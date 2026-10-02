@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BRD — Đăng nhập Google & Thành viên (ROMSFUN)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @media print { .no-print { display:none !important } body { font-size:12px } }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<div class="max-w-3xl mx-auto px-5 py-10 space-y-8">
+
+  <!-- Title -->
+  <header class="border-b border-slate-200 pb-5">
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">BRD — Đăng nhập Google & Hệ thống Thành viên</h1>
+        <p class="text-sm text-slate-500 mt-1">ROMSFUN · Bản v1.1 · 22/07/2026 · <span class="text-amber-600">Đã chốt thiết kế, chưa code</span></p>
+      </div>
+      <button onclick="window.print()" class="no-print text-xs rounded-md border border-slate-300 px-3 py-1.5 hover:bg-slate-100">In / PDF</button>
+    </div>
+    <p class="text-sm text-slate-600 mt-3">Cho phép người dùng đăng nhập bằng Google để tải các bài "chỉ thành viên", bình luận và báo lỗi. Nguồn thiết kế kỹ thuật: <code class="text-xs">.claude/docs/plan/google-login-members.md</code>.</p>
+  </header>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-2">1. Tính năng này là gì</h2>
+    <p class="text-sm leading-relaxed mb-2">Hiện tại mọi nội dung ROMSFUN đều public, chưa có khái niệm "thành viên". Ta thêm lớp thành viên để:</p>
+    <ul class="list-disc pl-5 text-sm space-y-1 text-slate-700">
+      <li>Giới hạn link tải của một số bài viết bị hạn chế — chỉ thành viên đăng nhập mới tải được.</li>
+      <li>Bắt buộc đăng nhập khi bình luận và báo lỗi, để giảm spam.</li>
+    </ul>
+    <p class="text-sm leading-relaxed mt-2">Đăng nhập <strong>một chạm bằng Google</strong> — không đăng ký thủ công, không mật khẩu, không mã kích hoạt. Đây là tính năng làm mới hoàn toàn (chưa có hệ đăng nhập nào trước đó).</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="rounded-xl border border-rose-200 bg-rose-50 p-4">
+    <h2 class="text-lg font-bold text-rose-900 mb-2">2. Ràng buộc quan trọng nhất — không được phá cache</h2>
+    <p class="text-sm text-rose-900/90 leading-relaxed">Website chịu được ~26M traffic/tháng nhờ Cloudflare phục vụ sẵn cache page html từ edge (server origin như không phải xử lý). Nhưng Cloudflare <strong>tự động ngừng cache</strong> với người mang cookie đăng nhập với WordPress. Nếu để ~100.000 thành viên đăng nhập theo kiểu đó → 100K người đập thẳng vào server gốc → quá tải.</p>
+    <p class="text-sm text-rose-900/90 leading-relaxed mt-2">Vì vậy thành viên dùng <strong>phiên đăng nhập riêng</strong> (không phải cookie WordPress), và trạng thái đăng nhập (avatar/tên) hiển thị <strong>phía trình duyệt</strong> — không gọi server trên mỗi lượt xem. Kết quả: thành viên vẫn đăng nhập được nhưng <strong>trang vẫn được cache như với guest user</strong>. Toàn bộ thiết kế xoay quanh nguyên tắc này.</p>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-3">3. Phạm vi</h2>
+    <div class="grid sm:grid-cols-3 gap-4 text-sm">
+      <div>
+        <h3 class="font-semibold text-emerald-700 mb-1">Làm đợt này</h3>
+        <ul class="list-disc pl-4 space-y-1 text-slate-700">
+          <li>Đăng nhập / đăng xuất Google</li>
+          <li>Tài khoản thành viên (bảng riêng)</li>
+          <li>Gate link tải bài "chỉ thành viên"</li>
+          <li>Bình luận (chỉ thành viên, văn bản thuần)</li>
+          <li>Báo lỗi (chỉ thành viên)</li>
+          <li>Trang "Của tôi"</li>
+          <li>Admin quản lý + khoá thành viên</li>
+          <li>Giới hạn tần suất hành động</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-amber-700 mb-1">Làm sau</h3>
+        <ul class="list-disc pl-4 space-y-1 text-slate-700">
+          <li>Đánh giá / rating chỉ-thành-viên (đợt này giữ nguyên rating guest hiện tại)</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-slate-500 mb-1">Không làm</h3>
+        <ul class="list-disc pl-4 space-y-1 text-slate-600">
+          <li>Đăng ký thủ công / mật khẩu</li>
+          <li>Provider khác (Facebook/Apple…)</li>
+          <li>Thanh toán / hội viên trả phí</li>
+          <li>Đổi hạ tầng cache</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-3">4. Yêu cầu chức năng</h2>
+    <div class="overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="text-left text-xs uppercase tracking-wide text-slate-500 border-b-2 border-slate-200">
+          <th class="py-2 pr-3 w-14">Mã</th>
+          <th class="py-2 pr-3 w-48">Chức năng</th>
+          <th class="py-2">Mô tả</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 align-top text-slate-700">
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-1</td><td class="py-2.5 pr-3 font-medium">Đăng nhập Google</td><td class="py-2.5">Bấm "Đăng nhập" ở header → mở modal Google → chọn tài khoản. Lần đầu tự tạo thành viên; lần sau nhận diện đúng người. Không form, không mật khẩu.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-2</td><td class="py-2.5 pr-3 font-medium">Tài khoản thành viên</td><td class="py-2.5">Lưu ở bảng riêng (tên, email, avatar lấy từ Google, ngày đăng ký, trạng thái khoá). Thành viên <strong>không</strong> vào được wp-admin, không hiện thanh admin. Tách hẳn khỏi tài khoản admin/staff.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-3</td><td class="py-2.5 pr-3 font-medium">Gate link tải</td><td class="py-2.5">Bài có thể đánh dấu "chỉ thành viên". Với bài đó, chỉ thành viên đăng nhập mới lấy được link tải (PC &amp; mobile). Guest user bấm tải → mở modal đăng nhập. Chặn thật ở server, không lách được bằng đoán URL. Bài công khai giữ nguyên hành vi cũ.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-4</td><td class="py-2.5 pr-3 font-medium">Bình luận</td><td class="py-2.5">Chỉ thành viên bình luận. <strong>Văn bản thuần</strong>: không HTML, không file, URL không tự thành link (hiển thị dạng chữ) → chặn spam link. Vẫn qua kiểm duyệt/chống spam sẵn có. Bình luận "chờ duyệt" hiện lại cho chính người viết để tránh gửi trùng.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-5</td><td class="py-2.5 pr-3 font-medium">Báo lỗi</td><td class="py-2.5">Chỉ thành viên gửi báo lỗi; mỗi báo lỗi gắn với 1 thành viên. Admin/staff không gửi. Thành viên xem lại được báo lỗi của mình.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-6</td><td class="py-2.5 pr-3 font-medium">Trang "Của tôi"</td><td class="py-2.5">Thành viên xem lại bình luận (gồm cả "chờ duyệt") và báo lỗi của mình. Bình luận bị đánh spam/xoá thì không hiện.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-7</td><td class="py-2.5 pr-3 font-medium">Khoá / mở khoá (Admin)</td><td class="py-2.5">Chỉ admin khoá/mở khoá, thao tác ở trang quản lý. Bị khoá → <strong>hết hiệu lực đăng nhập ngay ở mọi nơi</strong> và không đăng nhập lại được. Khoá ≠ xoá dữ liệu.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-8</td><td class="py-2.5 pr-3 font-medium">Trang quản lý thành viên (Admin)</td><td class="py-2.5">Danh sách trong wp-admin: avatar/tên, email, ngày đăng ký, trạng thái, thao tác. Mặc định sắp theo ngày đăng ký mới nhất; có phân trang &amp; tìm kiếm.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-9</td><td class="py-2.5 pr-3 font-medium">Đăng xuất</td><td class="py-2.5">Xoá phiên trên server + trả UI về trạng thái guest user; đồng bộ trên các tab đang mở.</td></tr>
+        <tr><td class="py-2.5 pr-3 font-mono text-indigo-600">FR-10</td><td class="py-2.5 pr-3 font-medium">Giới hạn tần suất</td><td class="py-2.5">Mỗi thành viên tối đa ~3 hành động/phút (gộp bình luận + báo lỗi). Vượt → báo "thao tác quá nhanh, thử lại sau". Ngưỡng cấu hình được.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="text-xs text-slate-500 mt-2">Rating chỉ-thành-viên sẽ là FR bổ sung khi làm ở đợt sau.</p>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-2">5. Quy tắc chính</h2>
+    <ul class="list-disc pl-5 text-sm space-y-1 text-slate-700">
+      <li>Một tài khoản Google = một thành viên (nhận diện theo tài khoản Google, không theo email đổi được).</li>
+      <li>Thành viên và tài khoản admin/staff là hai nhóm tách biệt, không lẫn.</li>
+      <li>Bình luận là văn bản thuần: không HTML/file, URL không thành link.</li>
+      <li>Chỉ admin khoá/mở khoá thành viên; khoá có hiệu lực ngay ở mọi nơi.</li>
+      <li>Chỉ thành viên gửi báo lỗi; admin/staff không gửi.</li>
+      <li>Giới hạn ~3 hành động/phút/thành viên.</li>
+      <li>Bình luận bị spam/xoá không hiện trong "Của tôi".</li>
+    </ul>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-3">6. Luồng chính</h2>
+    <div class="space-y-4 text-sm">
+      <div>
+        <h3 class="font-semibold text-slate-800 mb-1">Đăng nhập</h3>
+        <p class="text-slate-600">Bấm "Đăng nhập" → chọn tài khoản Google → server xác thực → tạo mới hoặc nhận diện thành viên → (nếu bị khoá thì từ chối) → giao diện đổi sang avatar, đóng modal.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-slate-800 mb-1">Tải bài "chỉ thành viên"</h3>
+        <p class="text-slate-600">Nút tải mặc định hiện "Đăng nhập để tải". Khách bấm → mở modal. Thành viên bấm → server cấp link tải rồi chuyển hướng. Trang tải vẫn là trang công khai được cache (và đang đặt noindex); link tải thật chỉ lấy được sau khi server xác nhận là thành viên.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-slate-800 mb-1">Bình luận</h3>
+        <p class="text-slate-600">Khu bình luận mặc định hiện "Đăng nhập để bình luận". Thành viên đăng nhập → hiện ô nhập văn bản. Gửi → qua kiểm duyệt; bình luận chờ duyệt hiện lại cho chính người viết.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-slate-800 mb-1">Admin khoá thành viên</h3>
+        <p class="text-slate-600">Admin vào trang quản lý → bấm "Khoá" → thành viên hết hiệu lực đăng nhập ngay ở lần thao tác kế và không đăng nhập lại được cho tới khi mở khoá.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-3">7. Yêu cầu phi chức năng &amp; rủi ro chính</h2>
+    <ul class="list-disc pl-5 text-sm space-y-1.5 text-slate-700">
+      <li><strong>Hiệu năng:</strong> thành viên đăng nhập vẫn nhận trang từ cache như khách; chi phí server chỉ phát sinh khi thực sự tải/bình luận, không phải khi chỉ đọc.</li>
+      <li><strong>Bảo mật:</strong> xác thực Google phía server (không tin dữ liệu trình duyệt gửi lên); chặn gian lận link tải; bình luận văn bản thuần → không XSS.</li>
+      <li><strong>Độ tin cậy:</strong> nếu Redis (nơi lưu phiên) gặp sự cố → đăng nhập/tải tạm báo "thử lại sau", nhưng <strong>website cho khách vẫn chạy bình thường</strong>.</li>
+      <li><strong>Rủi ro cao — lộ dữ liệu cá nhân:</strong> nếu lỡ đưa thông tin 1 thành viên vào trang bị cache thì người khác sẽ thấy. Giảm thiểu: trang cache luôn ẩn danh + kiểm tra tự động trước khi deploy + test 2 trình duyệt.</li>
+      <li><strong>Rủi ro cao — webview app:</strong> đăng nhập Google không chạy trong Facebook/Zalo. Giải pháp: hiện banner "mở bằng trình duyệt ngoài"; người dùng vẫn duyệt như khách → chỉ mất lượt đăng nhập, không mất traffic.</li>
+      <li><strong>Chống lạm dụng:</strong> ai có Google đều tạo được thành viên → giới hạn tần suất tạo tài khoản theo IP + cân nhắc Cloudflare Turnstile.</li>
+      <li><strong>Riêng tư:</strong> lưu email/tên/avatar → cần đường xoá dữ liệu thành viên khi được yêu cầu.</li>
+    </ul>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-3">8. Lộ trình</h2>
+    <ol class="list-decimal pl-5 text-sm space-y-1 text-slate-700">
+      <li><strong>GĐ 0:</strong> chốt baseline cache trên staging (trang trả HIT cho khách).</li>
+      <li><strong>GĐ 1:</strong> tạo bảng thành viên.</li>
+      <li><strong>GĐ 2:</strong> giao diện đăng nhập + đăng nhập Google + phiên; kiểm chứng vẫn HIT cache; test webview.</li>
+      <li><strong>GĐ 3:</strong> gate link tải bài "chỉ thành viên".</li>
+      <li><strong>GĐ 4:</strong> bình luận + báo lỗi (chỉ thành viên) + giới hạn tần suất.</li>
+      <li><strong>GĐ 5:</strong> khoá thành viên.</li>
+      <li><strong>GĐ 6:</strong> trang quản lý thành viên.</li>
+      <li><strong>GĐ 7:</strong> trang "Của tôi".</li>
+      <li class="text-slate-500"><strong>Sau:</strong> rating chỉ-thành-viên.</li>
+    </ol>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2 class="text-lg font-bold text-slate-900 mb-3">9. Còn phải chốt</h2>
+    <ul class="list-disc pl-5 text-sm space-y-1 text-slate-700">
+      <li>Danh sách/tiêu chí bài nào bật "chỉ thành viên".</li>
+      <li>Xử lý dữ liệu báo lỗi cũ (giữ hay dọn) khi gắn với thành viên.</li>
+      <li>Cách lưu rating theo thành viên (khi làm đợt sau).</li>
+    </ul>
+  </section>
+
+  <!-- Glossary -->
+  <section class="border-t border-slate-200 pt-5">
+    <h2 class="text-sm font-bold text-slate-900 mb-2">Thuật ngữ nhanh</h2>
+    <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-1.5 text-xs text-slate-600">
+      <div><dt class="font-semibold text-slate-700 inline">Thành viên (member):</dt> người đăng nhập bằng Google, lưu ở bảng riêng — khác tài khoản quản trị WordPress.</div>
+      <div><dt class="font-semibold text-slate-700 inline">Staff:</dt> tài khoản admin/biên tập trong WordPress.</div>
+      <div><dt class="font-semibold text-slate-700 inline">Gate:</dt> giới hạn — chỉ thành viên đăng nhập mới truy cập được (ở đây là link tải).</div>
+      <div><dt class="font-semibold text-slate-700 inline">Cache HIT:</dt> trang trả từ cache (nhanh, không tốn server); ngược lại là phải chạy server gốc.</div>
+      <div><dt class="font-semibold text-slate-700 inline">Phiên (session):</dt> trạng thái "đang đăng nhập", lưu ở Redis — khác cookie WordPress.</div>
+      <div><dt class="font-semibold text-slate-700 inline">Webview:</dt> trình duyệt nhúng trong app (Facebook/Zalo) — nơi đăng nhập Google không chạy.</div>
+    </dl>
+  </section>
+
+  <footer class="text-center text-xs text-slate-400 pt-4 border-t border-slate-200">
+    BRD · ROMSFUN — bản nghiệp vụ rút gọn. Chi tiết kỹ thuật: <code>.claude/docs/plan/google-login-members.md</code>
+  </footer>
+
+</div>
+</body>
+</html>
