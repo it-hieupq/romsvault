@@ -61,11 +61,11 @@ function rf_member_contact_table() {
  */
 function rf_ticket_statuses(): array {
 	return array(
-		0 => __( 'Init', 'romsfun' ),
-		1 => __( 'Processing', 'romsfun' ),
-		2 => __( 'Solved', 'romsfun' ),
-		3 => __( 'Closed', 'romsfun' ),
-		4 => __( 'Cancelled', 'romsfun' ),
+		0 => 'Init',
+		1 => 'Processing',
+		2 => 'Solved',
+		3 => 'Closed',
+		4 => 'Cancelled',
 	);
 }
 
@@ -74,9 +74,9 @@ function rf_ticket_statuses(): array {
  */
 function rf_ticket_types(): array {
 	return array(
-		0 => __( 'Add new game', 'romsfun' ),
-		1 => __( 'Add / Update file for existing game', 'romsfun' ),
-		2 => __( 'Other', 'romsfun' ),
+		0 => 'Add new game',
+		1 => 'Add / Update file for existing game',
+		2 => 'Other',
 	);
 }
 

@@ -41,16 +41,16 @@ function rf_ticket_flush_history( $member_id ): void {
 function rf_ticket_error( $code, $status ): WP_REST_Response
 {
 	$messages = array(
-		'blocked'       => __( 'Your account is locked and cannot submit requests.', 'romsfun' ),
-		'rate_limited'  => __( 'You are doing that too fast. Please wait a moment.', 'romsfun' ),
-		'auth_required' => __( 'Please sign in to submit a request.', 'romsfun' ),
-		'bad_type'      => __( 'Please select a valid request type.', 'romsfun' ),
-		'missing_title' => __( 'Please enter the game title.', 'romsfun' ),
-		'open_exists'   => __( 'You already have an open request. Please close it before creating a new one.', 'romsfun' ),
-		'daily_limit'   => __( 'You have reached today\'s request limit. Please try again tomorrow.', 'romsfun' ),
-		'not_open'      => __( 'This request can no longer be changed.', 'romsfun' ),
+		'blocked'       => __( 'Your account is locked and cannot submit requests.', 'rom' ),
+		'rate_limited'  => __( 'You are doing that too fast. Please wait a moment.', 'rom' ),
+		'auth_required' => __( 'Please sign in to submit a request.', 'rom' ),
+		'bad_type'      => __( 'Please select a valid request type.', 'rom' ),
+		'missing_title' => __( 'Please enter the game title.', 'rom' ),
+		'open_exists'   => __( 'You already have an open request. Please close it before creating a new one.', 'rom' ),
+		'daily_limit'   => __( 'You have reached today\'s request limit. Please try again tomorrow.', 'rom' ),
+		'not_open'      => __( 'This request can no longer be changed.', 'rom' ),
 	);
-	$message = $messages[$code] ?? __('Could not process your request. Please try again.', 'romsfun');
+	$message = $messages[$code] ?? __('Could not process your request. Please try again.', 'rom');
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 
@@ -170,7 +170,7 @@ function rf_rest_ticket_create( WP_REST_Request $request ): WP_REST_Response {
 
 	return new WP_REST_Response( array(
 		'ok'      => true,
-		'message' => __( 'Your request has been submitted. Thank you!', 'romsfun' ),
+		'message' => __( 'Your request has been submitted. Thank you!', 'rom' ),
 	), 200 );
 }
 
@@ -296,8 +296,8 @@ function rf_rest_ticket_close( WP_REST_Request $request ): WP_REST_Response {
 	rf_ticket_flush_history( $member_id ); // a new terminal ticket changed the finished list
 
 	$message = ( $new_status === 4 )
-		? __( 'Your request has been cancelled.', 'romsfun' )
-		: __( 'Your request has been closed.', 'romsfun' );
+		? __( 'Your request has been cancelled.', 'rom' )
+		: __( 'Your request has been closed.', 'rom' );
 
 	return new WP_REST_Response( array( 'ok' => true, 'status' => $new_status, 'message' => $message ), 200 );
 }

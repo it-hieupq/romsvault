@@ -21,10 +21,10 @@ function k_insert_seo_init() {
 	if ( function_exists('acf_add_local_field_group') ) {
 		acf_add_local_field_group(array(
 			'key'		=> 'insert_seo_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
 				array(
-					'label' => __( 'Console', 'romsfun' ),
+					'label' => __( 'Console', 'rom' ),
 					'name'  => 'insert_seo_console',
 					'key'   => 'insert_seo_console',
 					'type'  => 'taxonomy',
@@ -33,19 +33,19 @@ function k_insert_seo_init() {
 					'allow_null' => 1,
 				),
 				array(
-					'label' => __( 'Title', 'romsfun' ),
+					'label' => __( 'Title', 'rom' ),
 					'name'  => 'insert_seo_title',
 					'key'   => 'insert_seo_title',
 					'type'  => 'text',
 				),
 				array(
-					'label' => __( 'Description', 'romsfun' ),
+					'label' => __( 'Description', 'rom' ),
 					'name'  => 'insert_seo_desc',
 					'key'   => 'insert_seo_desc',
 					'type'  => 'text',
 				),
 				array(
-					'label' => __( 'Post Status', 'romsfun' ),
+					'label' => __( 'Post Status', 'rom' ),
 					'name'  => 'insert_seo_post_status',
 					'key'   => 'insert_seo_post_status',
 					'type'  => 'radio',
@@ -78,12 +78,12 @@ function k_insert_seo() {
 	$params = $_REQUEST['acf'];
 	
 	if ( empty($params['insert_seo_console']) ) {
-		_e('Please select console.', 'romsfun');
+		_e('Please select console.', 'rom');
 		exit;
 	}
 
 	if ( empty($params['insert_seo_title']) ) {
-		_e('Please input title.', 'romsfun');
+		_e('Please input title.', 'rom');
 		exit;
 	}
 
@@ -116,7 +116,7 @@ function k_insert_seo() {
 		} wp_reset_postdata();
 	}
 	
-	_e('Insert SEO is completed.', 'romsfun');
+	_e('Insert SEO is completed.', 'rom');
 	exit;
 }
 add_action( 'wp_ajax_k_insert_seo', 'k_insert_seo' );

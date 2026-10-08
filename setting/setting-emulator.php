@@ -7,16 +7,16 @@ function k_init_emulator() {
 	register_post_type( 'emulator',
 		array ( 
 			'labels' => array(
-				'name' 				=> __( 'Emulator', 'romsfun' ),
-				'singular_name' 	=> __( 'Emulator', 'romsfun' ),
-				'menu_name' 		=> __( 'Emulator', 'romsfun' ),
-				'name_admin_bar'    => __( 'Emulator', 'romsfun' ),
-				'all_items'			=> __( 'All Emulator', 'romsfun' ),
-				'add_new' 			=> __( 'Add Emulator', 'romsfun' ),
-				'add_new_item' 		=> __( 'Add Emulator', 'romsfun' ),
-				'edit_item' 		=> __( 'Edit Emulator', 'romsfun' ),
+				'name' 				=> __( 'Emulator', 'rom' ),
+				'singular_name' 	=> __( 'Emulator', 'rom' ),
+				'menu_name' 		=> __( 'Emulator', 'rom' ),
+				'name_admin_bar'    => __( 'Emulator', 'rom' ),
+				'all_items'			=> __( 'All Emulator', 'rom' ),
+				'add_new' 			=> __( 'Add Emulator', 'rom' ),
+				'add_new_item' 		=> __( 'Add Emulator', 'rom' ),
+				'edit_item' 		=> __( 'Edit Emulator', 'rom' ),
 			),
-			'description' 		=> __( 'Emulators', 'romsfun' ),
+			'description' 		=> __( 'Emulators', 'rom' ),
 			'menu_position' 	=> 5,
 			'menu_icon' 		=> 'dashicons-album',
 			'capability_type' 	=> 'post',
@@ -36,17 +36,17 @@ function k_init_emulator() {
 	register_taxonomy('emulator_console', array('emulator'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'Console', 'romsfun' ),
-				'singular_name'     => __( 'Console', 'romsfun' ),
-				'search_items'      => __( 'Search Console', 'romsfun' ),
-				'all_items'         => __( 'All Console', 'romsfun' ),
-				'parent_item'       => __( 'Parent Console', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Console:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Console', 'romsfun' ),
-				'update_item'       => __( 'Update Console', 'romsfun' ),
-				'add_new_item'      => __( 'Add Console', 'romsfun' ),
-				'new_item_name'     => __( 'Console Name', 'romsfun' ),
-				'menu_name'         => __( 'Console', 'romsfun' ),
+				'name'              => __( 'Console', 'rom' ),
+				'singular_name'     => __( 'Console', 'rom' ),
+				'search_items'      => __( 'Search Console', 'rom' ),
+				'all_items'         => __( 'All Console', 'rom' ),
+				'parent_item'       => __( 'Parent Console', 'rom' ),
+				'parent_item_colon' => __( 'Parent Console:', 'rom' ),
+				'edit_item'         => __( 'Edit Console', 'rom' ),
+				'update_item'       => __( 'Update Console', 'rom' ),
+				'add_new_item'      => __( 'Add Console', 'rom' ),
+				'new_item_name'     => __( 'Console Name', 'rom' ),
+				'menu_name'         => __( 'Console', 'rom' ),
 			),
 			'hierarchical'      	=> true,
 			'public'            	=> true,
@@ -62,17 +62,17 @@ function k_init_emulator() {
 	register_taxonomy('os', array('emulator'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'OS', 'romsfun' ),
-				'singular_name'     => __( 'OS', 'romsfun' ),
-				'search_items'      => __( 'Search OS', 'romsfun' ),
-				'all_items'         => __( 'All OS', 'romsfun' ),
-				'parent_item'       => __( 'Parent OS', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent OS:', 'romsfun' ),
-				'edit_item'         => __( 'Edit OS', 'romsfun' ),
-				'update_item'       => __( 'Update OS', 'romsfun' ),
-				'add_new_item'      => __( 'Add OS', 'romsfun' ),
-				'new_item_name'     => __( 'OS Name', 'romsfun' ),
-				'menu_name'         => __( 'OS', 'romsfun' ),
+				'name'              => __( 'OS', 'rom' ),
+				'singular_name'     => __( 'OS', 'rom' ),
+				'search_items'      => __( 'Search OS', 'rom' ),
+				'all_items'         => __( 'All OS', 'rom' ),
+				'parent_item'       => __( 'Parent OS', 'rom' ),
+				'parent_item_colon' => __( 'Parent OS:', 'rom' ),
+				'edit_item'         => __( 'Edit OS', 'rom' ),
+				'update_item'       => __( 'Update OS', 'rom' ),
+				'add_new_item'      => __( 'Add OS', 'rom' ),
+				'new_item_name'     => __( 'OS Name', 'rom' ),
+				'menu_name'         => __( 'OS', 'rom' ),
 			),
 			'hierarchical'      	=> true,
 			'public'            	=> true,
@@ -89,7 +89,7 @@ function k_init_emulator() {
 		'fields' 	=> array (
 			array (
 				'key' 	=> 'emulator_console_image',
-				'label' => __( 'Image', 'romsfun' ),
+				'label' => __( 'Image', 'rom' ),
 				'name' 	=> 'emulator_console_image',
 				'type' 	=> 'image',
 				'preview_size'		 => 'thumbnail',
@@ -99,7 +99,7 @@ function k_init_emulator() {
 			),
 			array (
 				'key' 	=> 'emulator_console_downloads',
-				'label' => __( 'Downloads', 'romsfun' ),
+				'label' => __( 'Downloads', 'rom' ),
 				'name' 	=> 'emulator_console_downloads',
 				'type' 	=> 'number',
 				'default_value'		 => 0,
@@ -126,7 +126,7 @@ add_action( 'init', 'k_init_emulator' );
 function k_emulator_columns_head($cols) {		
 	$cols = array_merge(
 		array_slice( $cols, 0, 1, true ),
-		array( 'thumbnail' => __( 'Image' , 'romsfun' ) ),
+		array( 'thumbnail' => __( 'Image' , 'rom' ) ),
 		array_slice( $cols, 1, null, true )
 	);
 	return $cols;
@@ -194,20 +194,15 @@ function k_change_emulator_link($post_link, $post, $leavename, $sample) {
 }
 add_filter('post_type_link', 'k_change_emulator_link', 10, 4);
 
-function k_rewrite_emulator_link($rules) {
-	$terms = get_terms( array('taxonomy' => 'emulator_console') );
-	if ( ! is_wp_error($terms) && ! empty($terms) ) {
-		$new_rules = array();
+/**
+ * Single rule for /emulators/{post_name}.html. The pattern does not depend on any
+ * emulator_console term, so it is added unconditionally.
+ */
+function rewrite_emulator_link($rules) {
+	$new_rules = array(
+		'emulators/([^/]*)\.html$' => 'index.php?post_type=emulator&name=$matches[1]',
+	);
 
-		foreach ( $terms as $term ) {
-			$term_slug = $term->slug;
-			if ( ! empty($term->parent) ) 
-				$term_slug = get_term($term->parent)->slug . '/' . $term_slug;
-			
-			$new_rules[ 'emulators/([^/]*)\.html$'] = 'index.php?post_type=emulator&name=$matches[1]';
-		}
-
-		return $new_rules + $rules;
-	}
+	return $new_rules + $rules;
 }
-add_filter('rewrite_rules_array', 'k_rewrite_emulator_link');
+add_filter('rewrite_rules_array', 'rewrite_emulator_link');

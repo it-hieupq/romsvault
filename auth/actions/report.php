@@ -35,14 +35,14 @@ add_action( 'rest_api_init', function () {
  */
 function rf_report_error( $code, $status ) {
 	$messages = array(
-		'blocked'       => __( 'Your account is locked and cannot submit reports.', 'romsfun' ),
-		'rate_limited'  => __( 'You are sending reports too fast. Please wait a moment.', 'romsfun' ),
-		'auth_required' => __( 'Please sign in to send a report.', 'romsfun' ),
-		'not_found'     => __( 'This post is not available for reporting.', 'romsfun' ),
-		'bad_type'      => __( 'Please select a valid issue type.', 'romsfun' ),
-		'daily_limit'   => __( 'You have reached today\'s report limit. Please try again tomorrow.', 'romsfun' ),
+		'blocked'       => __( 'Your account is locked and cannot submit reports.', 'rom' ),
+		'rate_limited'  => __( 'You are sending reports too fast. Please wait a moment.', 'rom' ),
+		'auth_required' => __( 'Please sign in to send a report.', 'rom' ),
+		'not_found'     => __( 'This post is not available for reporting.', 'rom' ),
+		'bad_type'      => __( 'Please select a valid issue type.', 'rom' ),
+		'daily_limit'   => __( 'You have reached today\'s report limit. Please try again tomorrow.', 'rom' ),
 	);
-	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not send your report. Please try again.', 'romsfun' );
+	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not send your report. Please try again.', 'rom' );
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 
@@ -137,7 +137,7 @@ function rf_rest_report( WP_REST_Request $request ) {
 
 	return new WP_REST_Response( array(
 		'ok'      => true,
-		'message' => __( 'Your report has been sent. Thank you!', 'romsfun' ),
+		'message' => __( 'Your report has been sent. Thank you!', 'rom' ),
 	), 200 );
 }
 

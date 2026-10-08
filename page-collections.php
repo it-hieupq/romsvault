@@ -42,7 +42,7 @@ while ( have_posts() ) : the_post();
                                 <div class="font-semibold text-base mb-4 hover:text-romfun-pink"><?php echo $term->name ?></div>
                                 <div class="text-sm text-muted flex justify-between">
                                         <span class="inline-flex items-center">
-                                            <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'romsfun') ?>
+                                            <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>
                                         </span>
                                 </div>
                             </div>

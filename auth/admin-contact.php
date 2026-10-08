@@ -24,8 +24,8 @@ if ( ! defined( 'RF_CONTACT_RESPONSE_MAXLEN' ) ) {
  */
 function app_contact_menu(): void {
 	add_menu_page(
-		__( 'Contact', 'romsfun' ),
-		__( 'Contact', 'romsfun' ),
+		__( 'Contact', 'rom' ),
+		__( 'Contact', 'rom' ),
 		'manage_options',
 		'contact',
 		'app_contact_render_page',
@@ -41,15 +41,15 @@ add_action( 'admin_menu', 'app_contact_menu' );
  */
 function app_contact_save_reply(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'contact_update_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	$id       = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 	$response = isset( $_POST['response'] ) ? trim( wp_strip_all_tags( wp_unslash( $_POST['response'] ) ) ) : '';
 	if ( $id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'rom' ) ) );
 	}
 	if ( mb_strlen( $response ) > RF_CONTACT_RESPONSE_MAXLEN ) {
 		$response = mb_substr( $response, 0, RF_CONTACT_RESPONSE_MAXLEN );
@@ -64,12 +64,12 @@ function app_contact_save_reply(): void {
 	) );
 
 	if ( false === $updated ) {
-		wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 	}
 	if ( function_exists( 'rf_contact_flush_history' ) ) {
 		rf_contact_flush_history( (int) $wpdb->get_var( $wpdb->prepare( "SELECT member_id FROM `{$table}` WHERE id = %d", $id ) ) );
 	}
-	wp_send_json_success( array( 'message' => __( 'Saved.', 'romsfun' ) ) );
+	wp_send_json_success( array( 'message' => __( 'Saved.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_contact_save_reply', 'app_contact_save_reply' );
 
@@ -78,14 +78,14 @@ add_action( 'wp_ajax_app_contact_save_reply', 'app_contact_save_reply' );
  */
 function app_contact_delete_row(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'contact_delete_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 	if ( $id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'rom' ) ) );
 	}
 	global $wpdb;
 	$table  = rf_member_contact_table();
@@ -93,9 +93,9 @@ function app_contact_delete_row(): void {
 	$result = $wpdb->delete( $table, array( 'id' => $id ), array( '%d' ) );
 	if ( $result ) {
 		if ( function_exists( 'rf_contact_flush_history' ) ) { rf_contact_flush_history( $owner ); }
-		wp_send_json_success( array( 'message' => __( 'Deleted.', 'romsfun' ) ) );
+		wp_send_json_success( array( 'message' => __( 'Deleted.', 'rom' ) ) );
 	}
-	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_contact_delete_row', 'app_contact_delete_row' );
 
@@ -104,17 +104,17 @@ add_action( 'wp_ajax_app_contact_delete_row', 'app_contact_delete_row' );
  */
 function app_contact_delete_rows(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'contact_delete_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['ids'] ) || ! is_array( $_POST['ids'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid IDs.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid IDs.', 'rom' ) ) );
 	}
 	$ids = array_filter( array_map( 'absint', $_POST['ids'] ) );
 	if ( empty( $ids ) ) {
-		wp_send_json_error( array( 'message' => __( 'No valid IDs provided.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'No valid IDs provided.', 'rom' ) ) );
 	}
 	global $wpdb;
 	$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
@@ -125,9 +125,9 @@ function app_contact_delete_rows(): void {
 		if ( function_exists( 'rf_contact_flush_history' ) ) {
 			foreach ( (array) $owners as $o ) { rf_contact_flush_history( (int) $o ); }
 		}
-		wp_send_json_success( array( 'message' => sprintf( __( '%d item(s) deleted.', 'romsfun' ), $result ) ) );
+		wp_send_json_success( array( 'message' => sprintf( __( '%d item(s) deleted.', 'rom' ), $result ) ) );
 	}
-	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_contact_delete_rows', 'app_contact_delete_rows' );
 
@@ -180,9 +180,9 @@ function app_contact_render_page(): void {
 		ARRAY_A
 	);
 	$views     = array(
-		''         => array( __( 'All', 'romsfun' ), (int) $counts['total'] ),
-		'awaiting' => array( __( 'Awaiting reply', 'romsfun' ), (int) $counts['awaiting'] ),
-		'replied'  => array( __( 'Replied', 'romsfun' ), (int) $counts['replied'] ),
+		''         => array( __( 'All', 'rom' ), (int) $counts['total'] ),
+		'awaiting' => array( __( 'Awaiting reply', 'rom' ), (int) $counts['awaiting'] ),
+		'replied'  => array( __( 'Replied', 'rom' ), (int) $counts['replied'] ),
 	);
 	$view_link = function ( $val, $label, $count ) use ( $filter, $per_page ) {
 		$args = array( 'page' => 'contact', 'per_page' => $per_page );
@@ -200,7 +200,7 @@ function app_contact_render_page(): void {
 	$update_nonce = wp_create_nonce( 'contact_update_nonce' );
 	?>
 	<div class="wrap">
-		<h1 class="wp-heading-inline"><?php esc_html_e( 'Contact', 'romsfun' ); ?></h1>
+		<h1 class="wp-heading-inline"><?php esc_html_e( 'Contact', 'rom' ); ?></h1>
 		<hr class="wp-header-end">
 
 		<style>
@@ -233,14 +233,14 @@ function app_contact_render_page(): void {
 			<table class="widefat striped">
 				<thead>
 				<tr>
-					<th><?php esc_html_e( 'Member', 'romsfun' ); ?></th>
-					<th class="col-title"><?php esc_html_e( 'Title', 'romsfun' ); ?></th>
-					<th class="col-msg"><?php esc_html_e( 'Message', 'romsfun' ); ?></th>
-					<th class="col-resp"><?php esc_html_e( 'Reply', 'romsfun' ); ?></th>
-					<th><?php esc_html_e( 'Time', 'romsfun' ); ?></th>
+					<th><?php esc_html_e( 'Member', 'rom' ); ?></th>
+					<th class="col-title"><?php esc_html_e( 'Title', 'rom' ); ?></th>
+					<th class="col-msg"><?php esc_html_e( 'Message', 'rom' ); ?></th>
+					<th class="col-resp"><?php esc_html_e( 'Reply', 'rom' ); ?></th>
+					<th><?php esc_html_e( 'Time', 'rom' ); ?></th>
 					<th>
-						<button class="button button-small delete-rows" type="button"><?php esc_html_e( 'Delete', 'romsfun' ); ?></button>
-						<button class="button button-small button-primary" id="contactCheckAll" type="button"><?php esc_html_e( 'Check', 'romsfun' ); ?></button>
+						<button class="button button-small delete-rows" type="button"><?php esc_html_e( 'Delete', 'rom' ); ?></button>
+						<button class="button button-small button-primary" id="contactCheckAll" type="button"><?php esc_html_e( 'Check', 'rom' ); ?></button>
 					</th>
 				</tr>
 				</thead>
@@ -257,18 +257,18 @@ function app_contact_render_page(): void {
 							<strong><?php echo esc_html( $row->title ); ?></strong>
 							<br>
 							<span class="rf-contact-badge" style="background:<?php echo $replied ? '#dcfce7' : '#fef3c7'; ?>;color:<?php echo $replied ? '#166534' : '#b45309'; ?>">
-								<?php echo $replied ? esc_html__( 'Replied', 'romsfun' ) : esc_html__( 'Awaiting', 'romsfun' ); ?>
+								<?php echo $replied ? esc_html__( 'Replied', 'rom' ) : esc_html__( 'Awaiting', 'rom' ); ?>
 							</span>
 						</td>
 						<td class="col-msg"><?php echo esc_html( $row->content ); ?></td>
 						<td class="col-resp">
 							<textarea class="rf-contact-response" maxlength="<?php echo esc_attr( RF_CONTACT_RESPONSE_MAXLEN ); ?>"><?php echo esc_textarea( (string) $row->response ); ?></textarea>
-							<button type="button" class="button button-small button-primary rf-contact-save"><?php esc_html_e( 'Save', 'romsfun' ); ?></button>
+							<button type="button" class="button button-small button-primary rf-contact-save"><?php esc_html_e( 'Save', 'rom' ); ?></button>
 						</td>
 						<td style="white-space:nowrap">
 							<?php echo rf_admin_time_ago( (string) $row->created_at, false ); // returns pre-escaped HTML ?>
 							<?php if ( $row->updated_at && $row->updated_at !== $row->created_at ) : ?>
-								<br><small style="color:#888"><?php esc_html_e( 'upd', 'romsfun' ); ?> <?php echo rf_admin_time_ago( (string) $row->updated_at, false ); // pre-escaped HTML ?></small>
+								<br><small style="color:#888"><?php esc_html_e( 'upd', 'rom' ); ?> <?php echo rf_admin_time_ago( (string) $row->updated_at, false ); // pre-escaped HTML ?></small>
 							<?php endif; ?>
 						</td>
 						<td style="text-align:center"><input class="check-item" type="checkbox" value="<?php echo esc_attr( $row->id ); ?>"></td>
@@ -324,7 +324,7 @@ function app_contact_render_page(): void {
 					<?php
 					$start = ( $current_page - 1 ) * $per_page + 1;
 					$end   = min( $current_page * $per_page, $total_count );
-					printf( esc_html__( 'Showing %1$d-%2$d of %3$d messages', 'romsfun' ), $start, $end, $total_count );
+					printf( esc_html__( 'Showing %1$d-%2$d of %3$d messages', 'rom' ), $start, $end, $total_count );
 					?>
 				</span>
 				<div class="pagination-links">
@@ -349,7 +349,7 @@ function app_contact_render_page(): void {
 		<?php endif; ?>
 
 		<?php else : ?>
-			<div class="notice notice-info"><p><?php esc_html_e( 'No messages yet.', 'romsfun' ); ?></p></div>
+			<div class="notice notice-info"><p><?php esc_html_e( 'No messages yet.', 'rom' ); ?></p></div>
 		<?php endif; ?>
 	</div>
 	<?php

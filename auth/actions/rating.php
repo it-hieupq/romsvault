@@ -44,14 +44,14 @@ add_action( 'rest_api_init', function () {
  */
 function rf_rating_error( $code, $status ) {
 	$messages = array(
-		'blocked'       => __( 'Your account is locked and cannot rate.', 'romsfun' ),
-		'rate_limited'  => __( 'You are doing that too fast. Please wait a moment.', 'romsfun' ),
-		'auth_required' => __( 'Please sign in to rate.', 'romsfun' ),
-		'not_found'     => __( 'This post is not available for rating.', 'romsfun' ),
-		'bad_score'     => __( 'Please choose a rating between 1 and 5 stars.', 'romsfun' ),
-		'already_rated' => __( 'You have already rated this post.', 'romsfun' ),
+		'blocked'       => __( 'Your account is locked and cannot rate.', 'rom' ),
+		'rate_limited'  => __( 'You are doing that too fast. Please wait a moment.', 'rom' ),
+		'auth_required' => __( 'Please sign in to rate.', 'rom' ),
+		'not_found'     => __( 'This post is not available for rating.', 'rom' ),
+		'bad_score'     => __( 'Please choose a rating between 1 and 5 stars.', 'rom' ),
+		'already_rated' => __( 'You have already rated this post.', 'rom' ),
 	);
-	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not save your rating. Please try again.', 'romsfun' );
+	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not save your rating. Please try again.', 'rom' );
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 
@@ -123,7 +123,7 @@ function rf_rest_rating_submit( WP_REST_Request $request ) {
 		'ok'      => true,
 		'mine'    => array( 'score' => $score, 'content' => $content, 'created_at' => $now ),
 		'post'    => array( 'avg' => $new_avg, 'count' => $new_count ),
-		'message' => __( 'Thank you for your rating!', 'romsfun' ),
+		'message' => __( 'Thank you for your rating!', 'rom' ),
 	), 200 );
 }
 

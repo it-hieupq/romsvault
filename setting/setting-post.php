@@ -5,11 +5,11 @@ function k_init_post() {
 	 */
 	acf_add_local_field_group( array(
 		'key'		=> 'post_settings',
-		'title'     => __( 'Settings', 'romsfun' ),
+		'title'     => __( 'Settings', 'rom' ),
 		'fields' 	=> array (
 			array (
 				'key'   		=> 'views',
-				'label' 		=> __( 'Views', 'romsfun' ),
+				'label' 		=> __( 'Views', 'rom' ),
 				'name'  		=> 'views',
 				'type'  		=> 'number',
 				'default_value' => 0,
@@ -35,7 +35,7 @@ add_action( 'init', 'k_init_post' );
 function k_post_columns_head($cols): array {
 	$cols = array_merge(
 		array_slice( $cols, 0, 1, true ),
-		array( 'thumbnail' => __( 'Image' , 'romsfun' ) ),
+		array( 'thumbnail' => __( 'Image' , 'rom' ) ),
 		array_slice( $cols, 1, null, true )
 	);
 	return $cols;

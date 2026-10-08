@@ -26,10 +26,10 @@ function k_grabber_multi_init()
     if (function_exists('acf_add_local_field_group')) {
         acf_add_local_field_group(array(
             'key' => 'grabber_multi_settings',
-            'title' => __('Settings', 'romsfun'),
+            'title' => __('Settings', 'rom'),
             'fields' => array(
                 array(
-                    'label' => __('Console', 'romsfun'),
+                    'label' => __('Console', 'rom'),
                     'name' => 'grabber_multi_console',
                     'key' => 'grabber_multi_console',
                     'type' => 'taxonomy',
@@ -38,7 +38,7 @@ function k_grabber_multi_init()
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('Type', 'romsfun'),
+                    'label' => __('Type', 'rom'),
                     'name' => 'grabber_type',
                     'key' => 'grabber_type',
                     'type' => 'taxonomy',
@@ -47,7 +47,7 @@ function k_grabber_multi_init()
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('URLs', 'romsfun'),
+                    'label' => __('URLs', 'rom'),
                     'name' => 'grabber_multi_urls',
                     'key' => 'grabber_multi_urls',
                     'type' => 'textarea',
@@ -75,17 +75,17 @@ function k_grabber_multi()
     $params = $_REQUEST['acf'];
 
     if (empty($params['grabber_multi_console'])) {
-        _e('Please select console.', 'romsfun');
+        _e('Please select console.', 'rom');
         exit;
     }
 
     // if (empty($params['grabber_type'])) {
-    // 	_e('Please select type.', 'romsfun');
+    // 	_e('Please select type.', 'rom');
     // 	exit;
     // }
 
     if (empty($params['grabber_multi_urls'])) {
-        _e('Please input url.', 'romsfun');
+        _e('Please input url.', 'rom');
         exit;
     }
 
@@ -97,7 +97,7 @@ function k_grabber_multi()
 
     $urls_array = [$params['request_url']];
     if (empty($urls_array)) {
-        _e('Please input valid URLs.', 'romsfun');
+        _e('Please input valid URLs.', 'rom');
         exit;
     }
 
@@ -139,7 +139,7 @@ function k_grabber_multi()
                 grabber_pushsquare_ac($url, $console, $type, $index);
                 break;
             default:
-                echo json_encode(array('status' => false, 'message' => $index . '. ' . __('The URL must belong to one of the following domains: <strong>mobygames.com, retrostic.com, igdb.com, romstation.fr, gamesdb.launchbox-app.com, gog.com, backloggd.com, romhackplaza.org</strong>' . '<br>', 'romsfun')));
+                echo json_encode(array('status' => false, 'message' => $index . '. ' . __('The URL must belong to one of the following domains: <strong>mobygames.com, retrostic.com, igdb.com, romstation.fr, gamesdb.launchbox-app.com, gog.com, backloggd.com, romhackplaza.org</strong>' . '<br>', 'rom')));
                 break;
         }
     }
@@ -185,7 +185,7 @@ function grabber_mobygames_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -283,15 +283,15 @@ function grabber_mobygames_ac($url, $console, $type, $stt)
 
                wp_set_post_terms($post_id, $pubs, 'pub');
 				
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
             $html->clear();
             unset($html);
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . 'Grabber Mobygames ERROR.' . '<br>', 'romsfun'));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . 'Grabber Mobygames ERROR.' . '<br>', 'rom'));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . 'Grabber Mobygames ERROR.' . '<br>', 'romsfun'));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . 'Grabber Mobygames ERROR.' . '<br>', 'rom'));
     }
 }
 
@@ -339,7 +339,7 @@ function grabber_retrostic_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -434,15 +434,15 @@ function grabber_retrostic_ac($url, $console, $type, $stt)
                     add_row('download_list', $download_data, $post_id);
                 }
 
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
             $html->clear();
             unset($html);
             return;
         }
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Retrostic ERROR.<br>', "romsfun")));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Retrostic ERROR.<br>', 'rom')));
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Retrostic ERROR.<br>', "romsfun")));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Retrostic ERROR.<br>', 'rom')));
     }
 }
 
@@ -454,7 +454,8 @@ function grabber_igdb_ac($url, $console, $type, $stt)
         $client_id = 'w38dtppzl9ms96wfq40dm8zuwqtue3';
         $client_secret = '8bf0jeapi6o5gufogwmkux4mgn4dmb';
 
-        $requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=https://romsfun.com/";
+        $redirect_uri = site_url( '/' );
+        $requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=$redirect_uri";
 
         $options = array(
             'http' => array(
@@ -499,7 +500,7 @@ function grabber_igdb_ac($url, $console, $type, $stt)
             }
         }
         if ($temp_post_id > 0) {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
             exit();
         } else {
         }
@@ -594,9 +595,9 @@ wp_set_post_terms($post_id, $pubs, 'pub');
 
 
 
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Igdb ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Igdb ERROR.' . '<br>', 'rom')));
     }
 }
 
@@ -679,7 +680,7 @@ function grabber_romstation_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -727,13 +728,13 @@ function grabber_romstation_ac($url, $console, $type, $stt)
 
                 wp_set_post_terms($post_id, $devs, 'dev');
 
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romstation ERROR.' . '<br>', 'romsfun')));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romstation ERROR.' . '<br>', 'rom')));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romstation ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romstation ERROR.' . '<br>', 'rom')));
     }
 }
 
@@ -743,7 +744,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
     $response = wp_remote_get($url);
 
     if (is_wp_error($response)) {
-        echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Error fetching URL:', 'romsfun') . ' ' . $response->get_error_message()));
+        echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Error fetching URL:', 'rom') . ' ' . $response->get_error_message()));
         exit();
     }
 
@@ -758,7 +759,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
     // title - với kiểm tra lỗi
     $title_element = $xpath->query('//h1')->item(0);
     if (!$title_element) {
-        echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Could not find title', 'romsfun')));
+        echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Could not find title', 'rom')));
         exit();
     }
     $title = trim($title_element->nodeValue);
@@ -789,7 +790,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
     }
 
     if ($temp_post_id > 0) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
         exit();
     } else {
         try {
@@ -832,7 +833,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
             }
         } catch (Exception $e) {
             error_log('Launchbox Grabber Error: ' . $e->getMessage());
-            echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Grabber Launchbox ERROR: ', 'romsfun') . $e->getMessage() . '<br>'));
+            echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Grabber Launchbox ERROR: ', 'rom') . $e->getMessage() . '<br>'));
             exit;
         }
 
@@ -845,7 +846,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
         ));
 
         if (is_wp_error($post_id)) {
-            echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Error creating post: ', 'romsfun') . $post_id->get_error_message()));
+            echo json_encode(array('status' => false, 'message' => $stt . '. ' . __('Error creating post: ', 'rom') . $post_id->get_error_message()));
             exit();
         }
 
@@ -949,7 +950,7 @@ wp_set_post_terms($post_id, $pubs, 'pub');
             }
         }
 
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
     }
 }
 
@@ -992,7 +993,7 @@ function grabber_gog_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -1104,16 +1105,16 @@ function grabber_gog_ac($url, $console, $type, $stt)
                 wp_set_post_terms($post_id, $devs, 'dev');
                 wp_set_post_terms($post_id, $pubs, 'pub');
 
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
 
             $html->clear();
             unset($html);
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber GOG ERROR.' . '<br>', 'romsfun')));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber GOG ERROR.' . '<br>', 'rom')));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber GOG ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber GOG ERROR.' . '<br>', 'rom')));
     }
 }
 
@@ -1155,7 +1156,7 @@ function grabber_backloggd_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -1258,16 +1259,16 @@ function grabber_backloggd_ac($url, $console, $type, $stt)
                wp_set_post_terms($post_id, $pubs, 'pub');
 				
 				
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
 
             $html->clear();
             unset($html);
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Backloggd ERROR.' . '<br>', 'romsfun')));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Backloggd ERROR.' . '<br>', 'rom')));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Backloggd ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Backloggd ERROR.' . '<br>', 'rom')));
     }
 }
 
@@ -1301,7 +1302,7 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
             }
 
             if (!$title) {
-                echo json_encode(['status' => false, 'message' => $stt . '. ' . __('Không tìm thấy tiêu đề.', 'romsfun')]);
+                echo json_encode(['status' => false, 'message' => $stt . '. ' . __('Không tìm thấy tiêu đề.', 'rom')]);
                 $html->clear();
                 unset($html);
                 return;
@@ -1328,7 +1329,7 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -1475,16 +1476,16 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
                     wp_set_post_terms($post_id, $terms, 'region');
                 }
 
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
 
             $html->clear();
             unset($html);
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romhackplaza ERROR.' . '<br>', 'romsfun')));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romhackplaza ERROR.' . '<br>', 'rom')));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romhackplaza ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Romhackplaza ERROR.' . '<br>', 'rom')));
     }
 }
 
@@ -1663,7 +1664,7 @@ function k_grabber_gallery_multi()
                 $client_id = 'w38dtppzl9ms96wfq40dm8zuwqtue3';
                 $client_secret = '8bf0jeapi6o5gufogwmkux4mgn4dmb';
 
-                $requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=https://romspure.com/";
+                $requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=https://romsvault.com/";
 
                 $options = array(
                     'http' => array(
@@ -1815,7 +1816,7 @@ case strpos($url, 'gamesdb.launchbox-app.com') !== false:
                 $client_id = 'w38dtppzl9ms96wfq40dm8zuwqtue3';
                 $client_secret = '8bf0jeapi6o5gufogwmkux4mgn4dmb';
 
-                $requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=https://romspure.com/";
+                $requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=https://romsvault.com/";
 
                 $options = array(
                     'http' => array(
@@ -1903,7 +1904,7 @@ function k_grab_file()
                     $file_size_mb = round(filesize($save_path) / (1024 * 1024), 2) . ' MB';
                     $file_info = array(
                         'name' => pathinfo($file_name, PATHINFO_FILENAME),
-                        'url' => "https://romsfun.com/wp-content/guest-upload/$type/$console/$post_name/$file_name",
+                        'url' => content_url("/guest-upload/$type/$console/$post_name/$file_name"),
                         'file_size' => $file_size_mb,
                         'file_type' => ''
                     );
@@ -1975,7 +1976,7 @@ function grabber_nintendolife_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -2110,15 +2111,15 @@ function grabber_nintendolife_ac($url, $console, $type, $stt)
                 }
 
 
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
 
                 return;
             }
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Nintendo Life ERROR.' . '<br>', 'romsfun')));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Nintendo Life ERROR.' . '<br>', 'rom')));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Nintendo Life ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Nintendo Life ERROR.' . '<br>', 'rom')));
     }
 }
 
@@ -2175,7 +2176,7 @@ function grabber_pushsquare_ac($url, $console, $type, $stt)
                 }
             }
             if ($temp_post_id > 0) {
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
                 exit();
             } else {
 
@@ -2311,14 +2312,14 @@ function grabber_pushsquare_ac($url, $console, $type, $stt)
                 }
 
 
-                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
 
                 return;
             }
         } else {
-            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Pushsquare ERROR.' . '<br>', 'romsfun')));
+            echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Pushsquare ERROR.' . '<br>', 'rom')));
         }
     } catch (\Throwable $th) {
-        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Pushsquare ERROR.' . '<br>', 'romsfun')));
+        echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Grabber Pushsquare ERROR.' . '<br>', 'rom')));
     }
 }

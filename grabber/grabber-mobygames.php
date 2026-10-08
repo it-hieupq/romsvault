@@ -22,10 +22,10 @@ function k_grabber_mobygames_init() {
 	if ( function_exists('acf_add_local_field_group') ) {
 		acf_add_local_field_group(array(
 			'key'		=> 'grabber_mobygames_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
 				array(
-					'label' 	 => __( 'Console', 'romsfun' ),
+					'label' 	 => __( 'Console', 'rom' ),
 					'name'  	 => 'grabber_mobygames_console',
 					'key'   	 => 'grabber_mobygames_console',
 					'type'  	 => 'taxonomy',
@@ -34,7 +34,7 @@ function k_grabber_mobygames_init() {
 					'allow_null' => 1,
 				),
 				array(
-					'label' => __( 'Url', 'romsfun' ),
+					'label' => __( 'Url', 'rom' ),
 					'name'  => 'grabber_mobygames_url',
 					'key'   => 'grabber_mobygames_url',
 					'type'  => 'url',
@@ -60,11 +60,11 @@ add_action( 'init', 'k_grabber_mobygames_init' );
 function k_grabber_mobygames() {
 	$params = $_REQUEST['acf'];
 	if ( empty($params['grabber_mobygames_console']) ) {
-		_e('Please select console.', 'romsfun');
+		_e('Please select console.', 'rom');
 		exit;
 	}
 	if ( empty($params['grabber_mobygames_url']) ) {
-		_e('Please input url.', 'romsfun');
+		_e('Please input url.', 'rom');
 		exit;
 	}
 
@@ -97,19 +97,19 @@ function k_grabber_mobygames() {
         $post_id_3 = rom_exists($title_3, $console);
 
         if ($post_id > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>';
             exit;
         }
         elseif ($post_id_1 > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>';
             exit;
         }
         elseif ($post_id_2 > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>';
             exit;
         }
         elseif ($post_id_3 > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>';
             exit;
         }
         else {
@@ -213,7 +213,7 @@ function k_grabber_mobygames() {
 				wp_set_post_terms( $post_id, $terms, 'pub' );
 			}
 
-			echo __('Post created:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) .'</a>';
+			echo __('Post created:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) .'</a>';
 			exit;
 		}
 
@@ -221,7 +221,7 @@ function k_grabber_mobygames() {
 		unset($html);
 	}
 	
-	_e('Grabber Mobygames ERROR.', 'romsfun');
+	_e('Grabber Mobygames ERROR.', 'rom');
 	exit;
 }
 add_action( 'wp_ajax_k_grabber_mobygames', 'k_grabber_mobygames' );

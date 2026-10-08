@@ -1,4 +1,4 @@
-# CLAUDE.md — ROMSPURE WordPress Theme
+# CLAUDE.md — ROMSVAULT WordPress Theme
 
 This file provides guidance to Claude Code when working with this repository.
 
@@ -38,7 +38,7 @@ Historical plans & specs (design rationale, not current state) live in `.claude/
 `brd/google-login-members.html`, `detail/auth-salvage-notes.md`.
 Operational test plan: [`docs/tracking-test-plan.md`](../docs/tracking-test-plan.md).
 
-**Pack & Library CPTs no longer exist.** Any `pack` / `library` / `pack_console` / `lib_console` code you meet was removed on 2026-10-08 (see ARCHITECTURE.md § 10.1). The theme has exactly two CPTs: `rom` and `emulator` — do not reintroduce those branches.
+**The theme has exactly two custom post types: `rom` and `emulator`** (plus WordPress `post` and `page`). Anything else is not part of this site.
 
 ## Token Efficiency Rule (STRICT)
 
@@ -58,7 +58,7 @@ Token budget is a **first-class constraint**. A single agent spawn reloads conte
 ## WordPress / Theme Guardrails
 
 - **Cache-aware:** front-end pages are Cloudflare/APO-cached. Never use `is_user_logged_in()` or WP cookies in templates; member state is client-side (`localStorage`) + REST (`rf/v1/*`). Templates render the guest state; JS swaps via `html.rf-authed`.
-- **i18n:** every user-facing string uses `__()/esc_html__()` with textdomain `romsfun`. No Vietnamese in theme UI (English default).
+- **i18n:** every user-facing string uses `__()/esc_html__()` with textdomain `rom`. No Vietnamese in theme UI (English default).
 - **Security:** escape on output (`esc_html/esc_attr/esc_url`); all `$wpdb` queries use `prepare()`; sanitize input.
 
 ## Messaging & UX

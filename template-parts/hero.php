@@ -7,7 +7,7 @@
 
                 <?php
 				 if (is_search()) :
-					$title = __('Search Results for: ', 'romsfun') . get_search_query();
+					$title = __('Search Results for: ', 'rom') . get_search_query();
 				elseif(is_page() || is_singular('post')) :
 					$title = get_the_title();
 				elseif (is_tax() || is_category() || is_tag()) :
@@ -15,7 +15,7 @@
 				elseif(is_archive()) :
 					$title = post_type_archive_title('', false);
                 else:
-                    $title = __('Not found', 'romsfun');
+                    $title = __('Not found', 'rom');
 				endif;
 				?>
 
@@ -33,13 +33,13 @@
                                    class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40">
                             <span class="absolute inset-y-0 right-1 flex items-center pr-1">
                                 <button class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-romfun-pink hover:bg-romfun-pink-dark transition">
-                                  <?php _e('Search', 'romsfun') ?>
+                                  <?php _e('Search', 'rom') ?>
                                 </button>
                               </span>
                         </label>
                     </form>
 
-                <?php elseif(is_singular(array('post', 'page')) && !is_page_template(get_romsfun_page_templates())) : ?>
+                <?php elseif(is_singular(array('post', 'page')) && !is_page_template(get_rom_page_templates())) : ?>
                     <div class="text-gray-500 font-bold flex items-center justify-center">
                         <?php echo get_svg_icon('time'). get_the_modified_date(); ?>
                     </div>

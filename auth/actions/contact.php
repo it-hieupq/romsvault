@@ -44,14 +44,14 @@ function rf_contact_flush_history( $member_id ): void {
  */
 function rf_contact_error( $code, $status ): WP_REST_Response {
 	$messages = array(
-		'blocked'         => __( 'Your account is locked and cannot send messages.', 'romsfun' ),
-		'rate_limited'    => __( 'You are doing that too fast. Please wait a moment.', 'romsfun' ),
-		'auth_required'   => __( 'Please sign in to send a message.', 'romsfun' ),
-		'missing_title'   => __( 'Please enter a title.', 'romsfun' ),
-		'missing_content' => __( 'Please enter your message.', 'romsfun' ),
-		'daily_limit'     => __( 'You have reached today\'s message limit. Please try again tomorrow.', 'romsfun' ),
+		'blocked'         => __( 'Your account is locked and cannot send messages.', 'rom' ),
+		'rate_limited'    => __( 'You are doing that too fast. Please wait a moment.', 'rom' ),
+		'auth_required'   => __( 'Please sign in to send a message.', 'rom' ),
+		'missing_title'   => __( 'Please enter a title.', 'rom' ),
+		'missing_content' => __( 'Please enter your message.', 'rom' ),
+		'daily_limit'     => __( 'You have reached today\'s message limit. Please try again tomorrow.', 'rom' ),
 	);
-	$message = $messages[ $code ] ?? __( 'Could not send your message. Please try again.', 'romsfun' );
+	$message = $messages[ $code ] ?? __( 'Could not send your message. Please try again.', 'rom' );
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 
@@ -141,7 +141,7 @@ function rf_rest_contact_create( WP_REST_Request $request ): WP_REST_Response {
 
 	return new WP_REST_Response( array(
 		'ok'      => true,
-		'message' => __( 'Your message has been sent. Thank you!', 'romsfun' ),
+		'message' => __( 'Your message has been sent. Thank you!', 'rom' ),
 	), 200 );
 }
 

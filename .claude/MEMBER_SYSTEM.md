@@ -1,10 +1,10 @@
 # MEMBER_SYSTEM.md — romsvault Member Subsystem
 
-**Traced:** 2026-10-08 against `auth/` (19 PHP + `auth/js/auth.js`, ~6.4k dòng).
-**Nguồn chuẩn:** `functions.php` include map → `auth/*`. Không có gì ở `inc/`.
+**Traced:** 2026-10-08 từ `auth/` (19 PHP + `auth/js/auth.js`, ~6.4k dòng).
+**Nguồn chuẩn:** `functions.php` include map → `auth/*`. Toàn bộ subsystem nằm trong
+`auth/`, không có phần nào ở `inc/`.
 
-> Đây là phần lớn nhất của codebase hiện tại và **không** xuất hiện trong
-> `ARCHITECTURE.md` / `DATA_DICTIONARY.md` phiên bản 2026-01.
+Doc liên quan: [ARCHITECTURE.md](./ARCHITECTURE.md) · [DATA_DICTIONARY.md](./DATA_DICTIONARY.md)
 
 ---
 
@@ -393,6 +393,7 @@ field ACF.
 | Fan-out wishlist khi post đổi status | `actions/wishlist.php` hook `transition_post_status`, `deleted_post` |
 
 `valid_post_type()` / `valid_downloadable_post_type()` (`inc/utility-post-type.php`)
-được dùng để chặn post type lạ ở `/rating`, `/report`, `/wishlist`.
-`AVAILABLE_POST_TYPES` = `['rom', 'emulator']` (dọn 2026-10-08 — `pack`/`library` đã bỏ).
-`rf_post_type_meta()` (`actions/wishlist.php`) cũng chỉ còn 2 entry tương ứng.
+chặn post type lạ ở `/rating`, `/report`, `/wishlist`. Cả hai đọc hằng
+`AVAILABLE_POST_TYPES` = `['rom', 'emulator']`.
+`rf_post_type_meta()` (`actions/wishlist.php`) map đúng 2 post type đó sang
+label + console taxonomy cho badge wishlist.

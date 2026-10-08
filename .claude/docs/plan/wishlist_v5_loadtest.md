@@ -43,7 +43,7 @@ Endpoint yêu cầu cookie `rf_member` (HttpOnly) → session ở Redis `{PREFIX
 | # | Kịch bản | Cách | Đo |
 |---|---|---|---|
 | A | **Hit baseline** | Warm cache trước; bắn GET `/wishlist` ở peak-thật ×1, ×2, ×4 | p95 hit, FPM active workers, có chạm `max_children`? |
-| B | **Cold-cache stampede** | `FLUSHDB` (hoặc xoá prefix `romsfun_rf_wl_v1_*`) → đổ tải đột ngột | DB QPS/`Threads_running`, p95 miss, thời gian cache đầy lại, latency có phục hồi? |
+| B | **Cold-cache stampede** | `FLUSHDB` (hoặc xoá prefix `rom_rf_wl_v1_*`) → đổ tải đột ngột | DB QPS/`Threads_running`, p95 miss, thời gian cache đầy lại, latency có phục hồi? |
 | C | **Mix thực tế** | 95% read + 5% toggle (tôn trọng cap 6/phút/member) | invalidate đúng sau toggle; chi phí rebuild; không lost-update (2 VU cùng member 2 "tab") |
 | D | **R1 leak dưới tải** | 2+ session song song bắn đồng thời; qua CF và thẳng origin | assert body[A] ≠ body[B]; header `no-store`; không `fastcgi_cache` HIT chéo |
 | E | **Sentinel rỗng** | VU toàn member rỗng | lần 1 = 1 query + set sentinel; lần sau 0 DB (kiểm general log / processlist) |
@@ -79,7 +79,7 @@ Theo thứ tự nhẹ→nặng, chỉ làm khi bench chứng minh cần:
 Mục đích: chứng minh response `/wp-json/rf/v1/wishlist` **không bị cache chéo member** (R1). Lấy `SID` = giá trị cookie `rf_member` của 2 member test KHÁC nhau (login 2 tài khoản → DevTools → Application → Cookies → copy `rf_member`); wishlist 2 member phải khác nhau.
 
 ```bash
-SITE="https://romsfun.com"          # qua Cloudflare
+SITE="https://romsvault.com"          # qua Cloudflare
 ORIGIN="http://127.0.0.1:8080"      # thẳng origin nginx (bypass CF) — chỉnh theo setup docker
 SID_A="<rf_member cookie member A>"
 SID_B="<rf_member cookie member B>"
@@ -100,8 +100,8 @@ echo "== 3) Lặp A nhiều lần: luôn là wishlist của A, không lẫn B ==
 for i in 1 2 3; do curl -sS -H "Cookie: rf_member=$SID_A" "$SITE$EP" | head -c 160; echo; done
 
 echo "== 4) Thẳng origin (bypass CF): 2 session → 2 body, không fastcgi_cache HIT chéo =="
-curl -sS -H "Host: romsfun.com" -H "Cookie: rf_member=$SID_A" "$ORIGIN$EP" | head -c 160; echo
-curl -sS -H "Host: romsfun.com" -H "Cookie: rf_member=$SID_B" "$ORIGIN$EP" | head -c 160; echo
+curl -sS -H "Host: romsvault.com" -H "Cookie: rf_member=$SID_A" "$ORIGIN$EP" | head -c 160; echo
+curl -sS -H "Host: romsvault.com" -H "Cookie: rf_member=$SID_B" "$ORIGIN$EP" | head -c 160; echo
 #  2 dòng phải KHÁC nhau. Nếu có header X-FastCGI-Cache thì phải là MISS/BYPASS, không HIT chéo.
 
 echo "== 5) Guest (không cookie) → 401, không phục vụ cache của ai =="

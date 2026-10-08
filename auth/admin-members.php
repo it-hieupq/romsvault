@@ -56,7 +56,7 @@ if ( ! function_exists( 'rf_admin_time_ago' ) ) {
 		}
 		/* translators: %s: human-readable time difference, e.g. "5 mins". */
 		return '<span title="' . esc_attr( $datetime ) . '">'
-			. esc_html( sprintf( __( '%s ago', 'romsfun' ), human_time_diff( $ts, time() ) ) )
+			. esc_html( sprintf( __( '%s ago', 'rom' ), human_time_diff( $ts, time() ) ) )
 			. '</span>';
 	}
 }
@@ -83,7 +83,7 @@ if ( ! function_exists( 'rf_admin_today_count' ) ) {
 if ( ! function_exists( 'rf_admin_today_badge' ) ) {
 	function rf_admin_today_badge( int $count ): string {
 		return '<span class="rf-added-today">'
-			. esc_html__( 'Added today:', 'romsfun' ) . ' <strong>' . esc_html( number_format_i18n( $count ) ) . '</strong>'
+			. esc_html__( 'Added today:', 'rom' ) . ' <strong>' . esc_html( number_format_i18n( $count ) ) . '</strong>'
 			. '</span>';
 	}
 }
@@ -99,10 +99,10 @@ if ( ! function_exists( 'rf_admin_per_page_field' ) ) {
 		echo '<div class="rf-per-page" style="clear:both;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">'
 			. '<span>' . $left_html . '</span>'
 			. '<span>'
-			. '<label>' . esc_html__( 'Items per page:', 'romsfun' ) . ' '
+			. '<label>' . esc_html__( 'Items per page:', 'rom' ) . ' '
 			. '<input type="number" name="per_page" value="' . esc_attr( $v ) . '" min="1" max="200" step="1" style="width:70px" />'
 			. '</label> '
-			. '<button type="submit" class="button">' . esc_html__( 'Apply', 'romsfun' ) . '</button>'
+			. '<button type="submit" class="button">' . esc_html__( 'Apply', 'rom' ) . '</button>'
 			. '</span>'
 			. '</div>';
 	}
@@ -124,11 +124,11 @@ class RF_Members_List_Table extends WP_List_Table {
 
 	public function get_columns() {
 		return array(
-			'name'       => __( 'Member', 'romsfun' ),
-			'email'      => __( 'Email', 'romsfun' ),
-			'created_at' => __( 'Registered', 'romsfun' ),
-			'google_sub' => __( 'Google ID', 'romsfun' ),
-			'status'     => __( 'Status', 'romsfun' ),
+			'name'       => __( 'Member', 'rom' ),
+			'email'      => __( 'Email', 'rom' ),
+			'created_at' => __( 'Registered', 'rom' ),
+			'google_sub' => __( 'Google ID', 'rom' ),
+			'status'     => __( 'Status', 'rom' ),
 		);
 	}
 
@@ -169,9 +169,9 @@ class RF_Members_List_Table extends WP_List_Table {
 		};
 
 		return array(
-			'all'     => $link( '', __( 'All', 'romsfun' ), $c['total'] ),
-			'active'  => $link( 'active', __( 'Active', 'romsfun' ), $c['active'] ),
-			'blocked' => $link( 'blocked', __( 'Blocked', 'romsfun' ), $c['blocked'] ),
+			'all'     => $link( '', __( 'All', 'rom' ), $c['total'] ),
+			'active'  => $link( 'active', __( 'Active', 'rom' ), $c['active'] ),
+			'blocked' => $link( 'blocked', __( 'Blocked', 'rom' ), $c['blocked'] ),
 		);
 	}
 
@@ -231,11 +231,11 @@ class RF_Members_List_Table extends WP_List_Table {
 		$avatar = $item['avatar_url']
 			? '<img src="' . esc_url( $item['avatar_url'] ) . '" width="32" height="32" style="border-radius:50%;vertical-align:middle;margin-right:8px" alt="" />'
 			: '';
-		$name = $item['name'] ? esc_html( $item['name'] ) : '<em>' . esc_html__( '(no name)', 'romsfun' ) . '</em>';
+		$name = $item['name'] ? esc_html( $item['name'] ) : '<em>' . esc_html__( '(no name)', 'rom' ) . '</em>';
 
 		$blocked = (int) $item['blocked'] === 1;
 		$action  = $blocked ? 'unblock' : 'block';
-		$label   = $blocked ? __( 'Unblock', 'romsfun' ) : __( 'Block', 'romsfun' );
+		$label   = $blocked ? __( 'Unblock', 'rom' ) : __( 'Block', 'rom' );
 		$url     = wp_nonce_url(
 			admin_url( 'admin.php?page=rf-members&action=' . $action . '&member=' . (int) $item['id'] ),
 			'rf_member_' . $action . '_' . (int) $item['id']
@@ -262,8 +262,8 @@ class RF_Members_List_Table extends WP_List_Table {
 
 	public function column_status( $item ) {
 		return (int) $item['blocked'] === 1
-			? '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Blocked', 'romsfun' ) . '</span>'
-			: '<span style="color:#008a20">' . esc_html__( 'Active', 'romsfun' ) . '</span>';
+			? '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Blocked', 'rom' ) . '</span>'
+			: '<span style="color:#008a20">' . esc_html__( 'Active', 'rom' ) . '</span>';
 	}
 
 	public function column_default( $item, $column_name ) {
@@ -271,7 +271,7 @@ class RF_Members_List_Table extends WP_List_Table {
 	}
 
 	public function no_items() {
-		esc_html_e( 'No members found.', 'romsfun' );
+		esc_html_e( 'No members found.', 'rom' );
 	}
 }
 
@@ -281,8 +281,8 @@ class RF_Members_List_Table extends WP_List_Table {
 function rf_members_admin_menu(): void
 {
 	add_menu_page(
-		__( 'Members', 'romsfun' ),
-		__( 'Members', 'romsfun' ),
+		__( 'Members', 'rom' ),
+		__( 'Members', 'rom' ),
 		'edit_users',
 		'rf-members',
 		'rf_members_render_page',
@@ -307,7 +307,7 @@ function rf_members_handle_action(): void
 		return;
 	}
 	if ( ! current_user_can( 'edit_users' ) ) {
-		wp_die( esc_html__( 'You are not allowed to manage members.', 'romsfun' ) );
+		wp_die( esc_html__( 'You are not allowed to manage members.', 'rom' ) );
 	}
 
 	$member_id = (int) ( $_GET['member'] ?? 0 );
@@ -334,19 +334,19 @@ add_action( 'admin_init', 'rf_members_handle_action' );
  */
 function rf_members_render_page(): void {
 	if ( ! current_user_can( 'edit_users' ) ) {
-		wp_die( esc_html__( 'You are not allowed to manage members.', 'romsfun' ) );
+		wp_die( esc_html__( 'You are not allowed to manage members.', 'rom' ) );
 	}
 
 	$table = new RF_Members_List_Table();
 	$table->prepare_items();
 	?>
 	<div class="wrap">
-		<h1 class="wp-heading-inline"><?php esc_html_e( 'Members', 'romsfun' ); ?></h1>
+		<h1 class="wp-heading-inline"><?php esc_html_e( 'Members', 'rom' ); ?></h1>
 		<?php if ( isset( $_GET['updated'] ) ) : ?>
 			<div class="notice notice-success is-dismissible"><p>
 				<?php echo $_GET['updated'] === 'block'
-					? esc_html__( 'Member blocked.', 'romsfun' )
-					: esc_html__( 'Member unblocked.', 'romsfun' ); ?>
+					? esc_html__( 'Member blocked.', 'rom' )
+					: esc_html__( 'Member unblocked.', 'rom' ); ?>
 			</p></div>
 		<?php endif; ?>
 		<hr class="wp-header-end" />
@@ -354,7 +354,7 @@ function rf_members_render_page(): void {
 		<form method="get">
 			<input type="hidden" name="page" value="rf-members" />
 			<input type="hidden" name="status" value="<?php echo esc_attr( rf_members_status_filter() ); ?>" />
-			<?php $table->search_box( __( 'Search members', 'romsfun' ), 'rf-members' ); ?>
+			<?php $table->search_box( __( 'Search members', 'rom' ), 'rf-members' ); ?>
 			<?php rf_admin_per_page_field( rf_admin_today_badge( rf_admin_today_count( rf_member_table(), true ) ) ); ?>
 			<?php $table->display(); ?>
 		</form>

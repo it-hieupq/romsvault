@@ -85,7 +85,7 @@ get_header();
                     <section class="mb-8">
                         <div class="flex items-center justify-between mb-6">
                             <h2 class="text-xl font-bold flex items-center">
-                                <?php _e('Latest ROMs', 'romsfun'); ?>
+                                <?php _e('Latest ROMs', 'rom'); ?>
                             </h2>
                         </div>
                         
@@ -156,9 +156,9 @@ get_header();
             <h2 class="text-xl font-bold flex items-center">
                 <?php 
                 if (!empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_types) || !empty($selected_consoles)) {
-	                $title =  number_format($query->found_posts) .' '. __('ROM found', 'romsfun');
+	                $title =  number_format($query->found_posts) .' '. __('ROM found', 'rom');
                 } else {
-	                $title = __('Filtered ROMs', 'romsfun');
+	                $title = __('Filtered ROMs', 'rom');
                 }
                 echo esc_html($title);
                 ?>
@@ -173,9 +173,9 @@ get_header();
                         endwhile;
                     else : ?>
                         <div class="bg-white rounded-lg shadow-md p-8 text-center">
-                            <p class="text-gray-600 text-lg"><?php _e('No ROMs found matching your filters.', 'romsfun'); ?></p>
+                            <p class="text-gray-600 text-lg"><?php _e('No ROMs found matching your filters.', 'rom'); ?></p>
                             <a href="<?php echo get_permalink(); ?>" class="inline-block mt-4 px-6 py-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition">
-                                <?php _e('Clear Filters', 'romsfun'); ?>
+                                <?php _e('Clear Filters', 'rom'); ?>
                             </a>
                         </div>
                     <?php endif;

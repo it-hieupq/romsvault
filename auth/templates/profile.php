@@ -15,11 +15,11 @@ get_header();
 ?>
 <section class="py-8 text-gray-900">
     <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-        <h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'My Profile', 'romsfun' ); ?></h1>
+        <h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'My Profile', 'rom' ); ?></h1>
 
         <div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
-            <p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to view your profile.', 'romsfun' ); ?></p>
-            <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'romsfun' ); ?></button>
+            <p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to view your profile.', 'rom' ); ?></p>
+            <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
         </div>
 
         <div class="rf-authed-only">
@@ -33,24 +33,24 @@ get_header();
                         <span class="text-lg font-bold truncate" data-rf-name></span>
                         <!-- Status badge: Active by default; JS swaps to Blocked when the member row is blocked -->
                         <span data-rf-status="active" class="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span><?php esc_html_e( 'Active', 'romsfun' ); ?>
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span><?php esc_html_e( 'Active', 'rom' ); ?>
                         </span>
                         <span data-rf-status="blocked" class="hidden shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span><?php esc_html_e( 'Blocked', 'romsfun' ); ?>
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span><?php esc_html_e( 'Blocked', 'rom' ); ?>
                         </span>
                     </div>
                     <div class="text-sm text-gray-500 truncate" data-rf-email></div>
                     <div class="text-xs text-gray-400 mt-0.5 rf-member-since">
-                        <?php esc_html_e( 'Member since', 'romsfun' ); ?> <span data-rf-member-since>&mdash;</span>
+                        <?php esc_html_e( 'Member since', 'rom' ); ?> <span data-rf-member-since>&mdash;</span>
                     </div>
                 </div>
-                <button type="button" data-rf-logout class="shrink-0 px-4 py-2 border border-gray-300 rounded-full font-semibold text-gray-700 hover:bg-gray-100 transition text-sm"><?php esc_html_e( 'Logout', 'romsfun' ); ?></button>
+                <button type="button" data-rf-logout class="shrink-0 px-4 py-2 border border-gray-300 rounded-full font-semibold text-gray-700 hover:bg-gray-100 transition text-sm"><?php esc_html_e( 'Logout', 'rom' ); ?></button>
             </div>
 
             <!-- Suspension notice: hidden by default; auth.js reveals it when the member is blocked -->
             <div data-rf-blocked-notice class="hidden mt-4 flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-700">
                 <svg class="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.492-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                <span><?php esc_html_e( 'Your account has been suspended by an administrator. You can still view your profile, but posting comments, sending reports, and updating your wishlist are disabled.', 'romsfun' ); ?></span>
+                <span><?php esc_html_e( 'Your account has been suspended by an administrator. You can still view your profile, but posting comments, sending reports, and updating your wishlist are disabled.', 'rom' ); ?></span>
             </div>
 
             <!-- Wishlist: navigates to its own page, so it is kept visually separate
@@ -62,8 +62,8 @@ get_header();
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9C4.045 12.733 2 10.352 2 7.5 2 5.015 4.015 3 6.5 3c1.398 0 2.65.638 3.5 1.638A4.494 4.494 0 0113.5 3C15.985 3 18 5.015 18 7.5c0 2.852-2.045 5.233-3.885 6.82a22.049 22.049 0 01-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 01-.69.001z"/></svg>
                     </span>
                     <span class="min-w-0">
-                        <span class="block text-sm font-semibold text-gray-700"><?php esc_html_e( 'Wishlist', 'romsfun' ); ?></span>
-                        <span class="block text-xs text-gray-400"><?php esc_html_e( 'Games you saved', 'romsfun' ); ?></span>
+                        <span class="block text-sm font-semibold text-gray-700"><?php esc_html_e( 'Wishlist', 'rom' ); ?></span>
+                        <span class="block text-xs text-gray-400"><?php esc_html_e( 'Games you saved', 'rom' ); ?></span>
                     </span>
                 </span>
                 <span class="flex items-center gap-3 shrink-0">
@@ -80,8 +80,8 @@ get_header();
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     </span>
                     <span class="min-w-0">
-                        <span class="block text-sm font-semibold text-gray-700"><?php esc_html_e( 'Create Request', 'romsfun' ); ?></span>
-                        <span class="block text-xs text-gray-400"><?php esc_html_e( 'Request a game or file', 'romsfun' ); ?></span>
+                        <span class="block text-sm font-semibold text-gray-700"><?php esc_html_e( 'Create Request', 'rom' ); ?></span>
+                        <span class="block text-xs text-gray-400"><?php esc_html_e( 'Request a game or file', 'rom' ); ?></span>
                     </span>
                 </span>
                 <svg class="w-5 h-5 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -89,14 +89,14 @@ get_header();
 
             <!-- Activity: inline accordion cards. Click Comments/Reports to expand its
                  list below; Ratings is a reserved slot (feature not shipped yet). -->
-            <h2 class="text-sm font-semibold text-gray-500 mt-6 mb-3"><?php esc_html_e( 'Activity', 'romsfun' ); ?></h2>
+            <h2 class="text-sm font-semibold text-gray-500 mt-6 mb-3"><?php esc_html_e( 'Activity', 'rom' ); ?></h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
 
                 <button type="button"
                         class="rf-stat-card text-left bg-white rounded-2xl shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition"
                         data-rf-stat-toggle="comments" aria-expanded="false" aria-controls="rf-panel-comments">
                     <span class="flex items-center justify-between text-sm font-semibold text-gray-500">
-                        <?php esc_html_e( 'Comments', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Comments', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
                     <span class="flex items-baseline gap-2">
@@ -109,7 +109,7 @@ get_header();
                         class="rf-stat-card text-left bg-white rounded-2xl shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition"
                         data-rf-stat-toggle="reports" aria-expanded="false" aria-controls="rf-panel-reports">
                     <span class="flex items-center justify-between text-sm font-semibold text-gray-500">
-                        <?php esc_html_e( 'Reports', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Reports', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
                     <span class="text-3xl font-bold text-romfun-pink" data-rf-count="reports">&mdash;</span>
@@ -119,7 +119,7 @@ get_header();
                         class="rf-stat-card text-left bg-white rounded-2xl shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition"
                         data-rf-stat-toggle="ratings" aria-expanded="false" aria-controls="rf-panel-ratings">
                     <span class="flex items-center justify-between text-sm font-semibold text-gray-500">
-                        <?php esc_html_e( 'Ratings', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Ratings', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
                     <span class="text-3xl font-bold text-romfun-pink" data-rf-count="ratings">&mdash;</span>
@@ -129,7 +129,7 @@ get_header();
                         class="rf-stat-card text-left bg-white rounded-2xl shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition"
                         data-rf-stat-toggle="contacts" aria-expanded="false" aria-controls="rf-panel-contacts">
                     <span class="flex items-center justify-between text-sm font-semibold text-gray-500">
-                        <?php esc_html_e( 'Contact', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Contact', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
                     <span class="text-3xl font-bold text-romfun-pink" data-rf-count="contacts">&mdash;</span>
@@ -146,10 +146,10 @@ get_header();
                  * empty-state copy; the skeleton/list/load-more wiring is identical.
                  */
                 $rf_panels = array(
-                    'comments' => __( 'You have not posted any comments yet.', 'romsfun' ),
-                    'reports'  => __( 'You have not sent any reports yet.', 'romsfun' ),
-                    'ratings'  => __( 'You have not rated any posts yet.', 'romsfun' ),
-                    'contacts' => __( 'You have not sent any messages yet.', 'romsfun' ),
+                    'comments' => __( 'You have not posted any comments yet.', 'rom' ),
+                    'reports'  => __( 'You have not sent any reports yet.', 'rom' ),
+                    'ratings'  => __( 'You have not rated any posts yet.', 'rom' ),
+                    'contacts' => __( 'You have not sent any messages yet.', 'rom' ),
                 );
                 foreach ( $rf_panels as $rf_slug => $rf_empty_text ) :
                     ?>
@@ -182,7 +182,7 @@ get_header();
                         <div class="rf-loadmore hidden text-center mt-4 pt-4 border-t border-gray-100" data-rf-loadmore-wrap>
                             <button type="button" data-rf-loadmore
                                     class="px-6 py-2 border border-romfun-pink text-romfun-pink rounded-full font-semibold hover:bg-romfun-pink hover:text-white transition text-sm">
-                                <?php esc_html_e( 'Load more', 'romsfun' ); ?>
+                                <?php esc_html_e( 'Load more', 'rom' ); ?>
                             </button>
                         </div>
                     </div>

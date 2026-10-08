@@ -9,7 +9,7 @@
  * Register the ACF options page + settings field group on acf/init.
  * Registering at require-time (before the init hook) triggered translated
  * labels to load too early — WP 6.7 _load_textdomain_just_in_time notice
- * for the "acf" and "romsfun" domains.
+ * for the "acf" and "rom" domains.
  */
 add_action( 'acf/init', function () {
 
@@ -36,18 +36,18 @@ if( function_exists('acf_add_local_field_group') ) {
 	
 	acf_add_local_field_group(	array(
 		'key'		=> 'options_settings',
-		'title' 	=> __( 'Settings', 'romsfun' ),
+		'title' 	=> __( 'Settings', 'rom' ),
 		'fields' 	=> array (
 			array (
 				'key'   		=> 'tab_general',
-				'label' 		=> __( 'General', 'romsfun' ),
+				'label' 		=> __( 'General', 'rom' ),
 				'name'  		=> 'tab_general',
 				'type'  		=> 'tab',
 				'placement' 	=> 'left',
 			),
 			array (
 				'key'   		=> 'logo',
-				'label' 		=> __( 'Logo', 'romsfun' ),
+				'label' 		=> __( 'Logo', 'rom' ),
 				'name'  		=> 'logo',
 				'type'  		=> 'image',
 				'preview_size'  => 'thumbnail',
@@ -58,7 +58,7 @@ if( function_exists('acf_add_local_field_group') ) {
 			),
 			array (
 				'key'   		=> 'favicon',
-				'label' 		=> __( 'Favicon', 'romsfun' ),
+				'label' 		=> __( 'Favicon', 'rom' ),
 				'name'  		=> 'favicon',
 				'type'  		=> 'image',
 				'preview_size'  => 'thumbnail',
@@ -69,15 +69,15 @@ if( function_exists('acf_add_local_field_group') ) {
 			),
 			array (
 				'key' 		    => 'social_networks',
-				'label'		    => __( 'Mạng xã hội', 'romsfun' ),
+				'label'		    => __( 'Mạng xã hội', 'rom' ),
 				'name' 		    => 'social_networks',
 				'type' 		    => 'repeater',
 				'layout'	    => 'table',
-				'button_label'  => __( 'Add', 'romsfun' ),
+				'button_label'  => __( 'Add', 'rom' ),
 				'sub_fields'    => array (
 					array (
 						'key' 	  	   => 'social_network_icon',
-						'label'   	   => __( 'Icon', 'romsfun' ),
+						'label'   	   => __( 'Icon', 'rom' ),
 						'name' 	  	   => 'social_network_icon',
 						'type' 	  	   => 'select',
 						'ui' 		   => 1,
@@ -89,7 +89,7 @@ if( function_exists('acf_add_local_field_group') ) {
 					),
                     array (
 						'key' 		   => 'social_network_url',
-						'label' 	   => __( 'Url', 'romsfun' ),
+						'label' 	   => __( 'Url', 'rom' ),
 						'name' 		   => 'social_network_url',
 						'type' 		   => 'url',
 						'wrapper'      => array(
@@ -100,21 +100,21 @@ if( function_exists('acf_add_local_field_group') ) {
 			),
 			array (
 				'key'   		=> 'copyright',
-				'label' 		=> __( 'Copyright', 'romsfun' ),
+				'label' 		=> __( 'Copyright', 'rom' ),
 				'name'  		=> 'copyright',
 				'type'  		=> 'wysiwyg',
 			),	
 
 			array (
 				'key'   		=> 'tab_ads',
-				'label' 		=> __( 'Ads', 'romsfun' ),
+				'label' 		=> __( 'Ads', 'rom' ),
 				'name'  		=> 'tab_ads',
 				'type'  		=> 'tab',
 				'placement' 	=> 'left',
 			),
 			array (
 				'key' 		    => 'ads_banner',
-				'label'		    => __( 'Banner', 'romsfun' ),
+				'label'		    => __( 'Banner', 'rom' ),
 				'name' 		    => 'ads_banner',
 				'type' 		    => 'textarea',
 				'rows'			=> 10,
@@ -122,49 +122,49 @@ if( function_exists('acf_add_local_field_group') ) {
 
             array (
                 'key'   		=> 'tab_js',
-                'label' 		=> __( 'Header/footer js', 'romsfun' ),
+                'label' 		=> __( 'Header/footer js', 'rom' ),
                 'name'  		=> 'tab_js',
                 'type'  		=> 'tab',
                 'placement' 	=> 'left',
             ),
             array (
                 'key' 		    => 'header_js',
-                'label'		    => __( 'Header js', 'romsfun' ),
+                'label'		    => __( 'Header js', 'rom' ),
                 'name' 		    => 'header_js',
                 'type' 		    => 'textarea',
                 'rows'			=> 10,
             ),
             array (
                 'key' 		    => 'footer_js',
-                'label'		    => __( 'Footer js', 'romsfun' ),
+                'label'		    => __( 'Footer js', 'rom' ),
                 'name' 		    => 'footer_js',
                 'type' 		    => 'textarea',
                 'rows'			=> 10,
             ),
 
 			array (
-				'label' 		=> __( 'Aff', 'romsfun' ),
+				'label' 		=> __( 'Aff', 'rom' ),
 				'key'   		=> 'tab_affs',
 				'name'  		=> 'tab_affs',
 				'type'  		=> 'tab',
 				'placement' 	=> 'left',
 			),
 			array (
-				'label'		    => __( 'Aff', 'romsfun' ),
+				'label'		    => __( 'Aff', 'rom' ),
 				'key' 		    => 'affs',
 				'name' 		    => 'affs',
 				'type' 		    => 'repeater',
 				'layout'	    => 'table',
-				'button_label'  => __( 'Add', 'romsfun' ),
+				'button_label'  => __( 'Add', 'rom' ),
 				'sub_fields'    => array (
 					array (
-						'label' => __( 'Host', 'romsfun' ),
+						'label' => __( 'Host', 'rom' ),
 						'key' 	=> 'aff_host',
 						'name' 	=> 'aff_host',
 						'type' 	=> 'text',
 					),
                     array (
-                    	'label' => __( 'Mã', 'romsfun' ),
+                    	'label' => __( 'Mã', 'rom' ),
 						'key' 	=> 'aff_code',
 						'name' 	=> 'aff_code',
 						'type' 	=> 'text',
@@ -200,14 +200,14 @@ if( function_exists('acf_add_local_field_group') ) {
 
             array(
                 'key'       => 'tab_homepage',
-                'label'     => __( 'Homepage', 'romsfun' ),
+                'label'     => __( 'Homepage', 'rom' ),
                 'name'      => 'tab_homepage',
                 'type'      => 'tab',
                 'placement' => 'left',
             ),
             array(
                 'key'           => 'home_collections',
-                'label'         => __( 'Collections', 'romsfun' ),
+                'label'         => __( 'Collections', 'rom' ),
                 'name'          => 'home_collections',
                 'type'          => 'taxonomy',
                 'taxonomy'      => 'collection',
@@ -221,14 +221,14 @@ if( function_exists('acf_add_local_field_group') ) {
 
             array(
                 'key'       => 'tab_rom_links',
-                'label'     => __( 'ROM Links', 'romsfun' ),
+                'label'     => __( 'ROM Links', 'rom' ),
                 'name'      => 'tab_rom_links',
                 'type'      => 'tab',
                 'placement' => 'left',
             ),
             array(
                 'key'           => 'rom_links_console',
-                'label'         => __( 'Console', 'romsfun' ),
+                'label'         => __( 'Console', 'rom' ),
                 'name'          => 'rom_links_console',
                 'type'          => 'taxonomy',
                 'taxonomy'      => 'console',
@@ -238,7 +238,7 @@ if( function_exists('acf_add_local_field_group') ) {
                 'load_terms'    => 0,
                 'save_terms'    => 0,
                 'return_format' => 'id',
-                'instructions'  => __( 'Chọn console để export tất cả permalinks của ROM gắn với console đó.', 'romsfun' ),
+                'instructions'  => __( 'Chọn console để export tất cả permalinks của ROM gắn với console đó.', 'rom' ),
             ),
             array(
                 'key'      => 'rom_links_export_button',
@@ -270,7 +270,7 @@ if( function_exists('acf_add_local_field_group') ) {
  * and return the permalinks as plain text (one per line) for the JS
  * client to download as a .md file.
  */
-add_action( 'wp_ajax_romsfun_export_rom_links', function () {
+add_action( 'wp_ajax_rom_export_rom_links', function () {
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
 	}

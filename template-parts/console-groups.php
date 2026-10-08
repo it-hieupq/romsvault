@@ -36,12 +36,12 @@ if ( $rows ) :
                                 <div class="font-bold text-base text-center mb-6 hover:text-romfun-pink"><?php echo $term->name ?></div>
                                 <div class="text-xs text-gray-500 flex justify-between">
                                     <span class="inline-flex items-center">
-                                        <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'romsfun') ?>
+                                        <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>
                                     </span>
                                     <span class="inline-flex items-center">
                                         <?php
                                         $console_downloads = get_field('console_rom_downloads', 'term_' . $term->term_id);
-                                        echo get_svg_icon( 'download' ) . number_format( $console_downloads ?: 0, 0, '' ) . ' ' . __( '', 'romsfun' );
+                                        echo get_svg_icon( 'download' ) . number_format( $console_downloads ?: 0, 0, '' ) . ' ' . __( '', 'rom' );
                                         ?>
                                     </span>
                                 </div>

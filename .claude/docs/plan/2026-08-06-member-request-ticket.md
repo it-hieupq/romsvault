@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - **Ngôn ngữ trả lời user: tiếng Việt.** Code/comment/biến: tiếng Anh.
-- **i18n:** mọi string UI qua `__()/esc_html__()` textdomain **`romsfun`**. Không tiếng Việt trong UI theme.
+- **i18n:** mọi string UI qua `__()/esc_html__()` textdomain **`rom`**. Không tiếng Việt trong UI theme.
 - **Security:** mọi `$wpdb` query dùng `prepare()`; escape output (`esc_html/esc_attr/esc_url`); sanitize input; nonce cho admin-ajax; REST verify origin + session.
 - **Cache-aware:** trang front-end bị Cloudflare cache. KHÔNG dùng `is_user_logged_in()`/cookie WP trong template. State member = client-side + REST.
 - **Messaging:** 1 notification / action; text lỗi lấy từ `message` của server → `window.showToast` (qua `toast()` trong auth.js).
@@ -19,7 +19,7 @@
 - **Verify:** sau sửa PHP chạy `php -l <file>`; sau sửa JS chạy `node --check <file>`. Không report "done" nếu check chưa pass.
 - **Commit rules:** KHÔNG thêm AI attribution/co-author. Chỉ stage file thuộc task. KHÔNG stage `assets/css/output.css`, `tailwindcss/node_modules`, lockfiles.
 - **Status codes:** 0 Init, 1 Processing, 2 Solved, 3 Closed, 4 Cancelled. Terminal = {3,4}. Open = {0,1,2}.
-- **Local env:** docker; domain `https://romsfun.local`; container php `wp_phpfpm`, DB `wp_mariadb`. wp-admin visit tự trigger `rf_member_maybe_upgrade` (admin_init).
+- **Local env:** docker; domain `https://romsvault.local`; container php `wp_phpfpm`, DB `wp_mariadb`. wp-admin visit tự trigger `rf_member_maybe_upgrade` (admin_init).
 
 ---
 
@@ -48,11 +48,11 @@ function rf_ticket_table() {
  */
 function rf_ticket_statuses() {
 	return array(
-		0 => __( 'Init', 'romsfun' ),
-		1 => __( 'Processing', 'romsfun' ),
-		2 => __( 'Solved', 'romsfun' ),
-		3 => __( 'Closed', 'romsfun' ),
-		4 => __( 'Cancelled', 'romsfun' ),
+		0 => __( 'Init', 'rom' ),
+		1 => __( 'Processing', 'rom' ),
+		2 => __( 'Solved', 'rom' ),
+		3 => __( 'Closed', 'rom' ),
+		4 => __( 'Cancelled', 'rom' ),
 	);
 }
 
@@ -61,8 +61,8 @@ function rf_ticket_statuses() {
  */
 function rf_ticket_types() {
 	return array(
-		0 => __( 'Add new game', 'romsfun' ),
-		1 => __( 'Add / Update file for existing game', 'romsfun' ),
+		0 => __( 'Add new game', 'rom' ),
+		1 => __( 'Add / Update file for existing game', 'rom' ),
 	);
 }
 ```
@@ -106,7 +106,7 @@ Expected: `No syntax errors detected`
 
 - [ ] **Step 5: Trigger migration + verify bảng tồn tại.** Mở bất kỳ trang wp-admin (login admin) để `admin_init` chạy `rf_member_maybe_upgrade`. Sau đó kiểm tra schema:
 
-Run: `docker exec wp_phpfpm bash -lc "cd /var/www/sites/romsfun && wp db query 'DESCRIBE wp_member_ticket' --allow-root"`
+Run: `docker exec wp_phpfpm bash -lc "cd /var/www/sites/romsvault && wp db query 'DESCRIBE wp_member_ticket' --allow-root"`
 Expected: liệt kê đủ 11 cột (id, member_id, request_type, game_title, reference_url, description, response_content, status, closed_by, created_at, updated_at).
 (Nếu WP-CLI không có, verify bằng `wp eval 'global $wpdb; var_dump($wpdb->get_col("SHOW TABLES LIKE \"%member_ticket\""));'` hoặc mở Adminer.)
 
@@ -163,16 +163,16 @@ if ( ! defined( 'RF_TICKET_DESC_MAXLEN' ) ) {
  */
 function rf_ticket_error( $code, $status ) {
 	$messages = array(
-		'blocked'       => __( 'Your account is locked and cannot submit requests.', 'romsfun' ),
-		'rate_limited'  => __( 'You are doing that too fast. Please wait a moment.', 'romsfun' ),
-		'auth_required' => __( 'Please sign in to submit a request.', 'romsfun' ),
-		'bad_type'      => __( 'Please select a valid request type.', 'romsfun' ),
-		'missing_title' => __( 'Please enter the game title.', 'romsfun' ),
-		'open_exists'   => __( 'You already have an open request. Please close it before creating a new one.', 'romsfun' ),
-		'daily_limit'   => __( 'You have reached today\'s request limit. Please try again tomorrow.', 'romsfun' ),
-		'not_open'      => __( 'This request can no longer be changed.', 'romsfun' ),
+		'blocked'       => __( 'Your account is locked and cannot submit requests.', 'rom' ),
+		'rate_limited'  => __( 'You are doing that too fast. Please wait a moment.', 'rom' ),
+		'auth_required' => __( 'Please sign in to submit a request.', 'rom' ),
+		'bad_type'      => __( 'Please select a valid request type.', 'rom' ),
+		'missing_title' => __( 'Please enter the game title.', 'rom' ),
+		'open_exists'   => __( 'You already have an open request. Please close it before creating a new one.', 'rom' ),
+		'daily_limit'   => __( 'You have reached today\'s request limit. Please try again tomorrow.', 'rom' ),
+		'not_open'      => __( 'This request can no longer be changed.', 'rom' ),
 	);
-	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not process your request. Please try again.', 'romsfun' );
+	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not process your request. Please try again.', 'rom' );
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 
@@ -276,7 +276,7 @@ function rf_rest_ticket_create( WP_REST_Request $request ) {
 
 	return new WP_REST_Response( array(
 		'ok'      => true,
-		'message' => __( 'Your request has been submitted. Thank you!', 'romsfun' ),
+		'message' => __( 'Your request has been submitted. Thank you!', 'rom' ),
 	), 200 );
 }
 
@@ -393,8 +393,8 @@ function rf_rest_ticket_close( WP_REST_Request $request ) {
 	}
 
 	$message = ( $new_status === 4 )
-		? __( 'Your request has been cancelled.', 'romsfun' )
-		: __( 'Your request has been closed.', 'romsfun' );
+		? __( 'Your request has been cancelled.', 'rom' )
+		: __( 'Your request has been closed.', 'rom' );
 
 	return new WP_REST_Response( array( 'ok' => true, 'status' => $new_status, 'message' => $message ), 200 );
 }
@@ -413,7 +413,7 @@ Expected: cả hai `No syntax errors detected`.
 
 - [ ] **Step 4: Verify endpoint được đăng ký + auth gate.** (Không có cookie session → phải trả 401.)
 
-Run: `curl -sk -X POST https://romsfun.local/wp-json/rf/v1/ticket -H 'Content-Type: application/json' -d '{"type":0,"game_title":"Test"}'`
+Run: `curl -sk -X POST https://romsvault.local/wp-json/rf/v1/ticket -H 'Content-Type: application/json' -d '{"type":0,"game_title":"Test"}'`
 Expected: JSON `{"ok":false,"error":"auth_required", ...}` (HTTP 401) — chứng tỏ route tồn tại và gate hoạt động (KHÔNG phải 404 rest_no_route).
 
 - [ ] **Step 5: Verify full-flow trong browser (đăng nhập member).** Console tab, khi đã login:
@@ -487,12 +487,12 @@ $rf_ticket_types = rf_ticket_types();
 ?>
 <section class="py-8 text-gray-900" data-rf-ticket-page>
 	<div class="content-container px-4 sm:px-6 lg:px-8 w-full max-w-3xl">
-		<h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'Create Request', 'romsfun' ); ?></h1>
+		<h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'Create Request', 'rom' ); ?></h1>
 
 		<!-- Guest -->
 		<div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
-			<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to submit a request.', 'romsfun' ); ?></p>
-			<button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'romsfun' ); ?></button>
+			<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to submit a request.', 'rom' ); ?></p>
+			<button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
 		</div>
 
 		<div class="rf-authed-only">
@@ -500,13 +500,13 @@ $rf_ticket_types = rf_ticket_types();
 			<!-- Lock notice: shown by JS when the member already has an open request -->
 			<div data-rf-ticket-lock class="hidden mb-4 flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-sm text-amber-700">
 				<svg class="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-				<span><?php esc_html_e( 'You already have an open request. Please close it before creating a new one.', 'romsfun' ); ?></span>
+				<span><?php esc_html_e( 'You already have an open request. Please close it before creating a new one.', 'rom' ); ?></span>
 			</div>
 
 			<!-- Create form -->
 			<form data-rf-ticket-form class="bg-white rounded-2xl shadow-md p-6 space-y-4">
 				<div>
-					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Request type', 'romsfun' ); ?></label>
+					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Request type', 'rom' ); ?></label>
 					<select name="type" class="w-full border border-gray-300 rounded-lg px-3 py-2">
 						<?php foreach ( $rf_ticket_types as $rf_k => $rf_label ) : ?>
 							<option value="<?php echo esc_attr( $rf_k ); ?>"><?php echo esc_html( $rf_label ); ?></option>
@@ -514,22 +514,22 @@ $rf_ticket_types = rf_ticket_types();
 					</select>
 				</div>
 				<div>
-					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Game title', 'romsfun' ); ?> <span class="text-red-500">*</span></label>
-					<input type="text" name="game_title" maxlength="255" required class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'e.g. The Legend of Zelda', 'romsfun' ); ?>">
+					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Game title', 'rom' ); ?> <span class="text-red-500">*</span></label>
+					<input type="text" name="game_title" maxlength="255" required class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'e.g. The Legend of Zelda', 'rom' ); ?>">
 				</div>
 				<div>
-					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Reference link', 'romsfun' ); ?> <span class="text-gray-400 font-normal">(<?php esc_html_e( 'optional', 'romsfun' ); ?>)</span></label>
+					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Reference link', 'rom' ); ?> <span class="text-gray-400 font-normal">(<?php esc_html_e( 'optional', 'rom' ); ?>)</span></label>
 					<input type="url" name="reference_url" maxlength="512" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="https://">
 				</div>
 				<div>
-					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Details', 'romsfun' ); ?></label>
-					<textarea name="description" rows="4" maxlength="2000" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'Describe your request…', 'romsfun' ); ?>"></textarea>
+					<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Details', 'rom' ); ?></label>
+					<textarea name="description" rows="4" maxlength="2000" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'Describe your request…', 'rom' ); ?>"></textarea>
 				</div>
-				<button type="submit" data-rf-ticket-submit class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Submit request', 'romsfun' ); ?></button>
+				<button type="submit" data-rf-ticket-submit class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Submit request', 'rom' ); ?></button>
 			</form>
 
 			<!-- Member's own tickets -->
-			<h2 class="text-sm font-semibold text-gray-500 mt-8 mb-3"><?php esc_html_e( 'My requests', 'romsfun' ); ?></h2>
+			<h2 class="text-sm font-semibold text-gray-500 mt-8 mb-3"><?php esc_html_e( 'My requests', 'rom' ); ?></h2>
 			<div class="bg-white rounded-2xl shadow-md p-5">
 				<div data-rf-ticket-loading class="animate-pulse space-y-4">
 					<?php for ( $i = 0; $i < 2; $i++ ) : ?>
@@ -537,9 +537,9 @@ $rf_ticket_types = rf_ticket_types();
 					<?php endfor; ?>
 				</div>
 				<ul data-rf-ticket-list class="hidden divide-y divide-gray-100"></ul>
-				<div data-rf-ticket-empty class="hidden text-center text-gray-500 py-8"><?php esc_html_e( 'You have not submitted any requests yet.', 'romsfun' ); ?></div>
+				<div data-rf-ticket-empty class="hidden text-center text-gray-500 py-8"><?php esc_html_e( 'You have not submitted any requests yet.', 'rom' ); ?></div>
 				<div data-rf-ticket-loadmore-wrap class="hidden text-center mt-4 pt-4 border-t border-gray-100">
-					<button type="button" data-rf-ticket-loadmore class="px-6 py-2 border border-romfun-pink text-romfun-pink rounded-full font-semibold hover:bg-romfun-pink hover:text-white transition text-sm"><?php esc_html_e( 'Load more', 'romsfun' ); ?></button>
+					<button type="button" data-rf-ticket-loadmore class="px-6 py-2 border border-romfun-pink text-romfun-pink rounded-full font-semibold hover:bg-romfun-pink hover:text-white transition text-sm"><?php esc_html_e( 'Load more', 'rom' ); ?></button>
 				</div>
 			</div>
 
@@ -778,8 +778,8 @@ exists. Reuses rfFetch/toast/escapeHtml."
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     </span>
                     <span class="min-w-0">
-                        <span class="block text-sm font-semibold text-gray-700"><?php esc_html_e( 'Create Request', 'romsfun' ); ?></span>
-                        <span class="block text-xs text-gray-400"><?php esc_html_e( 'Request a game or file', 'romsfun' ); ?></span>
+                        <span class="block text-sm font-semibold text-gray-700"><?php esc_html_e( 'Create Request', 'rom' ); ?></span>
+                        <span class="block text-xs text-gray-400"><?php esc_html_e( 'Request a game or file', 'rom' ); ?></span>
                     </span>
                 </span>
                 <svg class="w-5 h-5 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -861,19 +861,19 @@ add_action( 'init', 'app_ticket_init' );
  */
 function app_ticket_update_status() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ticket_update_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	$id       = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 	$status   = isset( $_POST['status'] ) ? intval( $_POST['status'] ) : -1;
 	$response = isset( $_POST['response'] ) ? trim( wp_strip_all_tags( wp_unslash( $_POST['response'] ) ) ) : '';
 	if ( $id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'rom' ) ) );
 	}
 	if ( $status < 0 || $status > 3 ) { // admin may set 0..3 only (Cancel is member-only)
-		wp_send_json_error( array( 'message' => __( 'Invalid status.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid status.', 'rom' ) ) );
 	}
 	if ( mb_strlen( $response ) > RF_TICKET_DESC_MAXLEN ) {
 		$response = mb_substr( $response, 0, RF_TICKET_DESC_MAXLEN );
@@ -900,12 +900,12 @@ function app_ticket_update_status() {
 	}
 
 	if ( false === $updated ) {
-		wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 	}
 	if ( 0 === $updated ) {
-		wp_send_json_error( array( 'message' => __( 'This request is already closed/cancelled.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'This request is already closed/cancelled.', 'rom' ) ) );
 	}
-	wp_send_json_success( array( 'message' => __( 'Updated.', 'romsfun' ) ) );
+	wp_send_json_success( array( 'message' => __( 'Updated.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_ticket_update_status', 'app_ticket_update_status' );
 
@@ -914,21 +914,21 @@ add_action( 'wp_ajax_app_ticket_update_status', 'app_ticket_update_status' );
  */
 function app_ticket_delete_row() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ticket_delete_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	global $wpdb;
 	$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 	if ( $id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'rom' ) ) );
 	}
 	$result = $wpdb->delete( rf_ticket_table(), array( 'id' => $id ), array( '%d' ) );
 	if ( $result ) {
-		wp_send_json_success( array( 'message' => __( 'Deleted.', 'romsfun' ) ) );
+		wp_send_json_success( array( 'message' => __( 'Deleted.', 'rom' ) ) );
 	}
-	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_ticket_delete_row', 'app_ticket_delete_row' );
 
@@ -937,26 +937,26 @@ add_action( 'wp_ajax_app_ticket_delete_row', 'app_ticket_delete_row' );
  */
 function app_ticket_delete_rows() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ticket_delete_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['ids'] ) || ! is_array( $_POST['ids'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid IDs.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid IDs.', 'rom' ) ) );
 	}
 	$ids = array_filter( array_map( 'absint', $_POST['ids'] ) );
 	if ( empty( $ids ) ) {
-		wp_send_json_error( array( 'message' => __( 'No valid IDs provided.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'No valid IDs provided.', 'rom' ) ) );
 	}
 	global $wpdb;
 	$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 	$table        = rf_ticket_table();
 	$result       = $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN({$placeholders})", ...$ids ) );
 	if ( $result !== false ) {
-		wp_send_json_success( array( 'message' => sprintf( __( '%d item(s) deleted.', 'romsfun' ), $result ) ) );
+		wp_send_json_success( array( 'message' => sprintf( __( '%d item(s) deleted.', 'rom' ), $result ) ) );
 	}
-	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_ticket_delete_rows', 'app_ticket_delete_rows' );
 
@@ -1020,9 +1020,9 @@ function app_after_ticket_page() {
 
 	<form method="get" style="margin:12px 0">
 		<input type="hidden" name="page" value="ticket" />
-		<label><?php esc_html_e( 'Status', 'romsfun' ); ?>:
+		<label><?php esc_html_e( 'Status', 'rom' ); ?>:
 			<select name="status" onchange="this.form.submit()">
-				<option value=""><?php esc_html_e( 'All', 'romsfun' ); ?></option>
+				<option value=""><?php esc_html_e( 'All', 'rom' ); ?></option>
 				<?php foreach ( $statuses as $rf_k => $rf_label ) : ?>
 					<option value="<?php echo esc_attr( $rf_k ); ?>" <?php selected( $filter, $rf_k ); ?>><?php echo esc_html( $rf_label ); ?></option>
 				<?php endforeach; ?>
@@ -1036,16 +1036,16 @@ function app_after_ticket_page() {
 		<table class="widefat striped">
 			<thead>
 			<tr>
-				<th><?php esc_html_e( 'Type', 'romsfun' ); ?></th>
-				<th><?php esc_html_e( 'Member', 'romsfun' ); ?></th>
-				<th class="col-title"><?php esc_html_e( 'Game', 'romsfun' ); ?></th>
-				<th class="col-desc"><?php esc_html_e( 'Details', 'romsfun' ); ?></th>
-				<th><?php esc_html_e( 'Status', 'romsfun' ); ?></th>
-				<th class="col-resp"><?php esc_html_e( 'Response', 'romsfun' ); ?></th>
-				<th><?php esc_html_e( 'Time', 'romsfun' ); ?></th>
+				<th><?php esc_html_e( 'Type', 'rom' ); ?></th>
+				<th><?php esc_html_e( 'Member', 'rom' ); ?></th>
+				<th class="col-title"><?php esc_html_e( 'Game', 'rom' ); ?></th>
+				<th class="col-desc"><?php esc_html_e( 'Details', 'rom' ); ?></th>
+				<th><?php esc_html_e( 'Status', 'rom' ); ?></th>
+				<th class="col-resp"><?php esc_html_e( 'Response', 'rom' ); ?></th>
+				<th><?php esc_html_e( 'Time', 'rom' ); ?></th>
 				<th>
-					<button class="button button-small delete-rows" type="button"><?php esc_html_e( 'Delete', 'romsfun' ); ?></button>
-					<button class="button button-small button-primary" id="ticketCheckAll" type="button"><?php esc_html_e( 'Check', 'romsfun' ); ?></button>
+					<button class="button button-small delete-rows" type="button"><?php esc_html_e( 'Delete', 'rom' ); ?></button>
+					<button class="button button-small button-primary" id="ticketCheckAll" type="button"><?php esc_html_e( 'Check', 'rom' ); ?></button>
 				</th>
 			</tr>
 			</thead>
@@ -1063,7 +1063,7 @@ function app_after_ticket_page() {
 					<td class="col-title">
 						<strong><?php echo esc_html( $row->game_title ); ?></strong>
 						<?php if ( ! empty( $row->reference_url ) ) : ?>
-							<br><a href="<?php echo esc_url( $row->reference_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'reference', 'romsfun' ); ?></a>
+							<br><a href="<?php echo esc_url( $row->reference_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'reference', 'rom' ); ?></a>
 						<?php endif; ?>
 					</td>
 					<td class="col-desc"><?php echo $row->description ? esc_html( $row->description ) : '<em>—</em>'; ?></td>
@@ -1078,12 +1078,12 @@ function app_after_ticket_page() {
 					</td>
 					<td class="col-resp">
 						<textarea class="rf-ticket-response" <?php disabled( $is_terminal ); ?>><?php echo esc_textarea( $row->response_content ); ?></textarea>
-						<button type="button" class="button button-small button-primary rf-ticket-save" <?php disabled( $is_terminal ); ?>><?php esc_html_e( 'Save', 'romsfun' ); ?></button>
+						<button type="button" class="button button-small button-primary rf-ticket-save" <?php disabled( $is_terminal ); ?>><?php esc_html_e( 'Save', 'rom' ); ?></button>
 					</td>
 					<td style="white-space:nowrap">
 						<?php echo esc_html( rf_admin_time_ago( (string) $row->created_at, false ) ); ?>
 						<?php if ( $row->updated_at && $row->updated_at !== $row->created_at ) : ?>
-							<br><small style="color:#888"><?php esc_html_e( 'upd', 'romsfun' ); ?> <?php echo esc_html( rf_admin_time_ago( (string) $row->updated_at, false ) ); ?></small>
+							<br><small style="color:#888"><?php esc_html_e( 'upd', 'rom' ); ?> <?php echo esc_html( rf_admin_time_ago( (string) $row->updated_at, false ) ); ?></small>
 						<?php endif; ?>
 					</td>
 					<td style="text-align:center"><input class="check-item" type="checkbox" value="<?php echo esc_attr( $row->id ); ?>"></td>
@@ -1140,7 +1140,7 @@ function app_after_ticket_page() {
 				<?php
 				$start = ( $current_page - 1 ) * $per_page + 1;
 				$end   = min( $current_page * $per_page, $total_count );
-				printf( esc_html__( 'Showing %1$d-%2$d of %3$d requests', 'romsfun' ), $start, $end, $total_count );
+				printf( esc_html__( 'Showing %1$d-%2$d of %3$d requests', 'rom' ), $start, $end, $total_count );
 				?>
 			</span>
 			<div class="pagination-links">
@@ -1165,7 +1165,7 @@ function app_after_ticket_page() {
 	<?php endif; ?>
 
 	<?php else : ?>
-		<div class="acf-admin-notice notice notice-info"><p><?php esc_html_e( 'No requests yet.', 'romsfun' ); ?></p></div>
+		<div class="acf-admin-notice notice notice-info"><p><?php esc_html_e( 'No requests yet.', 'rom' ); ?></p></div>
 	<?php endif;
 
 	$my_content = ob_get_clean();

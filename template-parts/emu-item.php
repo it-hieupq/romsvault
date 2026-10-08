@@ -35,7 +35,7 @@
                 <span class="text-romfun-pink"><?php echo get_svg_icon('download')?></span>
                 <?php
                 $downloads = get_field('downloads', get_the_ID());
-                echo number_format($downloads ?: 0, 0, '', ',') . ' ' . __('downloads', 'romsfun');
+                echo number_format($downloads ?: 0, 0, '', ',') . ' ' . __('downloads', 'rom');
                 ?>
             </span>
 			<span class="badge badge-info text-xs inline-flex items-center">

@@ -24,8 +24,8 @@ if ( ! defined( 'RF_TICKET_RESPONSE_MAXLEN' ) ) {
 function app_ticket_menu(): void
 {
 	add_menu_page(
-		__( 'Requests', 'romsfun' ),
-		__( 'Requests', 'romsfun' ),
+		__( 'Requests', 'rom' ),
+		__( 'Requests', 'rom' ),
 		'manage_options',
 		'ticket',
 		'app_ticket_render_page',
@@ -42,19 +42,19 @@ add_action( 'admin_menu', 'app_ticket_menu' );
 function app_ticket_update_status(): void
 {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ticket_update_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	$id       = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 	$status   = isset( $_POST['status'] ) ? intval( $_POST['status'] ) : -1;
 	$response = isset( $_POST['response'] ) ? trim( wp_strip_all_tags( wp_unslash( $_POST['response'] ) ) ) : '';
 	if ( $id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'rom' ) ) );
 	}
 	if ( $status < 0 || $status > 3 ) { // admin may set 0..3 only (Cancel is member-only)
-		wp_send_json_error( array( 'message' => __( 'Invalid status.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid status.', 'rom' ) ) );
 	}
 	if ( mb_strlen( $response ) > RF_TICKET_RESPONSE_MAXLEN ) {
 		$response = mb_substr( $response, 0, RF_TICKET_RESPONSE_MAXLEN );
@@ -81,16 +81,16 @@ function app_ticket_update_status(): void
 	}
 
 	if ( false === $updated ) {
-		wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 	}
 	if ( 0 === $updated ) {
-		wp_send_json_error( array( 'message' => __( 'This request is already closed/cancelled.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'This request is already closed/cancelled.', 'rom' ) ) );
 	}
 	if ( $status === 3 && function_exists( 'rf_ticket_flush_history' ) ) {
 		// Admin closed the ticket -> it entered the member's finished list; drop that cache.
 		rf_ticket_flush_history( (int) $wpdb->get_var( $wpdb->prepare( "SELECT member_id FROM `{$table}` WHERE id = %d", $id ) ) );
 	}
-	wp_send_json_success( array( 'message' => __( 'Updated.', 'romsfun' ) ) );
+	wp_send_json_success( array( 'message' => __( 'Updated.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_ticket_update_status', 'app_ticket_update_status' );
 
@@ -99,24 +99,24 @@ add_action( 'wp_ajax_app_ticket_update_status', 'app_ticket_update_status' );
  */
 function app_ticket_delete_row() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ticket_delete_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	global $wpdb;
 	$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 	if ( $id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid ID.', 'rom' ) ) );
 	}
 	$table  = rf_ticket_table();
 	$owner  = (int) $wpdb->get_var( $wpdb->prepare( "SELECT member_id FROM `{$table}` WHERE id = %d", $id ) );
 	$result = $wpdb->delete( $table, array( 'id' => $id ), array( '%d' ) );
 	if ( $result ) {
 		if ( function_exists( 'rf_ticket_flush_history' ) ) { rf_ticket_flush_history( $owner ); }
-		wp_send_json_success( array( 'message' => __( 'Deleted.', 'romsfun' ) ) );
+		wp_send_json_success( array( 'message' => __( 'Deleted.', 'rom' ) ) );
 	}
-	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_ticket_delete_row', 'app_ticket_delete_row' );
 
@@ -125,17 +125,17 @@ add_action( 'wp_ajax_app_ticket_delete_row', 'app_ticket_delete_row' );
  */
 function app_ticket_delete_rows() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unauthorized.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ticket_delete_nonce' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'rom' ) ) );
 	}
 	if ( ! isset( $_POST['ids'] ) || ! is_array( $_POST['ids'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid IDs.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid IDs.', 'rom' ) ) );
 	}
 	$ids = array_filter( array_map( 'absint', $_POST['ids'] ) );
 	if ( empty( $ids ) ) {
-		wp_send_json_error( array( 'message' => __( 'No valid IDs provided.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'No valid IDs provided.', 'rom' ) ) );
 	}
 	global $wpdb;
 	$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
@@ -146,9 +146,9 @@ function app_ticket_delete_rows() {
 		if ( function_exists( 'rf_ticket_flush_history' ) ) {
 			foreach ( (array) $owners as $o ) { rf_ticket_flush_history( $o ); }
 		}
-		wp_send_json_success( array( 'message' => sprintf( __( '%d item(s) deleted.', 'romsfun' ), $result ) ) );
+		wp_send_json_success( array( 'message' => sprintf( __( '%d item(s) deleted.', 'rom' ), $result ) ) );
 	}
-	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'romsfun' ) ) );
+	wp_send_json_error( array( 'message' => __( 'Error. Please contact administrator.', 'rom' ) ) );
 }
 add_action( 'wp_ajax_app_ticket_delete_rows', 'app_ticket_delete_rows' );
 
@@ -210,7 +210,7 @@ function app_ticket_render_page() {
 	$update_nonce = wp_create_nonce( 'ticket_update_nonce' );
 	?>
 	<div class="wrap">
-		<h1 class="wp-heading-inline"><?php esc_html_e( 'Requests', 'romsfun' ); ?></h1>
+		<h1 class="wp-heading-inline"><?php esc_html_e( 'Requests', 'rom' ); ?></h1>
 		<hr class="wp-header-end">
 
 		<style>
@@ -227,7 +227,7 @@ function app_ticket_render_page() {
 		</style>
 
 		<ul class="subsubsub" style="margin:8px 0 4px">
-			<li><?php echo $view_link( '', __( 'All', 'romsfun' ), $counts['total'] ); ?> |</li>
+			<li><?php echo $view_link( '', __( 'All', 'rom' ), $counts['total'] ); ?> |</li>
 			<?php foreach ( $statuses as $rf_k => $rf_label ) : ?>
 				<li><?php echo $view_link( (string) $rf_k, $rf_label, $counts[ 's' . $rf_k ] ); ?><?php echo $rf_k === $last_key ? '' : ' |'; ?></li>
 			<?php endforeach; ?>
@@ -244,16 +244,16 @@ function app_ticket_render_page() {
 			<table class="widefat striped">
 				<thead>
 				<tr>
-					<th><?php esc_html_e( 'Type', 'romsfun' ); ?></th>
-					<th><?php esc_html_e( 'Member', 'romsfun' ); ?></th>
-					<th class="col-title"><?php esc_html_e( 'Game', 'romsfun' ); ?></th>
-					<th class="col-desc"><?php esc_html_e( 'Details', 'romsfun' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'romsfun' ); ?></th>
-					<th class="col-resp"><?php esc_html_e( 'Response', 'romsfun' ); ?></th>
-					<th><?php esc_html_e( 'Time', 'romsfun' ); ?></th>
+					<th><?php esc_html_e( 'Type', 'rom' ); ?></th>
+					<th><?php esc_html_e( 'Member', 'rom' ); ?></th>
+					<th class="col-title"><?php esc_html_e( 'Game', 'rom' ); ?></th>
+					<th class="col-desc"><?php esc_html_e( 'Details', 'rom' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'rom' ); ?></th>
+					<th class="col-resp"><?php esc_html_e( 'Response', 'rom' ); ?></th>
+					<th><?php esc_html_e( 'Time', 'rom' ); ?></th>
 					<th>
-						<button class="button button-small delete-rows" type="button"><?php esc_html_e( 'Delete', 'romsfun' ); ?></button>
-						<button class="button button-small button-primary" id="ticketCheckAll" type="button"><?php esc_html_e( 'Check', 'romsfun' ); ?></button>
+						<button class="button button-small delete-rows" type="button"><?php esc_html_e( 'Delete', 'rom' ); ?></button>
+						<button class="button button-small button-primary" id="ticketCheckAll" type="button"><?php esc_html_e( 'Check', 'rom' ); ?></button>
 					</th>
 				</tr>
 				</thead>
@@ -272,7 +272,7 @@ function app_ticket_render_page() {
 						<td class="col-title">
 							<strong><?php echo esc_html( $row->game_title ); ?></strong>
 							<?php if ( ! empty( $row->reference_url ) ) : ?>
-								<br><a href="<?php echo esc_url( $row->reference_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'reference', 'romsfun' ); ?></a>
+								<br><a href="<?php echo esc_url( $row->reference_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'reference', 'rom' ); ?></a>
 							<?php endif; ?>
 						</td>
 						<td class="col-desc"><?php echo $row->description ? esc_html( $row->description ) : '<em>—</em>'; ?></td>
@@ -292,13 +292,13 @@ function app_ticket_render_page() {
 								<?php echo $row->response_content ? esc_html( $row->response_content ) : '<em>—</em>'; ?>
 							<?php else : ?>
 								<textarea class="rf-ticket-response" maxlength="1000"><?php echo esc_textarea( $row->response_content ); ?></textarea>
-								<button type="button" class="button button-small button-primary rf-ticket-save"><?php esc_html_e( 'Save', 'romsfun' ); ?></button>
+								<button type="button" class="button button-small button-primary rf-ticket-save"><?php esc_html_e( 'Save', 'rom' ); ?></button>
 							<?php endif; ?>
 						</td>
 						<td style="white-space:nowrap">
 							<?php echo rf_admin_time_ago( (string) $row->created_at, false ); // returns pre-escaped HTML ?>
 							<?php if ( $row->updated_at && $row->updated_at !== $row->created_at ) : ?>
-								<br><small style="color:#888"><?php esc_html_e( 'upd', 'romsfun' ); ?> <?php echo rf_admin_time_ago( (string) $row->updated_at, false ); // pre-escaped HTML ?></small>
+								<br><small style="color:#888"><?php esc_html_e( 'upd', 'rom' ); ?> <?php echo rf_admin_time_ago( (string) $row->updated_at, false ); // pre-escaped HTML ?></small>
 							<?php endif; ?>
 						</td>
 						<td style="text-align:center"><input class="check-item" type="checkbox" value="<?php echo esc_attr( $row->id ); ?>"></td>
@@ -355,7 +355,7 @@ function app_ticket_render_page() {
 					<?php
 					$start = ( $current_page - 1 ) * $per_page + 1;
 					$end   = min( $current_page * $per_page, $total_count );
-					printf( esc_html__( 'Showing %1$d-%2$d of %3$d requests', 'romsfun' ), $start, $end, $total_count );
+					printf( esc_html__( 'Showing %1$d-%2$d of %3$d requests', 'rom' ), $start, $end, $total_count );
 					?>
 				</span>
 				<div class="pagination-links">
@@ -380,7 +380,7 @@ function app_ticket_render_page() {
 		<?php endif; ?>
 
 		<?php else : ?>
-			<div class="notice notice-info"><p><?php esc_html_e( 'No requests yet.', 'romsfun' ); ?></p></div>
+			<div class="notice notice-info"><p><?php esc_html_e( 'No requests yet.', 'rom' ); ?></p></div>
 		<?php endif; ?>
 	</div>
 	<?php

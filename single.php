@@ -40,7 +40,7 @@ while ( have_posts() ) : the_post();
 					?>
                     <div class="space-x-2 pb-6">
                         <h2 class="text-xl font-bold flex items-center mb-4">
-                            <?php _e( 'Related posts', 'romsfun' ); ?>
+                            <?php _e( 'Related posts', 'rom' ); ?>
                         </h2>
 
                         <div class="horizontal-scroll-container">

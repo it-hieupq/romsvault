@@ -4,7 +4,7 @@ function k_breadcrumb() {
 
     // Settings
     $breadcrums_id = 'breadcrumb';
-    $home_title = __('Home', 'romsfun');
+    $home_title = __('Home', 'rom');
 
     $post_type = get_post_type();
     // Initialize custom taxonomy variable
@@ -270,7 +270,7 @@ function k_breadcrumb() {
             <li class="flex items-center">
                 <a href="<?php echo get_the_permalink($post_id); ?>" class="text-gray-500 hover:underline"><?php echo get_the_title($post_id); ?></a><span class="mx-2 text-gray-400">/</span>
             </li>
-            <li class="flex items-center"><span class="text-gray-500"><?php _e('Download', 'romsfun'); ?></span></li>
+            <li class="flex items-center"><span class="text-gray-500"><?php _e('Download', 'rom'); ?></span></li>
             <?php
         } else if (is_category()) {
             // Category page
@@ -325,7 +325,7 @@ function k_breadcrumb() {
 
             // Display the tag name
             ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Tag', 'romsfun') . ': ' . $get_term_name; ?></span></li>
+            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Tag', 'rom') . ': ' . $get_term_name; ?></span></li>
             <?php
         } elseif (is_day()) {
 
@@ -357,25 +357,25 @@ function k_breadcrumb() {
 
             // Display author name
             ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Author', 'romsfun') . ': ' . $userdata->display_name; ?></span></li>
+            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Author', 'rom') . ': ' . $userdata->display_name; ?></span></li>
             <?php
         } else if (get_query_var('paged')) {
 
             // Paginated archives
             ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Page', 'romsfun') . ' ' . get_query_var('paged'); ?></span></li>
+            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Page', 'rom') . ' ' . get_query_var('paged'); ?></span></li>
             <?php
         } else if (is_search()) {
 
             // Search results page
             ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Search results for', 'romsfun') . ': ' . get_search_query(); ?></span></li>
+            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Search results for', 'rom') . ': ' . get_search_query(); ?></span></li>
             <?php
         } elseif (is_404()) {
 
             // 404 page
             ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php _e('Error 404', 'romsfun'); ?></span></li>
+            <li class="flex items-center"><span class="text-gray-500"><?php _e('Error 404', 'rom'); ?></span></li>
             <?php
         }
         ?>

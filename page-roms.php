@@ -21,7 +21,7 @@ while ( have_posts() ) : the_post();
             <?php endif; ?>
 
             <h2 class="text-xl py-6 font-bold text-gray-800">
-                <?php _e('List of available consoles', 'romsfun'); ?>
+                <?php _e('List of available consoles', 'rom'); ?>
             </h2>
 
             <?php get_template_part( 'template-parts/console-groups' ) ?>

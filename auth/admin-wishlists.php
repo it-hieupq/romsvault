@@ -43,10 +43,10 @@ class RF_Wishlists_List_Table extends WP_List_Table {
 
 	public function get_columns() {
 		return array(
-			'post'       => __( 'Post', 'romsfun' ),
-			'wishers'    => __( 'Wishlisted by', 'romsfun' ),
-			'status'     => __( 'Post status', 'romsfun' ),
-			'last_added' => __( 'Last added', 'romsfun' ),
+			'post'       => __( 'Post', 'rom' ),
+			'wishers'    => __( 'Wishlisted by', 'rom' ),
+			'status'     => __( 'Post status', 'rom' ),
+			'last_added' => __( 'Last added', 'rom' ),
 		);
 	}
 
@@ -92,10 +92,10 @@ class RF_Wishlists_List_Table extends WP_List_Table {
 		};
 
 		return array(
-			'all'         => $link( '', __( 'All', 'romsfun' ), $c['total'] ),
-			'published'   => $link( 'published', __( 'Published', 'romsfun' ), $c['published'] ),
-			'unpublished' => $link( 'unpublished', __( 'Unpublished', 'romsfun' ), $c['unpublished'] ),
-			'missing'     => $link( 'missing', __( 'Missing', 'romsfun' ), $c['missing'] ),
+			'all'         => $link( '', __( 'All', 'rom' ), $c['total'] ),
+			'published'   => $link( 'published', __( 'Published', 'rom' ), $c['published'] ),
+			'unpublished' => $link( 'unpublished', __( 'Unpublished', 'rom' ), $c['unpublished'] ),
+			'missing'     => $link( 'missing', __( 'Missing', 'rom' ), $c['missing'] ),
 		);
 	}
 
@@ -163,7 +163,7 @@ class RF_Wishlists_List_Table extends WP_List_Table {
 		$post_id = (int) $item['post_id'];
 		if ( empty( $item['exists_id'] ) ) {
 			return '<strong><em>#' . $post_id . '</em></strong> '
-				. '<span style="color:#b32d2e">(' . esc_html__( 'deleted', 'romsfun' ) . ')</span>';
+				. '<span style="color:#b32d2e">(' . esc_html__( 'deleted', 'rom' ) . ')</span>';
 		}
 
 		$title     = $item['post_title'] ? esc_html( $item['post_title'] ) : '<em>#' . $post_id . '</em>';
@@ -175,7 +175,7 @@ class RF_Wishlists_List_Table extends WP_List_Table {
 			: '<strong>' . $title . '</strong>';
 		if ( $edit ) {
 			$out .= '<div class="row-actions"><span class="edit">'
-				. '<a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit', 'romsfun' ) . '</a>'
+				. '<a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit', 'rom' ) . '</a>'
 				. '</span></div>';
 		}
 		return $out;
@@ -187,14 +187,14 @@ class RF_Wishlists_List_Table extends WP_List_Table {
 
 	public function column_status( $item ) {
 		if ( empty( $item['exists_id'] ) ) {
-			return '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Missing', 'romsfun' ) . '</span>';
+			return '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Missing', 'rom' ) . '</span>';
 		}
 		$st = (string) $item['post_status'];
 		if ( $st === 'publish' ) {
-			return '<span style="color:#008a20;font-weight:600">' . esc_html__( 'Published', 'romsfun' ) . '</span>';
+			return '<span style="color:#008a20;font-weight:600">' . esc_html__( 'Published', 'rom' ) . '</span>';
 		}
 		if ( $st === 'trash' ) {
-			return '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Trashed', 'romsfun' ) . '</span>';
+			return '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Trashed', 'rom' ) . '</span>';
 		}
 		// draft / pending / private / future — show WP's own label where available.
 		$obj   = get_post_status_object( $st );
@@ -211,7 +211,7 @@ class RF_Wishlists_List_Table extends WP_List_Table {
 	}
 
 	public function no_items() {
-		esc_html_e( 'No wishlisted posts found.', 'romsfun' );
+		esc_html_e( 'No wishlisted posts found.', 'rom' );
 	}
 }
 
@@ -221,8 +221,8 @@ class RF_Wishlists_List_Table extends WP_List_Table {
  */
 function rf_wishlists_admin_menu(): void {
 	add_menu_page(
-		__( 'Wishlists', 'romsfun' ),
-		__( 'Wishlists', 'romsfun' ),
+		__( 'Wishlists', 'rom' ),
+		__( 'Wishlists', 'rom' ),
 		'manage_options',
 		'rf-wishlists',
 		'rf_wishlists_render_page',
@@ -237,20 +237,20 @@ add_action( 'admin_menu', 'rf_wishlists_admin_menu' );
  */
 function rf_wishlists_render_page(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You are not allowed to view wishlists.', 'romsfun' ) );
+		wp_die( esc_html__( 'You are not allowed to view wishlists.', 'rom' ) );
 	}
 
 	$table = new RF_Wishlists_List_Table();
 	$table->prepare_items();
 	?>
 	<div class="wrap">
-		<h1 class="wp-heading-inline"><?php esc_html_e( 'Wishlists', 'romsfun' ); ?></h1>
+		<h1 class="wp-heading-inline"><?php esc_html_e( 'Wishlists', 'rom' ); ?></h1>
 		<hr class="wp-header-end" />
 		<?php $table->views(); ?>
 		<form method="get">
 			<input type="hidden" name="page" value="rf-wishlists" />
 			<input type="hidden" name="status" value="<?php echo esc_attr( rf_wishlists_status_filter() ); ?>" />
-			<?php $table->search_box( __( 'Search posts', 'romsfun' ), 'rf-wishlists' ); ?>
+			<?php $table->search_box( __( 'Search posts', 'rom' ), 'rf-wishlists' ); ?>
 			<?php rf_admin_per_page_field( rf_admin_today_badge( rf_admin_today_count( rf_member_wishlist_table(), false ) ) ); ?>
 			<?php $table->display(); ?>
 		</form>

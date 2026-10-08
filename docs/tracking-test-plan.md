@@ -14,8 +14,8 @@ Không dùng WP-CLI: mọi thao tác WordPress đều qua `php -r` + `wp-load.ph
 ls /www/server/php/*/bin/php          # tim ban PHP dung
 
 export PHP=/www/server/php/83/bin/php
-export SITE=/www/wwwroot/romsfun.com
-export TRACK=$SITE/wp-content/themes/romsfun/tracking
+export SITE=/www/wwwroot/romsvault.com
+export TRACK=$SITE/wp-content/themes/romsvault/tracking
 export RCLI="redis-cli -h 127.0.0.1 -p 6379"     # them -a 'password' neu co requirepass
 ```
 
@@ -50,7 +50,7 @@ $RCLI HLEN romsfun_rf_track:pending_views
 ## Bước 1 — Deploy + dọn cron cũ
 
 ```bash
-cd $SITE/wp-content/themes/romsfun && git pull && git log --oneline -3
+cd $SITE/wp-content/themes/romsvault && git pull && git log --oneline -3
 ls tracking/                        # phai co config.php flush.php track.php
 ```
 
@@ -71,7 +71,7 @@ var_dump( wp_next_scheduled( "rf_flush_tracking" ) );'
 Quan trọng nhất: `rf_redis()` đã chuyển từ `inc/ajax-tracking.php` sang `auth/member-core.php`. Hỏng cái này thì member không đăng nhập được, mà **không có lỗi nào hiện ra** — mọi call site đều bọc `function_exists`.
 
 ```bash
-curl -s -o /dev/null -w 'trang chu: %{http_code}\n' https://romsfun.com/
+curl -s -o /dev/null -w 'trang chu: %{http_code}\n' https://romsvault.com/
 
 cd $SITE && $PHP -r 'require "wp-load.php";
 echo "rf_redis defined: ", function_exists( "rf_redis" ) ? "yes" : "NO", "\n";
@@ -96,7 +96,7 @@ if ( $sid ) {
 nginx -t
 
 curl -s -o /dev/null -w 'status=%{http_code} time=%{time_total}s\n' \
-  -X POST -d "id=$POST_ID&a=v" -H 'Host: romsfun.com' http://127.0.0.1/t
+  -X POST -d "id=$POST_ID&a=v" -H 'Host: romsvault.com' http://127.0.0.1/t
 ```
 
 **Pass:** `204`, dưới `0.05s`.
@@ -112,8 +112,8 @@ Chặn truy cập file trực tiếp:
 ```bash
 for F in track.php flush.php config.php; do
   printf '%-12s -> ' "$F"
-  curl -s -o /dev/null -w '%{http_code}\n' -H 'Host: romsfun.com' \
-    "http://127.0.0.1/wp-content/themes/romsfun/tracking/$F"
+  curl -s -o /dev/null -w '%{http_code}\n' -H 'Host: romsvault.com' \
+    "http://127.0.0.1/wp-content/themes/romsvault/tracking/$F"
 done
 ```
 
@@ -122,7 +122,7 @@ done
 Qua Cloudflare — chạy **từ máy cá nhân**, không phải trên server:
 
 ```bash
-curl -s -o /dev/null -w '%{http_code}\n' -X POST -d 'id=<POST_ID>&a=v' https://romsfun.com/t
+curl -s -o /dev/null -w '%{http_code}\n' -X POST -d 'id=<POST_ID>&a=v' https://romsvault.com/t
 ```
 
 **Pass:** `204`. Ra `403` kèm HTML → Bot Fight Mode đang chặn: Cloudflare → Security → WAF → Custom rules → `(http.request.uri.path eq "/t")` → **Skip** Bot Fight Mode + Managed Rules + Rate Limiting.
@@ -132,8 +132,8 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST -d 'id=<POST_ID>&a=v' https://r
 ## Bước 4 — Redis nhận đúng key
 
 ```bash
-curl -s -o /dev/null -X POST -d "id=$POST_ID&a=v" -H 'Host: romsfun.com' http://127.0.0.1/t
-curl -s -o /dev/null -X POST -d "id=$POST_ID&a=d" -H 'Host: romsfun.com' http://127.0.0.1/t
+curl -s -o /dev/null -X POST -d "id=$POST_ID&a=v" -H 'Host: romsvault.com' http://127.0.0.1/t
+curl -s -o /dev/null -X POST -d "id=$POST_ID&a=d" -H 'Host: romsvault.com' http://127.0.0.1/t
 
 $RCLI HGET rftrk:pending_views $POST_ID
 $RCLI HGET rftrk:pending_downloads $POST_ID
@@ -211,7 +211,7 @@ Còn sót `rftrk:pending_views:flushing` = lần ghi DB fail giữa chừng — 
 **aaPanel** → Cron → Add task → Shell Script → chu kỳ N phút = **10**:
 
 ```bash
-cd /www/wwwroot/romsfun.com/wp-content/themes/romsfun/tracking && /www/server/php/83/bin/php flush.php
+cd /www/wwwroot/romsvault.com/wp-content/themes/romsvault/tracking && /www/server/php/83/bin/php flush.php
 ```
 
 Xem kết quả: aaPanel → Cron → dòng task → **Log**. Mỗi lần chạy phải có một dòng `[rf-flush] …`.
@@ -219,7 +219,7 @@ Xem kết quả: aaPanel → Cron → dòng task → **Log**. Mỗi lần chạy
 Nếu dùng `crontab -e` thẳng thay vì aaPanel thì mới cần redirect, vì cron hệ thống gửi output qua mail chứ không lưu log:
 
 ```
-*/10 * * * * cd /www/wwwroot/romsfun.com/wp-content/themes/romsfun/tracking && /www/server/php/83/bin/php flush.php >> /www/wwwlogs/rf-flush.log 2>&1
+*/10 * * * * cd /www/wwwroot/romsvault.com/wp-content/themes/romsvault/tracking && /www/server/php/83/bin/php flush.php >> /www/wwwlogs/rf-flush.log 2>&1
 ```
 
 Đợi qua 2 chu kỳ (20 phút) rồi kiểm chứng bằng heartbeat — đáng tin hơn đọc log:
@@ -245,7 +245,7 @@ $RCLI INFO memory | grep maxmemory_policy
 $RCLI HLEN rftrk:pending_views
 
 # Key legacy phai dung tang han
-$RCLI HLEN romsfun_rf_track:pending_views
+$RCLI HLEN rom_rf_track:pending_views
 
 # Heartbeat con song
 $RCLI GET rftrk:last_flush | xargs -I{} date -d @{}
@@ -255,10 +255,10 @@ $RCLI GET rftrk:last_flush | xargs -I{} date -d @{}
 
 ⚠️ Nếu `maxmemory_policy` là `allkeys-lru` thì Redis **được phép xoá** key `rftrk:*` khi đầy bộ nhớ, tức mất lượt view chưa kịp vào DB. Cần đổi sang `volatile-lru` — key tracking không có TTL nên sẽ được miễn.
 
-Nếu block nginx có thêm `access_log /www/wwwlogs/romsfun.com.track.log rftrk;` thì đo được tỉ lệ lỗi của `/t`:
+Nếu block nginx có thêm `access_log /www/wwwlogs/romsvault.com.track.log rftrk;` thì đo được tỉ lệ lỗi của `/t`:
 
 ```bash
-awk '{print $2}' /www/wwwlogs/romsfun.com.track.log | sort | uniq -c | sort -rn
+awk '{print $2}' /www/wwwlogs/romsvault.com.track.log | sort | uniq -c | sort -rn
 ```
 
 **Pass:** ~100% là `204`.
@@ -287,7 +287,7 @@ cd $TRACK && $PHP flush.php
 nginx -t && nginx -s reload
 
 # 4. Tra code
-cd $SITE/wp-content/themes/romsfun && git revert 0a3cffc 1b90470
+cd $SITE/wp-content/themes/romsvault && git revert 0a3cffc 1b90470
 ```
 
 Lưu ý `0a3cffc` đã xoá `inc/ajax-tracking.php` và chuyển `rf_redis()` sang `auth/member-core.php` — revert riêng nó sẽ khôi phục file cũ trong khi `member-core.php` vẫn giữ hàm, tạo ra **hai định nghĩa `rf_redis()`** → fatal error. Phải revert cả hai commit cùng lúc, đúng thứ tự trên.

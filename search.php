@@ -14,7 +14,7 @@ $keywords = get_search_query();
         <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
 
             <h2 class="text-lg font-bold flex items-center mb-8">
-                <?php echo __('Found ', 'romsfun') . '  ' . $wp_query->found_posts . ' ' . __('results', 'romsfun'); ?>
+                <?php echo __('Found ', 'rom') . '  ' . $wp_query->found_posts . ' ' . __('results', 'rom'); ?>
             </h2>
 
             <div class="space-y-4">

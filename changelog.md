@@ -18,7 +18,7 @@ Rom admin management (`inc/setting-rom.php`):
 - Added a sortable "Views" column to the rom list table (orders by `views` meta)
 
 Bug fixes:
-- Fixed WP 6.7 `_load_textdomain_just_in_time` notices for `acf` / `romsfun` domains: register the Site Options page + field group on `acf/init` (`inc/options.php`) and move `register_nav_menus` to `init` (`functions.php`) so translated labels no longer load before `init`
+- Fixed WP 6.7 `_load_textdomain_just_in_time` notices for `acf` / `rom` domains: register the Site Options page + field group on `acf/init` (`inc/options.php`) and move `register_nav_menus` to `init` (`functions.php`) so translated labels no longer load before `init`
 - Removed a leftover debug `error_log(print_r($wp_rewrite->rules, true))` on `init` (`inc/setting-rom.php`) that flooded `debug.log` with empty lines on every request
 
 Performance — view/download tracking (`inc/ajax-tracking.php`):

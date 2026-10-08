@@ -15,7 +15,7 @@
 | Hiển thị cho member (menu, heading, label) | **"Request"** | Khớp CTA "Create Request", thân thiện với người dùng. |
 | Code / DB / route / function / file | **`ticket`** | Trong `auth/` từ "request" đã overload nặng (`WP_REST_Request $request`, `rf_verify_request_origin`, `$_REQUEST`, `wp_remote_request`). Đặt `rf_request_*` sẽ gây nhầm lẫn với HTTP request. `ticket` không đụng gì, nghĩa domain rõ ràng. |
 
-Cụ thể: bảng `{prefix}member_ticket`, hàm `rf_ticket_*`, route `/ticket`, file `auth/actions/ticket.php` + `auth/admin-ticket.php` + `auth/templates/ticket.php`. Nhưng string i18n hiển thị dùng "Request" (vd `__( 'Create Request', 'romsfun' )`).
+Cụ thể: bảng `{prefix}member_ticket`, hàm `rf_ticket_*`, route `/ticket`, file `auth/actions/ticket.php` + `auth/admin-ticket.php` + `auth/templates/ticket.php`. Nhưng string i18n hiển thị dùng "Request" (vd `__( 'Create Request', 'rom' )`).
 
 > Có thể veto: nếu muốn đồng nhất hoàn toàn 1 từ, đổi cả code sang `request` — nhưng chấp nhận rủi ro nhầm lẫn nêu trên.
 
@@ -62,23 +62,23 @@ DDL string-built an toàn vì tên bảng chỉ từ `$wpdb->prefix` (không có
 
 ## 3. Mapping arrays (code ⇄ label)
 
-Đặt trong `auth/setting-member.php` (luôn load, dùng chung front REST + admin). Label bọc `__()` textdomain `romsfun`.
+Đặt trong `auth/setting-member.php` (luôn load, dùng chung front REST + admin). Label bọc `__()` textdomain `rom`.
 
 ```php
 function rf_ticket_statuses() {
     return array(
-        0 => __( 'Init', 'romsfun' ),
-        1 => __( 'Processing', 'romsfun' ),
-        2 => __( 'Solved', 'romsfun' ),
-        3 => __( 'Closed', 'romsfun' ),
-        4 => __( 'Cancelled', 'romsfun' ),
+        0 => __( 'Init', 'rom' ),
+        1 => __( 'Processing', 'rom' ),
+        2 => __( 'Solved', 'rom' ),
+        3 => __( 'Closed', 'rom' ),
+        4 => __( 'Cancelled', 'rom' ),
     );
 }
 
 function rf_ticket_types() {
     return array(
-        0 => __( 'Add new game', 'romsfun' ),
-        1 => __( 'Add / Update file for existing game', 'romsfun' ),
+        0 => __( 'Add new game', 'rom' ),
+        1 => __( 'Add / Update file for existing game', 'rom' ),
     );
 }
 ```
@@ -199,7 +199,7 @@ Mirror `auth/admin-report.php`:
 ## 9. Guardrails (bắt buộc)
 
 - **Security:** mọi `$wpdb` query dùng `prepare()`; escape output (`esc_html/esc_attr/esc_url`); sanitize input; nonce cho admin-ajax; REST verify origin + session.
-- **i18n:** mọi string UI qua `__()/esc_html__()` textdomain `romsfun`; không tiếng Việt trong UI theme.
+- **i18n:** mọi string UI qua `__()/esc_html__()` textdomain `rom`; không tiếng Việt trong UI theme.
 - **Cache-aware:** `/ticket` là shell cache-safe, không dùng `is_user_logged_in()`/cookie WP trong template; state member client-side + REST.
 - **Messaging:** 1 notification / action; text lỗi từ `message` server → toast dùng chung.
 - **Verify:** sau sửa PHP chạy `php -l`; sau sửa JS chạy `node --check`.

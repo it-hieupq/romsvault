@@ -247,7 +247,7 @@ Member **không phải WP-logged-in** → luồng comment WP mặc định (`wp-
 | `header.php` | +nút "Đăng nhập" (desktop sau L105 + mobile menu) mở modal; JS đổi sang avatar theo `localStorage` |
 | `footer.php` | +markup modal login (Google GSI) dùng chung |
 | `comments.php` / comment area | Render cache-safe; submit qua `rf/v1/comment`; chặn `wp-comments-post.php` ẩn danh (§4.7) |
-| `functions.php` | +3 require; đọc hằng `ROMSFUN_GOOGLE_CLIENT_ID`; register REST `rf/v1`; enqueue `auth.js` |
+| `functions.php` | +3 require; đọc hằng `GOOGLE_CLIENT_ID`; register REST `rf/v1`; enqueue `auth.js` |
 
 ---
 
@@ -306,7 +306,7 @@ Nguyên tắc gốc: **1 bản HTML ẩn danh chung cho tất cả (guest = memb
 
 ## 9. Config cần chuẩn bị
 - **Google OAuth Client ID** (Google Cloud Console → OAuth 2.0, Authorized JS origins = domain). Client Secret không cần.
-- **Lưu ở `wp-config.php`** dạng hằng: `define('ROMSFUN_GOOGLE_CLIENT_ID', '...');`. Code đọc qua hằng này (không hardcode, không commit ID vào theme).
+- **Lưu ở `wp-config.php`** dạng hằng: `define('GOOGLE_CLIENT_ID', '...');`. Code đọc qua hằng này (không hardcode, không commit ID vào theme).
 - **KHÔNG cần đổi cấu hình Cloudflare/APO** (Plan B) — chỉ đảm bảo member không set cookie WP.
 - **Redis 7.4** (sẵn có) làm session store; dùng kết nối phpredis theo pattern `inc/ajax-tracking.php` (reuse `rf_redis()`). Hằng config `define()` (để chỉnh dễ — #10): `RF_SESSION_TTL = 30 * DAY_IN_SECONDS` (**fixed window, KHÔNG sliding**), `RF_ACTION_LIMIT = 3`, `RF_ACTION_WINDOW = 60`.
 - Session id = opaque ngẫu nhiên (`random_bytes`), không cần secret ký riêng (state ở Redis).
@@ -333,7 +333,7 @@ Nguyên tắc gốc: **1 bản HTML ẩn danh chung cho tất cả (guest = memb
 - *verify:* front-end vẫn `HIT`; set tay `localStorage.rf_display` → reload thấy avatar; xoá → về nút login; modal mở/đóng. **Chốt look & feel trước khi đụng auth.**
 
 **P2.1 · Config + nạp GSI** — `wp-config.php`, `functions.php`, `auth.js`
-- `define('ROMSFUN_GOOGLE_CLIENT_ID', ...)`; Google Cloud Console OAuth, Authorized JS origins = domain.
+- `define('GOOGLE_CLIENT_ID', ...)`; Google Cloud Console OAuth, Authorized JS origins = domain.
 - **Lazy-load** `accounts.google.com/gsi/client` chỉ khi mở modal; `renderButton` (user gesture), KHÔNG One Tap auto (§13.P).
 - *verify:* chỉ mở modal mới nạp gsi/client; nút Google hiện.
 
@@ -374,7 +374,7 @@ Nguyên tắc gốc: **1 bản HTML ẩn danh chung cho tất cả (guest = memb
 > Thứ tự: **P2.0 → P2.8**. P2.0–P2.2 dựng khung nhìn/bấm được ngay; P2.3–P2.5 lõi bảo mật; P2.6–P2.8 hoàn thiện + nghiệm thu.
 
 ## 11. Quyết định đã chốt (trước đây là open questions)
-- [x] Client ID lưu ở **`wp-config.php`** (hằng `ROMSFUN_GOOGLE_CLIENT_ID`).
+- [x] Client ID lưu ở **`wp-config.php`** (hằng `GOOGLE_CLIENT_ID`).
 - [x] Login qua **modal popup** mở từ **nút "Đăng nhập" trên header** (cần thêm nút — header hiện chưa có). Tái dùng cho single restricted.
 - [x] Nút Block **chỉ ở trang quản lý members**, không thêm vào Users list mặc định.
 - [x] **Giữ Cloudflare APO** (không gỡ); member dùng **session riêng Redis + cookie `rf_member`** (scope `/wp-json/rf/v1`), KHÔNG `wp_set_auth_cookie` (đã verify APO không cache được user có cookie WP).

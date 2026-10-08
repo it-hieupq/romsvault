@@ -33,7 +33,7 @@
 
 Client: cookie **`rf_member`** (HttpOnly, `RF_SESSION_COOKIE`, auth-google.php:449). `localStorage.rf_wishlist_ids` = **mảng ids** (icon tim trang duyệt; §8).
 
-**Cache backend = WP Transient API** (chạy trên Redis object-cache, prefix `romsfun_`, DB 0). `wp cache flush` (selective `MATCH 'romsfun_*'`) xoá transient → **vô hại** (rebuild từ DB) — nhất quán với quyết định "logout-on-flush chấp nhận".
+**Cache backend = WP Transient API** (chạy trên Redis object-cache, prefix `rom_`, DB 0). `wp cache flush` (selective `MATCH 'rom_*'`) xoá transient → **vô hại** (rebuild từ DB) — nhất quán với quyết định "logout-on-flush chấp nhận".
 
 ## 2. Nguyên tắc cốt lõi
 
@@ -59,7 +59,7 @@ ALTER TABLE member_wishlist
 ```
 auth: rf_verify_request_origin → rf_current_member; guest → 401; blocked → 403
       (client 401 → "Đăng nhập để xem"; cookie session = rf_member / RF_SESSION_COOKIE)
-$key = "rf_wl_v1_{member_id}"                      # transient; WP tự thêm prefix romsfun_
+$key = "rf_wl_v1_{member_id}"                      # transient; WP tự thêm prefix rom_
 $payload = get_transient($key)
   hit ($payload !== false) → rf_wishlist_serve($payload)     # KHÔNG chạm DB (kể cả sentinel rỗng)
   miss → rf_wishlist_build_payload($member_id):
@@ -159,7 +159,7 @@ Kích thước: ~250–300B/item → 8 item ≈ ~2KB, đầy 30 ≈ ~8KB.
 
 - **R1 — cache-leak (🔴, rủi ro số 1):** response `/rf/v1/wishlist` per-member. Chốt chặn: **`Cache-Control: private, no-store`** + **CF bypass rule cho `/wp-json/rf/`** (per-member, không cache) + **nginx: không `fastcgi_cache` route này** (hoặc `fastcgi_no_cache`/`fastcgi_cache_bypass` khi có cookie `rf_member`). **KHÔNG dựa `Vary`** (CF ignore; fastcgi bỏ qua). Verify bắt buộc trước launch (§12).
 - **WP boot per read:** chấp nhận vì volume `/wishlist` nhỏ (member đã login, chủ động mở). Không cần pool riêng/pure-PHP. Nếu đo được volume lớn bất thường → khi đó mới tách endpoint ids-only nhẹ.
-- **Cache = Transient API** trên Redis object-cache hiện có (TCP `WP_REDIS_HOST=redis`, DB 0, prefix `romsfun_`). Không tách DB.
+- **Cache = Transient API** trên Redis object-cache hiện có (TCP `WP_REDIS_HOST=redis`, DB 0, prefix `rom_`). Không tách DB.
 - **⚠️ Dependency CỨNG — object-cache dropin phải active:** `set/get_transient` chỉ nằm ở Redis khi `wp-content/object-cache.php` (redis-cache) hoạt động. Nếu dropin tắt/hỏng → transient rơi xuống bảng `wp_options` = **ghi DB mỗi miss + autoload bloat** → phá thiết kế. Verify dropin active (đang có, 105KB); nếu lo, dùng thẳng `wp_cache_set/get` (object cache) thay vì transient để fail loud khi không có persistent cache.
 - **MariaDB:** miss = 1 SELECT ids + WP_Query ≤30 post (point lookups theo PK). Nhẹ.
 

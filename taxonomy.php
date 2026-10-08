@@ -30,7 +30,7 @@ $template_slug = get_taxonomy_template_slug_by_post_type( $taxonomy_post_type );
                 <?php
                 $title_suffix = get_taxonomy_title_suffix_by_post_type( $taxonomy_post_type );
 
-                echo __( 'Explore', 'romsfun' ) . ' ' . esc_html( $taxonomy_obj->name ) . ' ' . $title_suffix;
+                echo __( 'Explore', 'rom' ) . ' ' . esc_html( $taxonomy_obj->name ) . ' ' . $title_suffix;
                 ?>
             </h1>
 
@@ -50,7 +50,7 @@ $template_slug = get_taxonomy_template_slug_by_post_type( $taxonomy_post_type );
 	        <?php if ( $paged == 1 && $desc = get_queried_object()->description ) : ?>
 
                 <div class="px-6 py-4 my-12 rounded-xl bg-white">
-                    <h2 class="text-xl mb-4 font-semibold text-gray-800"><?php _e('Information', 'romsfun') ?></h2>
+                    <h2 class="text-xl mb-4 font-semibold text-gray-800"><?php _e('Information', 'rom') ?></h2>
                     <?php echo $desc; ?>
                 </div>
 

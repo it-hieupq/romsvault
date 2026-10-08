@@ -33,16 +33,16 @@ if ( ! defined( 'RF_COMMENT_MAXLEN' ) ) {
  */
 function rf_comment_error( $code, $status ) {
 	$messages = array(
-		'blocked'         => __( 'Your account is locked and cannot comment.', 'romsfun' ),
-		'comments_closed' => __( 'Comments are closed for this post.', 'romsfun' ),
-		'rate_limited'    => __( 'You are commenting too fast. Please wait a moment.', 'romsfun' ),
-		'empty'           => __( 'Please enter a comment.', 'romsfun' ),
-		'not_found'       => __( 'This post is not available.', 'romsfun' ),
-		'bad_parent'      => __( 'Invalid reply target.', 'romsfun' ),
-		'duplicate'       => __( 'It looks like you already posted this comment.', 'romsfun' ),
-		'auth_required'   => __( 'Please sign in to comment.', 'romsfun' ),
+		'blocked'         => __( 'Your account is locked and cannot comment.', 'rom' ),
+		'comments_closed' => __( 'Comments are closed for this post.', 'rom' ),
+		'rate_limited'    => __( 'You are commenting too fast. Please wait a moment.', 'rom' ),
+		'empty'           => __( 'Please enter a comment.', 'rom' ),
+		'not_found'       => __( 'This post is not available.', 'rom' ),
+		'bad_parent'      => __( 'Invalid reply target.', 'rom' ),
+		'duplicate'       => __( 'It looks like you already posted this comment.', 'rom' ),
+		'auth_required'   => __( 'Please sign in to comment.', 'rom' ),
 	);
-	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not post your comment. Please try again.', 'romsfun' );
+	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Could not post your comment. Please try again.', 'rom' );
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 
@@ -101,7 +101,7 @@ function rf_rest_comment( WP_REST_Request $request ) {
 
 	$commentdata = array(
 		'comment_post_ID'      => $post_id,
-		'comment_author'       => $member['name'] ? $member['name'] : __( 'Member', 'romsfun' ),
+		'comment_author'       => $member['name'] ? $member['name'] : __( 'Member', 'rom' ),
 		'comment_author_email' => $member['email'],
 		'comment_author_url'   => '',
 		'comment_content'      => $content,

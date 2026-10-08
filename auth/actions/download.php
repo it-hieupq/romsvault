@@ -74,7 +74,7 @@ function rf_rest_download_url( WP_REST_Request $request ) {
 			return new WP_REST_Response( array( 'ok' => false, 'error' => 'auth_required' ), 401 );
 		}
 		if ( (int) $member['blocked'] === 1 ) {
-			return new WP_REST_Response( array( 'ok' => false, 'error' => 'blocked', 'message' => __( 'Your account has been blocked.', 'romsfun' ) ), 403 );
+			return new WP_REST_Response( array( 'ok' => false, 'error' => 'blocked', 'message' => __( 'Your account has been blocked.', 'rom' ) ), 403 );
 		}
 	}
 

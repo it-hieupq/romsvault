@@ -44,8 +44,8 @@ define( 'RFTRK_REDIS_PERSISTENT_ID', 'rftrk' );
 /**
  * Buffer keys, both hashes of {post_id => pending delta}.
  *
- * The prefix deliberately does NOT start with WP_REDIS_PREFIX ("romsfun_"):
- * the Redis Object Cache plugin flushes with SCAN MATCH 'romsfun_*' + DEL,
+ * The prefix deliberately does NOT start with WP_REDIS_PREFIX ('romsvault_'):
+ * the Redis Object Cache plugin flushes with SCAN MATCH 'romsvault_*' + DEL,
  * which would wipe counts that have not reached the database yet.
  *
  * They carry no TTL on purpose. An abandoned buffer is bounded by the number of

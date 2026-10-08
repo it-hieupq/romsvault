@@ -45,7 +45,7 @@ while ( have_posts() ) :
                             <div class="flex items-center justify-between mb-6">
                                 
                                 <h2 class="text-xl font-semibold">
-                                    <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Featured', 'romsfun') ?></p>
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Featured', 'rom') ?></p>
                                     <?php echo $title ?>
                                 </h2>
                                 
@@ -77,7 +77,7 @@ while ( have_posts() ) :
                     <div class="content-container px-4 sm:px-6 lg:px-8">
                         <div class="bg-white rounded-2xl p-6 shadow-lg">
                             <h2 class="text-xl font-semibold mb-6">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Announcement', 'romsfun') ?></p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Announcement', 'rom') ?></p>
                                 <?php echo $title; ?>
                             </h2>
                             <div class="text-gray-700 revert">
@@ -94,7 +94,7 @@ while ( have_posts() ) :
                     <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
 
                         <h2 class="text-xl font-semibold mb-6">
-                            <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Browse by systems', 'romsfun') ?></p>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Browse by systems', 'rom') ?></p>
                             <?php echo $title ?>
                         </h2>
 
@@ -117,7 +117,7 @@ while ( have_posts() ) :
                     <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-xl font-semibold">
-                                <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Choice for you', 'romsfun') ?></p>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Choice for you', 'rom') ?></p>
                                 <?php echo $title; ?>
                             </h2>
                             <a href="<?php echo $link['url'] ?>" class="inline-flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
@@ -143,7 +143,7 @@ while ( have_posts() ) :
                                         <div class="font-semibold text-base mb-4 hover:text-romfun-pink"><?php echo $term->name ?></div>
                                         <div class="text-sm text-muted flex justify-between">
                                             <span class="inline-flex items-center">
-                                                <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'romsfun') ?>
+                                                <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>
                                             </span>
                                         </div>
                                     </div>
@@ -191,13 +191,13 @@ while ( have_posts() ) :
                             <div class="flex items-center justify-between mb-6">
                                 <h2 class="text-xl font-semibold">
                                     <p class="text-xs font-semibold uppercase tracking-wider text-brand">
-                                        <?php echo $sort == 'popular' ? __('Trending', 'romsfun') : __('Fresh upload', 'romsfun') ?>
+                                        <?php echo $sort == 'popular' ? __('Trending', 'rom') : __('Fresh upload', 'rom') ?>
                                     </p>
                                     <?php echo $title; ?>
                                 </h2>
                                 <a href="<?php echo $base_link ?>"
                                    class="flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
-                                    <?php echo __( 'More', 'romsfun' ) . get_svg_icon('more'); ?>
+                                    <?php echo __( 'More', 'rom' ) . get_svg_icon('more'); ?>
                                 </a>
                             </div>
 

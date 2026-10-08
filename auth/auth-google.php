@@ -230,11 +230,11 @@ function rf_verify_google_id_token( $jwt, $expected_nonce = '' ) {
  */
 function rf_login_error( $code, $status ) {
 	$messages = array(
-		'blocked'             => __( 'Your account has been blocked.', 'romsfun' ),
-		'rate_limited'        => __( 'Too many attempts. Please wait a moment and try again.', 'romsfun' ),
-		'session_unavailable' => __( 'Sign-in is temporarily unavailable. Please try again shortly.', 'romsfun' ),
+		'blocked'             => __( 'Your account has been blocked.', 'rom' ),
+		'rate_limited'        => __( 'Too many attempts. Please wait a moment and try again.', 'rom' ),
+		'session_unavailable' => __( 'Sign-in is temporarily unavailable. Please try again shortly.', 'rom' ),
 	);
-	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Sign-in failed. Please try again.', 'romsfun' );
+	$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Sign-in failed. Please try again.', 'rom' );
 	return new WP_REST_Response( array( 'ok' => false, 'error' => $code, 'message' => $message ), $status );
 }
 

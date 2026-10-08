@@ -21,10 +21,10 @@ function k_insert_link_aff_init() {
 	if ( function_exists('acf_add_local_field_group') ) {
 		acf_add_local_field_group(array(
 			'key'		=> 'insert_link_aff_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
 				array(
-					'label' => __( 'Console', 'romsfun' ),
+					'label' => __( 'Console', 'rom' ),
 					'name'  => 'insert_link_aff_console',
 					'key'   => 'insert_link_aff_console',
 					'type'  => 'taxonomy',
@@ -33,19 +33,19 @@ function k_insert_link_aff_init() {
 					'allow_null' => 1,
 				),
 				array(
-					'label' => __( 'Url', 'romsfun' ),
+					'label' => __( 'Url', 'rom' ),
 					'name'  => 'insert_link_aff_url',
 					'key'   => 'insert_link_aff_url',
 					'type'  => 'text',
 				),
 				array(
-					'label' => __( 'Type', 'romsfun' ),
+					'label' => __( 'Type', 'rom' ),
 					'name'  => 'insert_link_aff_type',
 					'key'   => 'insert_link_aff_type',
 					'type'  => 'text',
 				),
 				array(
-					'label' => __( 'Post Status', 'romsfun' ),
+					'label' => __( 'Post Status', 'rom' ),
 					'name'  => 'insert_link_aff_post_status',
 					'key'   => 'insert_link_aff_post_status',
 					'type'  => 'radio',
@@ -57,7 +57,7 @@ function k_insert_link_aff_init() {
 					'layout' => 'horizontal',
 				),
 				array(
-					'label' => __( 'Remove', 'romsfun' ),
+					'label' => __( 'Remove', 'rom' ),
 					'name'  => 'insert_link_aff_remove',
 					'key'   => 'insert_link_aff_remove',
 					'type'  => 'true_false',
@@ -83,11 +83,11 @@ add_action( 'init', 'k_insert_link_aff_init' );
 function k_insert_link_aff() {
 	$params = $_REQUEST['acf'];
 	if ( empty($params['insert_link_aff_console']) ) {
-		_e('Please select console.', 'romsfun');
+		_e('Please select console.', 'rom');
 		exit;
 	}
 	if ( empty($params['insert_link_aff_url']) ) {
-		_e('Please input url.', 'romsfun');
+		_e('Please input url.', 'rom');
 		exit;
 	}
 
@@ -124,7 +124,7 @@ function k_insert_link_aff() {
 			delete_field('download_list_aff');
 		}
 
-		_e('Remove Link Aff is completed.', 'romsfun');
+		_e('Remove Link Aff is completed.', 'rom');
 	} else {
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_HEADER, 0);
@@ -207,7 +207,7 @@ function k_insert_link_aff() {
 	 		unset($html);
 	    }
 
-    	_e('Insert Link Aff is completed.', 'romsfun');
+    	_e('Insert Link Aff is completed.', 'rom');
     }
 
     wp_reset_postdata();

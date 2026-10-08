@@ -68,7 +68,7 @@ function rf_rest_wishlist_set( WP_REST_Request $request ) {
 		return new WP_REST_Response( array( 'ok' => false, 'error' => 'auth_required' ), 401 );
 	}
 	if ( (int) $member['blocked'] === 1 ) {
-		return new WP_REST_Response( array( 'ok' => false, 'error' => 'blocked', 'message' => __( 'Your account has been blocked.', 'romsfun' ) ), 403 );
+		return new WP_REST_Response( array( 'ok' => false, 'error' => 'blocked', 'message' => __( 'Your account has been blocked.', 'rom' ) ), 403 );
 	}
 
 	$member_id = (int) $member['id'];
@@ -323,8 +323,8 @@ function rf_render_wishlist_button( $post_id ) {
 		return;
 	}
 	echo '<button type="button" class="rf-wish-btn" data-rf-wish data-post="' . esc_attr( $post_id ) . '"'
-		. ' aria-pressed="false" aria-label="' . esc_attr__( 'Add to wishlist', 'romsfun' ) . '"'
-		. ' title="' . esc_attr__( 'Add to wishlist', 'romsfun' ) . '">'
+		. ' aria-pressed="false" aria-label="' . esc_attr__( 'Add to wishlist', 'rom' ) . '"'
+		. ' title="' . esc_attr__( 'Add to wishlist', 'rom' ) . '">'
 		. '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.4 5.4 0 0 0-7.7 0L12 6.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 22l8.8-8.7a5.4 5.4 0 0 0 0-7.7z"/></svg>'
 		. '</button>';
 }

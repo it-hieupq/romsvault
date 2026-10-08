@@ -26,7 +26,7 @@ global $post;
                 <section class="content-container w-full text-gray-900 rounded-lg">
                     <h3 class="text-lg font-semibold mb-8 flex items-center text-gray-600">
                         <span class="w-3 h-3 rounded-full bg-romfun-pink mr-2"></span>
-						<?php _e( 'List of available consoles', 'romsfun' ) ?>
+						<?php _e( 'List of available consoles', 'rom' ) ?>
                     </h3>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -43,13 +43,13 @@ global $post;
                                     <div class="font-bold text-base text-center mb-6 hover:text-romfun-pink"><?php echo $term->name ?></div>
                                     <div class="text-xs text-gray-500 flex justify-between">
                                         <span class="inline-flex items-center">
-                                            <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __( 'Emulators', 'romsfun' ) ?>
+                                            <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __( 'Emulators', 'rom' ) ?>
                                         </span>
 
                                         <span class="inline-flex items-center">
                                         <?php
                                         $console_downloads = get_field( 'emulator_console_downloads', 'term_' . $term->term_id );
-                                        echo get_svg_icon( 'download' ) . number_format( $console_downloads ?: 0, 0, '' ) . ' ' . __( '', 'romsfun' );
+                                        echo get_svg_icon( 'download' ) . number_format( $console_downloads ?: 0, 0, '' ) . ' ' . __( '', 'rom' );
                                         ?>
                                     </span>
                                     </div>

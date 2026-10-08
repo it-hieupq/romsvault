@@ -39,7 +39,7 @@ function get_s3_roms($url)
                     );
                     
                 }
-                // For link https://romsfun.com/finder-v2?folder=3DO-CHD
+                // For link https://romsvault.com/finder-v2?folder=3DO-CHD
                 else if (preg_match('/<td class="action"><a class="download-link" href="(.*?)">(.*)<\/a><\/td><td class="size">(.*)<\/td>/ui', $html_item, $item_matches)) {
                     
                     $result[] = array(
@@ -212,10 +212,10 @@ function k_insert_link_s3_init()
     if (function_exists('acf_add_local_field_group')) {
         acf_add_local_field_group(array(
             'key' => 'insert_link_s3_settings',
-            'title' => __('Settings', 'romsfun'),
+            'title' => __('Settings', 'rom'),
             'fields' => array(
                 array(
-                    'label' => __('Console', 'romsfun'),
+                    'label' => __('Console', 'rom'),
                     'name' => 'insert_link_s3_console',
                     'key' => 'insert_link_s3_console',
                     'type' => 'taxonomy',
@@ -224,19 +224,19 @@ function k_insert_link_s3_init()
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('Url', 'romsfun'),
+                    'label' => __('Url', 'rom'),
                     'name' => 'insert_link_s3_url',
                     'key' => 'insert_link_s3_url',
                     'type' => 'text',
                 ),
                 array(
-                    'label' => __('Note', 'romsfun'),
+                    'label' => __('Note', 'rom'),
                     'name' => 'insert_link_s3_note',
                     'key' => 'insert_link_s3_note',
                     'type' => 'text',
                 ),
                 array(
-                    'label' => __('Post Status', 'romsfun'),
+                    'label' => __('Post Status', 'rom'),
                     'name' => 'insert_link_s3_post_status',
                     'key' => 'insert_link_s3_post_status',
                     'type' => 'radio',
@@ -248,7 +248,7 @@ function k_insert_link_s3_init()
                     'layout' => 'horizontal',
                 ),
                 array(
-                    'label' => __('Post Download', 'romsfun'),
+                    'label' => __('Post Download', 'rom'),
                     'name' => 'insert_link_s3_post_download',
                     'key' => 'insert_link_s3_post_download',
                     'type' => 'radio',
@@ -259,7 +259,7 @@ function k_insert_link_s3_init()
                     'layout' => 'horizontal',
                 ),
                 array(
-                    'label' => __('Remove', 'romsfun'),
+                    'label' => __('Remove', 'rom'),
                     'name' => 'insert_link_s3_remove',
                     'key' => 'insert_link_s3_remove',
                     'type' => 'true_false',
@@ -291,12 +291,12 @@ function k_insert_link_s3()
     $params = $_REQUEST['acf'];
     if (empty($params['insert_link_s3_console'])) {
         header('Content-Type: application/json');
-        echo json_encode(array('status' => false, 'message' => __('Please select console.', 'romsfun')));
+        echo json_encode(array('status' => false, 'message' => __('Please select console.', 'rom')));
         exit;
     }
     if (empty($params['insert_link_s3_url'])) {
         header('Content-Type: application/json');
-        echo json_encode(array('status' => false, 'message' => __('Please input url.', 'romsfun')));
+        echo json_encode(array('status' => false, 'message' => __('Please input url.', 'rom')));
         exit;
     }
 
@@ -339,7 +339,7 @@ function k_insert_link_s3()
         }
 
         header('Content-Type: application/json');
-        echo json_encode(array('status' => false, 'message' => __('Remove Link S3 is completed.', 'romsfun')));
+        echo json_encode(array('status' => false, 'message' => __('Remove Link S3 is completed.', 'rom')));
 
     } else {
 
@@ -457,7 +457,7 @@ function k_insert_link_s3()
             } else {
 
                 header('Content-Type: application/json');
-                echo json_encode(array('status' => false, 'message' => __('Insert Link S3 is completed.', 'romsfun')));
+                echo json_encode(array('status' => false, 'message' => __('Insert Link S3 is completed.', 'rom')));
 
             }
         }

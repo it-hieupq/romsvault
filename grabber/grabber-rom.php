@@ -23,10 +23,10 @@ function k_grabber_rom_init() {
 
 		acf_add_local_field_group(array(
 			'key'		=> 'grabber_rom_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
                 array(
-                    'label' => __('Console', 'romsfun'),
+                    'label' => __('Console', 'rom'),
                     'name' => 'grabber_console',
                     'key' => 'grabber_console',
                     'type' => 'taxonomy',
@@ -35,7 +35,7 @@ function k_grabber_rom_init() {
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('Type', 'romsfun'),
+                    'label' => __('Type', 'rom'),
                     'name' => 'grabber_type',
                     'key' => 'grabber_type',
                     'type' => 'taxonomy',
@@ -44,7 +44,7 @@ function k_grabber_rom_init() {
                     'allow_null' => 1,
                 ),
 				array(
-					'label' => __( 'Url', 'romsfun' ),
+					'label' => __( 'Url', 'rom' ),
 					'name'  => 'grabber_rom_url',
 					'key'   => 'grabber_rom_url',
 					'type'  => 'url',
@@ -72,17 +72,17 @@ function k_grabber_rom() {
 	$params = $_REQUEST['acf'];
 
     if (empty($params['grabber_console'])) {
-        _e('Please select console.', 'romsfun');
+        _e('Please select console.', 'rom');
         exit;
     }
 
     if (empty($params['grabber_type'])) {
-        _e('Please select type.', 'romsfun');
+        _e('Please select type.', 'rom');
         exit;
     }
 
 	if ( empty($params['grabber_rom_url']) ) {
-		_e('Please input url.', 'romsfun');
+		_e('Please input url.', 'rom');
 		exit;
 	}
 
@@ -162,19 +162,19 @@ function k_grabber_rom() {
         $post_id_3 = rom_exists($title_3, $console);
 
         if ($post_id > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>';
             exit;
         }
         elseif ($post_id_1 > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>';
             exit;
         }
         elseif ($post_id_2 > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>';
             exit;
         }
         elseif ($post_id_3 > 0) {
-            echo __('Post exists:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>';
+            echo __('Post exists:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>';
             exit;
         }
         else {
@@ -232,12 +232,12 @@ function k_grabber_rom() {
 				wp_set_post_terms( $post_id, $terms, 'dev' );
 			}
 
-			echo __('Post created:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) .'</a>';
+			echo __('Post created:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) .'</a>';
 			exit;
 		}
 	}
 	
-	_e('Grabber Rom ERROR.', 'romsfun');
+	_e('Grabber Rom ERROR.', 'rom');
 	exit;
 }
 add_action( 'wp_ajax_k_grabber_rom', 'k_grabber_rom' );

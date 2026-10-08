@@ -51,19 +51,19 @@ function app_report_delete_row()
 {
     // Check user capability
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('Unauthorized.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Unauthorized.', 'rom')));
     }
     
     // Verify nonce
     if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'report_delete_nonce')) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Security check failed.', 'rom')));
     }
     
     global $wpdb;
     $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
     
     if ($id <= 0) {
-        wp_send_json_error(array('message' => __('Invalid ID.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Invalid ID.', 'rom')));
     }
     
     $result = $wpdb->delete(
@@ -73,9 +73,9 @@ function app_report_delete_row()
     );
     
     if ($result) {
-        wp_send_json_success(array('message' => __('Deleted.', 'romsfun')));
+        wp_send_json_success(array('message' => __('Deleted.', 'rom')));
     } else {
-        wp_send_json_error(array('message' => __('Error. Please contact administrator.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Error. Please contact administrator.', 'rom')));
     }
 }
 
@@ -88,25 +88,25 @@ function app_report_delete_rows()
 {
     // Check user capability
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('Unauthorized.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Unauthorized.', 'rom')));
     }
     
     // Verify nonce
     if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'report_delete_nonce')) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Security check failed.', 'rom')));
     }
     
     global $wpdb;
     
     if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
-        wp_send_json_error(array('message' => __('Invalid IDs.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Invalid IDs.', 'rom')));
     }
     
     $ids = array_map('absint', $_POST['ids']);
     $ids = array_filter($ids);
     
     if (empty($ids)) {
-        wp_send_json_error(array('message' => __('No valid IDs provided.', 'romsfun')));
+        wp_send_json_error(array('message' => __('No valid IDs provided.', 'rom')));
     }
     
     // Use prepared statement for security
@@ -121,9 +121,9 @@ function app_report_delete_rows()
     $result = $wpdb->query($query);
     
     if ($result !== false) {
-        wp_send_json_success(array('message' => sprintf(__('%d item(s) deleted.', 'romsfun'), $result)));
+        wp_send_json_success(array('message' => sprintf(__('%d item(s) deleted.', 'rom'), $result)));
     } else {
-        wp_send_json_error(array('message' => __('Error. Please contact administrator.', 'romsfun')));
+        wp_send_json_error(array('message' => __('Error. Please contact administrator.', 'rom')));
     }
 }
 
@@ -447,7 +447,7 @@ function app_after_report_page(){
                     <?php 
                     $start = ($current_page - 1) * $per_page + 1;
                     $end = min($current_page * $per_page, $total_count);
-                    printf(__('Showing %d-%d of %d reports', 'romsfun'), $start, $end, $total_count);
+                    printf(__('Showing %d-%d of %d reports', 'rom'), $start, $end, $total_count);
                     ?>
                 </span>
                 <div class="pagination-links">
@@ -474,7 +474,7 @@ function app_after_report_page(){
         <?php endif; ?>
     <?php else : ?>
         <div class="acf-admin-notice notice notice-error">
-            <p><?php _e('Not found.', 'romsfun'); ?></p>
+            <p><?php _e('Not found.', 'rom'); ?></p>
         </div>
     <?php
     endif;

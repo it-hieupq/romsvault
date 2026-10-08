@@ -95,14 +95,14 @@
 <!-- Login modal (P2.0 scaffold; Google button wired in P2.1). Shared by header + single "login to download". -->
 <div id="rf-modal" class="rf-modal" aria-hidden="true">
     <div class="rf-modal-overlay" data-rf-close></div>
-    <div class="rf-modal-card" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Sign in', 'romsfun' ); ?>">
-        <button type="button" class="rf-modal-close" data-rf-close aria-label="<?php esc_attr_e( 'Close', 'romsfun' ); ?>">&times;</button>
-        <div class="rf-modal-title"><?php esc_html_e( 'Sign in to RomsFun', 'romsfun' ); ?></div>
-        <div class="rf-modal-sub"><?php esc_html_e( 'Sign in to download, comment and rate.', 'romsfun' ); ?></div>
+    <div class="rf-modal-card" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Sign in', 'rom' ); ?>">
+        <button type="button" class="rf-modal-close" data-rf-close aria-label="<?php esc_attr_e( 'Close', 'rom' ); ?>">&times;</button>
+        <div class="rf-modal-title"><?php esc_html_e( 'Sign in to system', 'rom' ); ?></div>
+        <div class="rf-modal-sub"><?php esc_html_e( 'Sign in to download, comment and rate.', 'rom' ); ?></div>
         <div class="rf-gsi-slot" id="rf-gsi-slot">
-            <span class="rf-gsi-note"><?php esc_html_e( 'Loading Google sign-in…', 'romsfun' ); ?></span>
+            <span class="rf-gsi-note"><?php esc_html_e( 'Loading Google sign-in…', 'rom' ); ?></span>
         </div>
-        <div class="rf-webview-banner"><?php esc_html_e( 'Please open in Chrome or Safari to sign in with Google.', 'romsfun' ); ?></div>
+        <div class="rf-webview-banner"><?php esc_html_e( 'Please open in Chrome or Safari to sign in with Google.', 'rom' ); ?></div>
     </div>
 </div>
 

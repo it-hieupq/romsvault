@@ -8,10 +8,10 @@ function k_init_page_home() {
 		// Page home
 		acf_add_local_field_group( array(
 			'key'		=> 'home_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
 				array(
-					'label' => __( 'Content', 'romsfun' ),
+					'label' => __( 'Content', 'rom' ),
 					'name'  => 'home_content',
 					'key'   => 'home_content',
 					'type'  => 'flexible_content',
@@ -20,12 +20,12 @@ function k_init_page_home() {
 						array(
 							'key'           => 'home_console_groups',
 							'name'          => 'home_console_groups',
-							'label'         => __( 'Console Group', 'romsfun' ),
+							'label'         => __( 'Console Group', 'rom' ),
 							'display'       => 'block',
 							'sub_fields'    => array(
 								array(
 									'key'       => 'home_console_groups_title',
-									'label'     => __( 'Console groups title', 'romsfun' ),
+									'label'     => __( 'Console groups title', 'rom' ),
 									'name'      => 'home_console_groups_title',
 									'type'      => 'text',
 									'required'      => 1,
@@ -34,20 +34,20 @@ function k_init_page_home() {
 						),
 
 						array(
-							'label'   	 => __( 'Introduction', 'romsfun' ),
+							'label'   	 => __( 'Introduction', 'rom' ),
 							'name'    	 => 'home_intro',
 							'key'    	 => 'home_intro',
 							'display'    => 'block',
 							'sub_fields' => array(
 								array (
-									'label' 		=> __( 'Title', 'romsfun' ),
+									'label' 		=> __( 'Title', 'rom' ),
 									'name' 			=> 'home_intro_title',
 									'key' 			=> 'home_intro_title',
 									'type' 			=> 'text',
 									'required'      => 1,
 								),
 								array (
-									'label' 		=> __( 'Description', 'romsfun' ),
+									'label' 		=> __( 'Description', 'rom' ),
 									'name' 			=> 'home_intro_desc',
 									'key' 			=> 'home_intro_desc',
 									'type' 			=> 'wysiwyg',
@@ -57,13 +57,13 @@ function k_init_page_home() {
 						),
 
                         array(
-                            'label'   	 => __( 'Roms Collection', 'romsfun' ),
+                            'label'   	 => __( 'Roms Collection', 'rom' ),
                             'name'    	 => 'home_roms_collection',
                             'key'    	 => 'home_roms_collection',
                             'display'    => 'block',
                             'sub_fields' => array(
                                 array (
-                                    'label'		 	=> __( 'Title', 'romsfun' ),
+                                    'label'		 	=> __( 'Title', 'rom' ),
                                     'name' 		 	=> 'home_roms_collection_title',
                                     'key'   	 	=> 'home_roms_collection_title',
                                     'type' 		 	=> 'text',
@@ -73,7 +73,7 @@ function k_init_page_home() {
                                     'required'      => 1,
                                 ),
 								array (
-									'label'		 	=> __( 'Collection', 'romsfun' ),
+									'label'		 	=> __( 'Collection', 'rom' ),
 									'name' 		 	=> 'home_roms_collection_items',
 									'key'   	 	=> 'home_roms_collection_items',
 									'type' 		 	=> 'taxonomy',
@@ -86,7 +86,7 @@ function k_init_page_home() {
 									'field_type' => 'multi_select',
 								),
 								array (
-									'label'		 	=> __( 'Link', 'romsfun' ),
+									'label'		 	=> __( 'Link', 'rom' ),
 									'name' 		 	=> 'home_roms_collection_link',
 									'key'   	 	=> 'home_roms_collection_link',
 									'type' 		 	=> 'link',
@@ -100,13 +100,13 @@ function k_init_page_home() {
                         ),
 
 						array(
-							'label'   	 => __( 'Roms', 'romsfun' ),
+							'label'   	 => __( 'Roms', 'rom' ),
 							'name'    	 => 'home_roms',
 							'key'    	 => 'home_roms',
 							'display'    => 'block',
 							'sub_fields' => array(
 								array (
-								 	'label'		 	=> __( 'Title', 'romsfun' ),
+								 	'label'		 	=> __( 'Title', 'rom' ),
 								 	'name' 		 	=> 'home_roms_title',
 								 	'key'   	 	=> 'home_roms_title',
 									'type' 		 	=> 'text',
@@ -116,7 +116,7 @@ function k_init_page_home() {
 								    'required'      => 1,
 								),
 								array (
-									'label'		 	=> __( 'Number', 'romsfun' ),
+									'label'		 	=> __( 'Number', 'rom' ),
 									'name' 		 	=> 'home_roms_number',
 									'key'   	 	=> 'home_roms_number',
 									'type' 		 	=> 'number',
@@ -127,7 +127,7 @@ function k_init_page_home() {
 									),
 								),
 								array (
-								 	'label'		 	=> __( 'Sort', 'romsfun' ),
+								 	'label'		 	=> __( 'Sort', 'rom' ),
 								 	'name' 		 	=> 'home_roms_sort',
 								 	'key'   	 	=> 'home_roms_sort',
 									'type' 		 	=> 'select',
@@ -141,7 +141,7 @@ function k_init_page_home() {
 									),
 								),
 								array (
-									'label'		 	=> __( 'Layout', 'romsfun' ),
+									'label'		 	=> __( 'Layout', 'rom' ),
 									'name' 		 	=> 'home_roms_layout',
 									'key'   	 	=> 'home_roms_layout',
 									'type' 		 	=> 'select',
@@ -157,13 +157,13 @@ function k_init_page_home() {
 							),
 						),
 						array(
-							'label'   	 => __( 'Posts', 'romsfun' ),
+							'label'   	 => __( 'Posts', 'rom' ),
 							'name'    	 => 'home_new_posts',
 							'key'    	 => 'home_new_posts',
 							'display'    => 'block',
 							'sub_fields' => array(
 								array (
-								 	'label'		 	=> __( 'Title', 'romsfun' ),
+								 	'label'		 	=> __( 'Title', 'rom' ),
 								 	'name' 		 	=> 'home_new_posts_title',
 								 	'key'   	 	=> 'home_new_posts_title',
 									'type' 		 	=> 'text',
@@ -173,7 +173,7 @@ function k_init_page_home() {
 								    'required'      => 1,
 								),
 								array (
-								 	'label'		 	=> __( 'Number', 'romsfun' ),
+								 	'label'		 	=> __( 'Number', 'rom' ),
 								 	'name' 		 	=> 'home_new_posts_number',
 								 	'key'   	 	=> 'home_new_posts_number',
 									'type' 		 	=> 'number',
@@ -184,7 +184,7 @@ function k_init_page_home() {
 								    'required'      => 1,
 								),
 								array (
-								 	'label'		 	=> __( 'Link', 'romsfun' ),
+								 	'label'		 	=> __( 'Link', 'rom' ),
 								 	'name' 		 	=> 'home_new_posts_link',
 								 	'key'   	 	=> 'home_new_posts_link',
 									'type' 		 	=> 'link',
@@ -196,7 +196,7 @@ function k_init_page_home() {
 							),
 						),
 					),
-					'button_label' => __( 'Add layout', 'romsfun' ),
+					'button_label' => __( 'Add layout', 'rom' ),
 				),
 			),
 			'location' => array (

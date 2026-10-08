@@ -8,7 +8,7 @@ global $post;
 $type = get_queried_object();
 // Validate type object
 if (!is_tax('type') || !isset($type->term_id)) {
-    wp_die(__('Invalid type taxonomy.', 'romsfun'));
+    wp_die(__('Invalid type taxonomy.', 'rom'));
 }
 get_header();
 
@@ -83,7 +83,7 @@ $filter_data = array(
                 if ($latest_roms_query->have_posts()) : ?>
                     <section class="mb-8">
                         <h2 class="text-xl font-bold flex items-center mb-4">
-                            <?php echo esc_html($type->name . ' ' . __('Latest ROMs', 'romsfun')); ?>
+                            <?php echo esc_html($type->name . ' ' . __('Latest ROMs', 'rom')); ?>
                         </h2>
 
                         <div class="carousel-container relative mx-auto" data-carousel-id="consoleLatestROMs">
@@ -126,9 +126,9 @@ $filter_data = array(
 						<?php 
                         $title = $type->name;
                         if (!empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_consoles)) {
-                            $title .= ' ' . __('Filtered ROMs', 'romsfun');
+                            $title .= ' ' . __('Filtered ROMs', 'rom');
                         } else {
-                            $title .= ' ' . __('Popular ROMs', 'romsfun');
+                            $title .= ' ' . __('Popular ROMs', 'rom');
                         }
 						echo $title . ' (' .$query->found_posts.')';
                         ?>
@@ -143,9 +143,9 @@ $filter_data = array(
                         endwhile;
                     else : ?>
                         <div class="bg-white rounded-lg shadow-md p-8 text-center">
-                            <p class="text-gray-600 text-lg"><?php _e('No ROMs found matching your filters.', 'romsfun'); ?></p>
+                            <p class="text-gray-600 text-lg"><?php _e('No ROMs found matching your filters.', 'rom'); ?></p>
                             <a href="<?php echo get_term_link($type->term_id, 'type'); ?>" class="inline-block mt-4 px-6 py-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition">
-                                <?php _e('Clear Filters', 'romsfun'); ?>
+                                <?php _e('Clear Filters', 'rom'); ?>
                             </a>
                         </div>
                     <?php endif;

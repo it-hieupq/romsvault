@@ -91,7 +91,7 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
             <div class="prose max-w-none bg-white p-6 rounded-2xl shadow-xl">
                 <?php k_breadcrumb(); ?>
                 <h1 class="text-romfun-pink text-2xl font-bold">
-                    <?php echo esc_html( __( 'Download', 'romsfun' ) . ' ' . get_the_title( $post_id ) . ' ' . $post->post_type ); ?>
+                    <?php echo esc_html( __( 'Download', 'rom' ) . ' ' . get_the_title( $post_id ) . ' ' . $post->post_type ); ?>
                 </h1>
                 <div class="flex items-center pt-2 pb-6">
                     <div class="d-flex align-items-center min-w-[5rem]">
@@ -103,14 +103,14 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
                     </div>
                     <span class="ml-2 text-sm text-gray-600"><?php echo esc_html( $score ); ?></span>
                     <span class="ml-2 text-sm text-gray-500">
-					(<?php echo esc_html( $count . ' ' . _n( 'review', 'reviews', $count, 'romsfun' ) ); ?>)
+					(<?php echo esc_html( $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ) ); ?>)
 				</span>
                 </div>
 
                 <?php if ( $console && $guide = get_field( 'console_guide', 'term_' . $console->term_id ) ) : ?>
                     <div class="bg-romfun-pink/10 p-4 rounded-xl shadow-lg mb-6">
                         <div class="font-bold text-romfun-pink mb-3 flex items-center">
-                            <?php echo get_svg_icon( 'noti' ) . ' ' . esc_html( __( 'Note', 'romsfun' ) ); ?>
+                            <?php echo get_svg_icon( 'noti' ) . ' ' . esc_html( __( 'Note', 'rom' ) ); ?>
                         </div>
                         <?php echo wp_kses_post( $guide ); ?>
                     </div>
@@ -120,7 +120,7 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
                 <?php if ( $guide = get_field( 'download_note', $post_id ) ) : ?>
                     <div class="bg-green-100 p-4 rounded-xl shadow-lg mb-6">
                         <div class="font-bold text-green-500 mb-3 flex items-center">
-                            <?php echo get_svg_icon( 'info' ) . ' ' . esc_html( __( 'Download Guides', 'romsfun' ) ); ?>
+                            <?php echo get_svg_icon( 'info' ) . ' ' . esc_html( __( 'Download Guides', 'rom' ) ); ?>
                         </div>
                         <?php echo wpautop( $guide ); ?>
                     </div>
@@ -139,7 +139,7 @@ if ( empty( $download_slugs[1] ) ) :
             <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
                 <div class="prose max-w-none bg-white p-6 lg:p-8 rounded-2xl shadow-xl">
                     <h2 class="text-lg font-semibold pb-6">
-                        <?php esc_html_e( 'Normal download links', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Normal download links', 'rom' ); ?>
                     </h2>
                     <div class="overflow-x-auto">
                         <table class="table-auto w-full">
@@ -190,7 +190,7 @@ if ( empty( $download_slugs[1] ) ) :
             <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
                 <div class="prose max-w-none bg-white p-6 lg:p-8 rounded-2xl shadow-xl">
                     <h2 class="text-lg font-semibold pb-6">
-                        <?php esc_html_e( 'Aff download links', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Aff download links', 'rom' ); ?>
                     </h2>
                     <div class="overflow-x-auto">
                         <table class="table-auto w-full">
@@ -282,7 +282,7 @@ elseif ( isset( $download_slugs[1] ) ) :
         <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
             <div class="prose max-w-none bg-white p-6 lg:p-8 mb-8 rounded-2xl shadow-xl">
                 <h1 class="text-base font-bold text-gray-500 py-4 text-center">
-                    <?php echo esc_html( __( 'You are downloading', 'romsfun' ) . ' ' . $file_name . ' (' . $file_type . ')'); ?>
+                    <?php echo esc_html( __( 'You are downloading', 'rom' ) . ' ' . $file_name . ' (' . $file_type . ')'); ?>
                 </h1>
                 <div id="download-container" class="text-center py-6" data-ajax-url="<?php echo esc_attr( admin_url('admin-ajax.php') ); ?>">
                     <?php if ( $rf_members ) : ?>
@@ -315,10 +315,10 @@ elseif ( isset( $download_slugs[1] ) ) :
                            <?php if ( $rf_members ) : ?>data-rf-download data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $download_slugs[1] ); ?>"<?php endif; ?>
                            class="inline-flex items-center justify-center px-6 py-4 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
                            rel="nofollow">
-                            <?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'romsfun' ). ' ' . ' (' . $file_size . ')'; ?>
+                            <?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'rom' ). ' ' . ' (' . $file_size . ')'; ?>
                         </a>
                         <p class="text-sm text-gray-500 mt-4">
-                            <?php esc_html_e( 'If the download doesn\'t start automatically, click the button above', 'romsfun' ); ?>
+                            <?php esc_html_e( 'If the download doesn\'t start automatically, click the button above', 'rom' ); ?>
                         </p>
                     </div>
 
@@ -379,21 +379,21 @@ elseif ( isset( $download_slugs[1] ) ) :
             <section class="pb-6 text-gray-900">
                 <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
                     <h2 class="font-bold text-black text-lg mb-4">
-                        <?php esc_html_e( 'Other available download links', 'romsfun' ); ?>
+                        <?php esc_html_e( 'Other available download links', 'rom' ); ?>
                     </h2>
 
                     <?php if ( $has_other_normal ) : ?>
                         <div class="bg-white p-6 lg:p-8 mb-6 rounded-2xl shadow-xl">
                             <h3 class="text-base font-semibold mb-4 text-gray-700">
-                                <?php esc_html_e( 'Normal Download Links', 'romsfun' ); ?>
+                                <?php esc_html_e( 'Normal Download Links', 'rom' ); ?>
                             </h3>
                             <div class="overflow-x-auto">
                                 <table class="table-auto w-full">
                                     <thead>
                                     <tr>
-                                        <th class="text-left"><?php esc_html_e( 'Filename', 'romsfun' ); ?></th>
-                                        <th class="text-left"><?php esc_html_e( 'Type', 'romsfun' ); ?></th>
-                                        <th class="text-left"><?php esc_html_e( 'Size', 'romsfun' ); ?></th>
+                                        <th class="text-left"><?php esc_html_e( 'Filename', 'rom' ); ?></th>
+                                        <th class="text-left"><?php esc_html_e( 'Type', 'rom' ); ?></th>
+                                        <th class="text-left"><?php esc_html_e( 'Size', 'rom' ); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -430,15 +430,15 @@ elseif ( isset( $download_slugs[1] ) ) :
                     <?php if ( $has_other_aff ) : ?>
                         <div class="bg-white p-6 lg:p-8 mb-6 rounded-2xl shadow-xl">
                             <h3 class="text-base font-semibold mb-4 text-gray-700">
-                                <?php esc_html_e( 'Affiliate Download Links', 'romsfun' ); ?>
+                                <?php esc_html_e( 'Affiliate Download Links', 'rom' ); ?>
                             </h3>
                             <div class="overflow-x-auto">
                                 <table class="table-auto w-full">
                                     <thead>
                                     <tr>
-                                        <th class="text-left"><?php esc_html_e( 'Filename', 'romsfun' ); ?></th>
-                                        <th class="text-left"><?php esc_html_e( 'Type', 'romsfun' ); ?></th>
-                                        <th class="text-left"><?php esc_html_e( 'Size', 'romsfun' ); ?></th>
+                                        <th class="text-left"><?php esc_html_e( 'Filename', 'rom' ); ?></th>
+                                        <th class="text-left"><?php esc_html_e( 'Type', 'rom' ); ?></th>
+                                        <th class="text-left"><?php esc_html_e( 'Size', 'rom' ); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -513,7 +513,7 @@ if ( $console && isset( $console->term_id ) ) :
         <section class="pb-6 text-gray-900">
             <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
                 <h2 class="font-bold text-black text-lg mb-4">
-                    <?php esc_html_e( 'Recommended for you', 'romsfun' ); ?>
+                    <?php esc_html_e( 'Recommended for you', 'rom' ); ?>
                 </h2>
                 <div class="space-y-4">
                     <?php

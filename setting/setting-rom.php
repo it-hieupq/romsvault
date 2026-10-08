@@ -7,16 +7,16 @@ function k_init_rom() {
 	register_post_type( 'rom',
 		array (
 			'labels' => array(
-				'name' 				=> __( 'Roms', 'romsfun' ),
-				'singular_name' 	=> __( 'Rom', 'romsfun' ),
-				'menu_name' 		=> __( 'Roms', 'romsfun' ),
-				'name_admin_bar'    => __( 'Roms', 'romsfun' ),
-				'all_items'			=> __( 'All Roms', 'romsfun' ),
-				'add_new' 			=> __( 'Add Rom', 'romsfun' ),
-				'add_new_item' 		=> __( 'Add Rom', 'romsfun' ),
-				'edit_item' 		=> __( 'Edit Rom', 'romsfun' ),
+				'name' 				=> __( 'Roms', 'rom' ),
+				'singular_name' 	=> __( 'Rom', 'rom' ),
+				'menu_name' 		=> __( 'Roms', 'rom' ),
+				'name_admin_bar'    => __( 'Roms', 'rom' ),
+				'all_items'			=> __( 'All Roms', 'rom' ),
+				'add_new' 			=> __( 'Add Rom', 'rom' ),
+				'add_new_item' 		=> __( 'Add Rom', 'rom' ),
+				'edit_item' 		=> __( 'Edit Rom', 'rom' ),
 			),
-			'description' 		=> __( 'Roms', 'romsfun' ),
+			'description' 		=> __( 'Roms', 'rom' ),
 			'menu_position' 	=> 5,
 			'menu_icon' 		=> 'dashicons-media-interactive',
 			'capability_type' 	=> 'post',
@@ -34,17 +34,17 @@ function k_init_rom() {
 	register_taxonomy( 'console', array( 'rom' ),
 		array(
 			'labels'            => array(
-				'name'              => __( 'Console', 'romsfun' ),
-				'singular_name'     => __( 'Console', 'romsfun' ),
-				'search_items'      => __( 'Search Console', 'romsfun' ),
-				'all_items'         => __( 'All Console', 'romsfun' ),
-				'parent_item'       => __( 'Parent Console', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Console:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Console', 'romsfun' ),
-				'update_item'       => __( 'Update Console', 'romsfun' ),
-				'add_new_item'      => __( 'Add Console', 'romsfun' ),
-				'new_item_name'     => __( 'Console Name', 'romsfun' ),
-				'menu_name'         => __( 'Console', 'romsfun' ),
+				'name'              => __( 'Console', 'rom' ),
+				'singular_name'     => __( 'Console', 'rom' ),
+				'search_items'      => __( 'Search Console', 'rom' ),
+				'all_items'         => __( 'All Console', 'rom' ),
+				'parent_item'       => __( 'Parent Console', 'rom' ),
+				'parent_item_colon' => __( 'Parent Console:', 'rom' ),
+				'edit_item'         => __( 'Edit Console', 'rom' ),
+				'update_item'       => __( 'Update Console', 'rom' ),
+				'add_new_item'      => __( 'Add Console', 'rom' ),
+				'new_item_name'     => __( 'Console Name', 'rom' ),
+				'menu_name'         => __( 'Console', 'rom' ),
 			),
 			'hierarchical'      => true,
 			'public'            => true,
@@ -55,6 +55,15 @@ function k_init_rom() {
 				'with_front'   => false,
 				'hierarchical' => false,
 			],
+			// console drives the ROM permalink (post_type_link) and the per-console
+			// rewrite rules, so a rom without one has no usable URL. Guarantee every
+			// rom always carries a console term — this covers every write path
+			// (editor, quick/bulk edit, REST, grabber), unlike form-level validation.
+			// Roms that land here: edit.php?post_type=rom&console=unknown
+			'default_term' => [
+				'name' => 'Unknown',
+				'slug' => 'unknown',
+			],
 		)
 	);
 
@@ -64,17 +73,17 @@ function k_init_rom() {
 	register_taxonomy('collection', array('rom'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'Collection', 'romsfun' ),
-				'singular_name'     => __( 'Collection', 'romsfun' ),
-				'search_items'      => __( 'Search Collection', 'romsfun' ),
-				'all_items'         => __( 'All Collection', 'romsfun' ),
-				'parent_item'       => __( 'Parent Collection', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Collection:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Collection', 'romsfun' ),
-				'update_item'       => __( 'Update Collection', 'romsfun' ),
-				'add_new_item'      => __( 'Add Collection', 'romsfun' ),
-				'new_item_name'     => __( 'Collection Name', 'romsfun' ),
-				'menu_name'         => __( 'Collection', 'romsfun' ),
+				'name'              => __( 'Collection', 'rom' ),
+				'singular_name'     => __( 'Collection', 'rom' ),
+				'search_items'      => __( 'Search Collection', 'rom' ),
+				'all_items'         => __( 'All Collection', 'rom' ),
+				'parent_item'       => __( 'Parent Collection', 'rom' ),
+				'parent_item_colon' => __( 'Parent Collection:', 'rom' ),
+				'edit_item'         => __( 'Edit Collection', 'rom' ),
+				'update_item'       => __( 'Update Collection', 'rom' ),
+				'add_new_item'      => __( 'Add Collection', 'rom' ),
+				'new_item_name'     => __( 'Collection Name', 'rom' ),
+				'menu_name'         => __( 'Collection', 'rom' ),
 			),
 			'hierarchical'      	=> true,
 			'public'            	=> true,
@@ -88,17 +97,17 @@ function k_init_rom() {
 	register_taxonomy('region', array('rom'),
 		array(
 			'labels'            => array(
-				'name'              => __( 'Region', 'romsfun' ),
-				'singular_name'     => __( 'Region', 'romsfun' ),
-				'search_items'      => __( 'Search Region', 'romsfun' ),
-				'all_items'         => __( 'All Region', 'romsfun' ),
-				'parent_item'       => __( 'Parent Region', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Region:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Region', 'romsfun' ),
-				'update_item'       => __( 'Update Region', 'romsfun' ),
-				'add_new_item'      => __( 'Add Region', 'romsfun' ),
-				'new_item_name'     => __( 'Region Name', 'romsfun' ),
-				'menu_name'         => __( 'Region', 'romsfun' ),
+				'name'              => __( 'Region', 'rom' ),
+				'singular_name'     => __( 'Region', 'rom' ),
+				'search_items'      => __( 'Search Region', 'rom' ),
+				'all_items'         => __( 'All Region', 'rom' ),
+				'parent_item'       => __( 'Parent Region', 'rom' ),
+				'parent_item_colon' => __( 'Parent Region:', 'rom' ),
+				'edit_item'         => __( 'Edit Region', 'rom' ),
+				'update_item'       => __( 'Update Region', 'rom' ),
+				'add_new_item'      => __( 'Add Region', 'rom' ),
+				'new_item_name'     => __( 'Region Name', 'rom' ),
+				'menu_name'         => __( 'Region', 'rom' ),
 			),
 			'hierarchical'      	=> true,
 			'public'            	=> true,
@@ -112,17 +121,17 @@ function k_init_rom() {
 	register_taxonomy('genre', array('rom'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'Genre', 'romsfun' ),
-				'singular_name'     => __( 'Genre', 'romsfun' ),
-				'search_items'      => __( 'Search Genre', 'romsfun' ),
-				'all_items'         => __( 'All Genre', 'romsfun' ),
-				'parent_item'       => __( 'Parent Genre', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Genre:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Genre', 'romsfun' ),
-				'update_item'       => __( 'Update Genre', 'romsfun' ),
-				'add_new_item'      => __( 'Add Genre', 'romsfun' ),
-				'new_item_name'     => __( 'Genre Name', 'romsfun' ),
-				'menu_name'         => __( 'Genre', 'romsfun' ),
+				'name'              => __( 'Genre', 'rom' ),
+				'singular_name'     => __( 'Genre', 'rom' ),
+				'search_items'      => __( 'Search Genre', 'rom' ),
+				'all_items'         => __( 'All Genre', 'rom' ),
+				'parent_item'       => __( 'Parent Genre', 'rom' ),
+				'parent_item_colon' => __( 'Parent Genre:', 'rom' ),
+				'edit_item'         => __( 'Edit Genre', 'rom' ),
+				'update_item'       => __( 'Update Genre', 'rom' ),
+				'add_new_item'      => __( 'Add Genre', 'rom' ),
+				'new_item_name'     => __( 'Genre Name', 'rom' ),
+				'menu_name'         => __( 'Genre', 'rom' ),
 			),
 			'hierarchical'      	=> true,
 			'public'            	=> true,
@@ -136,17 +145,17 @@ function k_init_rom() {
 	register_taxonomy('dev', array('rom'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'Developer', 'romsfun' ),
-				'singular_name'     => __( 'Developer', 'romsfun' ),
-				'search_items'      => __( 'Search Developer', 'romsfun' ),
-				'all_items'         => __( 'All Developer', 'romsfun' ),
-				'parent_item'       => __( 'Parent Developer', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Developer:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Developer', 'romsfun' ),
-				'update_item'       => __( 'Update Developer', 'romsfun' ),
-				'add_new_item'      => __( 'Add Developer', 'romsfun' ),
-				'new_item_name'     => __( 'Developer Name', 'romsfun' ),
-				'menu_name'         => __( 'Developer', 'romsfun' ),
+				'name'              => __( 'Developer', 'rom' ),
+				'singular_name'     => __( 'Developer', 'rom' ),
+				'search_items'      => __( 'Search Developer', 'rom' ),
+				'all_items'         => __( 'All Developer', 'rom' ),
+				'parent_item'       => __( 'Parent Developer', 'rom' ),
+				'parent_item_colon' => __( 'Parent Developer:', 'rom' ),
+				'edit_item'         => __( 'Edit Developer', 'rom' ),
+				'update_item'       => __( 'Update Developer', 'rom' ),
+				'add_new_item'      => __( 'Add Developer', 'rom' ),
+				'new_item_name'     => __( 'Developer Name', 'rom' ),
+				'menu_name'         => __( 'Developer', 'rom' ),
 			),
 			'hierarchical'      	=> false,
 			'public'            	=> true,
@@ -160,17 +169,17 @@ function k_init_rom() {
 	register_taxonomy('pub', array('rom'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'Publisher', 'romsfun' ),
-				'singular_name'     => __( 'Publisher', 'romsfun' ),
-				'search_items'      => __( 'Search Publisher', 'romsfun' ),
-				'all_items'         => __( 'All Publisher', 'romsfun' ),
-				'parent_item'       => __( 'Parent Publisher', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Publisher:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Publisher', 'romsfun' ),
-				'update_item'       => __( 'Update Publisher', 'romsfun' ),
-				'add_new_item'      => __( 'Add Publisher', 'romsfun' ),
-				'new_item_name'     => __( 'Publisher Name', 'romsfun' ),
-				'menu_name'         => __( 'Publisher', 'romsfun' ),
+				'name'              => __( 'Publisher', 'rom' ),
+				'singular_name'     => __( 'Publisher', 'rom' ),
+				'search_items'      => __( 'Search Publisher', 'rom' ),
+				'all_items'         => __( 'All Publisher', 'rom' ),
+				'parent_item'       => __( 'Parent Publisher', 'rom' ),
+				'parent_item_colon' => __( 'Parent Publisher:', 'rom' ),
+				'edit_item'         => __( 'Edit Publisher', 'rom' ),
+				'update_item'       => __( 'Update Publisher', 'rom' ),
+				'add_new_item'      => __( 'Add Publisher', 'rom' ),
+				'new_item_name'     => __( 'Publisher Name', 'rom' ),
+				'menu_name'         => __( 'Publisher', 'rom' ),
 			),
 			'hierarchical'      	=> false,
 			'public'            	=> true,
@@ -184,17 +193,17 @@ function k_init_rom() {
 	register_taxonomy('type', array('rom'), 
 		array(
 			'labels'            => array(
-				'name'              => __( 'Type', 'romsfun' ),
-				'singular_name'     => __( 'Type', 'romsfun' ),
-				'search_items'      => __( 'Search Type', 'romsfun' ),
-				'all_items'         => __( 'All Type', 'romsfun' ),
-				'parent_item'       => __( 'Parent Type', 'romsfun' ),
-				'parent_item_colon' => __( 'Parent Type:', 'romsfun' ),
-				'edit_item'         => __( 'Edit Type', 'romsfun' ),
-				'update_item'       => __( 'Update Type', 'romsfun' ),
-				'add_new_item'      => __( 'Add Type', 'romsfun' ),
-				'new_item_name'     => __( 'Type Name', 'romsfun' ),
-				'menu_name'         => __( 'Type', 'romsfun' ),
+				'name'              => __( 'Type', 'rom' ),
+				'singular_name'     => __( 'Type', 'rom' ),
+				'search_items'      => __( 'Search Type', 'rom' ),
+				'all_items'         => __( 'All Type', 'rom' ),
+				'parent_item'       => __( 'Parent Type', 'rom' ),
+				'parent_item_colon' => __( 'Parent Type:', 'rom' ),
+				'edit_item'         => __( 'Edit Type', 'rom' ),
+				'update_item'       => __( 'Update Type', 'rom' ),
+				'add_new_item'      => __( 'Add Type', 'rom' ),
+				'new_item_name'     => __( 'Type Name', 'rom' ),
+				'menu_name'         => __( 'Type', 'rom' ),
 			),
 			'show_in_rest'          => true,
 			'hierarchical'      	=> true,
@@ -241,7 +250,7 @@ function k_init_rom() {
 
 			array (
 				'key' 	=> 'views',
-				'label' => __( 'Views', 'romsfun' ),
+				'label' => __( 'Views', 'rom' ),
 				'name' 	=> 'views',
 				'type' 	=> 'number',
 				'default_value' => 0,
@@ -255,7 +264,7 @@ function k_init_rom() {
 
 			array (
 				'key' 	=> 'downloads',
-				'label' => __( 'Downloads', 'romsfun' ),
+				'label' => __( 'Downloads', 'rom' ),
 				'name' 	=> 'downloads',
 				'type' 	=> 'number',
 				'default_value' => 0,
@@ -265,7 +274,7 @@ function k_init_rom() {
 			),
 
 			array (
-				'label' 		=> __( 'Rating Count', 'romsfun' ),
+				'label' 		=> __( 'Rating Count', 'rom' ),
 				'key'   		=> 'rating_count',
 				'name'  		=> 'rating_count',
 				'type' 		    => 'number',
@@ -277,7 +286,7 @@ function k_init_rom() {
 			),
 
 			array (
-				'label' 		=> __( 'Rating Avg', 'romsfun' ),
+				'label' 		=> __( 'Rating Avg', 'rom' ),
 				'key'   		=> 'rating_avg',
 				'name'  		=> 'rating_avg',
 				'type' 		    => 'number',
@@ -289,7 +298,7 @@ function k_init_rom() {
 			),
 
 			array (
-				'label'		    => __( 'Hide ADS', 'romsfun' ),
+				'label'		    => __( 'Hide ADS', 'rom' ),
 				'key' 		    => 'hide_ads',
 				'name' 		    => 'hide_ads',
 				'type' 		    => 'true_false',
@@ -300,7 +309,7 @@ function k_init_rom() {
 			
 			array (
 				'key' 	=> 'released',
-				'label' => __( 'Release Date', 'romsfun' ),
+				'label' => __( 'Release Date', 'rom' ),
 				'name' 	=> 'released',
 				'type' 	=> 'textarea',
 				'rows'  => 2,
@@ -309,7 +318,7 @@ function k_init_rom() {
 				),
 			),
 			array (
-				'label' 		=> __( 'Related Posts', 'romsfun' ),
+				'label' 		=> __( 'Related Posts', 'rom' ),
 				'key'   		=> 'related_posts',
 				'name'  		=> 'related_posts',
 				'type' 		    => 'post_object',
@@ -323,7 +332,7 @@ function k_init_rom() {
 			),
 
             array(
-                'label' => __('Internal Notes', 'romsfun'),
+                'label' => __('Internal Notes', 'rom'),
                 'key' => 'internal_note',
                 'name' => 'internal_note',
                 'type' => 'textarea',
@@ -342,14 +351,14 @@ function k_init_rom() {
 			array(
 				'key'       => 'grabber_gallery',
 				'name'      => 'grabber_gallery',
-				'label'     => __('Grabber Gallery', 'romsfun'),
+				'label'     => __('Grabber Gallery', 'rom'),
 				'type'      => 'group',
 				'sub_fields' => array(
 					array(
 						'key'       => 'grabber_input',
 						'name'      => 'grabber_input',
 						'type'      => 'text',
-						// 'label'     => __('Image URL', 'romsfun'),
+						// 'label'     => __('Image URL', 'rom'),
 						'wrapper'   => array(
 							'width' => '90',
 						),
@@ -362,7 +371,7 @@ function k_init_rom() {
 							'width' => '10',
 						),
 						'readonly' => 1,
-						'default_value' => __('Grab Images', 'romsfun'),
+						'default_value' => __('Grab Images', 'rom'),
 					),
 				),
 				'wrapper' => array(
@@ -374,13 +383,13 @@ function k_init_rom() {
 			array(
 				'key'       => 'grabber_file',
 				'name'      => 'grabber_file',
-				'label'     => __('Grabber File', 'romspure'),
+				'label'     => 'Grabber File',
 				'type'      => 'group',
 				'sub_fields' => array(
 					array(
 						'key'       => 'grb_file_name',
 						'name'      => 'grb_file_name',
-						'label'     => __('File Name', 'romspure'),
+						'label'     => 'File Name',
 						'type'      => 'text',
 						'wrapper'   => array(
 							'width' => '45',
@@ -389,7 +398,7 @@ function k_init_rom() {
 					array(
 						'key'       => 'grb_file_url',
 						'name'      => 'grb_file_url',
-						'label'     => __('File Url', 'romspure'),
+						'label'     => 'File Url',
 						'type'      => 'text',
 						'wrapper'   => array(
 							'width' => '45',
@@ -403,7 +412,7 @@ function k_init_rom() {
 							'width' => '10',
 						),
 						'readonly' => 1,
-						'default_value' => __('Grab Files', 'romspure'),
+						'default_value' => 'Grab Files',
 					),
 				),
 				'wrapper' => array(
@@ -413,22 +422,22 @@ function k_init_rom() {
 
             array (
                 'key'   		=> 'download_note',
-                'label' 		=> __( 'Download note', 'romsfun' ),
+                'label' 		=> __( 'Download note', 'rom' ),
                 'name'  		=> 'download_note',
                 'type'  		=> 'textarea',
                 'rows'          => 5,
             ),
 
             array (
-				'label'		    => __( 'Download list', 'romsfun' ),
+				'label'		    => __( 'Download list', 'rom' ),
 				'key' 		    => 'download_list',
 				'name' 		    => 'download_list',
 				'type' 		    => 'repeater',
 				'layout'	    => 'table',
-				'button_label'  => __( 'Add File', 'romsfun' ),
+				'button_label'  => __( 'Add File', 'rom' ),
 				'sub_fields'    => array (
 					array (
-						'label' => __( 'Name', 'romsfun' ),
+						'label' => __( 'Name', 'rom' ),
 						'key' 	=> 'name',
 						'name' 	=> 'name',
 						'required' => 1,
@@ -438,7 +447,7 @@ function k_init_rom() {
         				),
 					),
 					array (
-						'label' => __( 'Url', 'romsfun' ),
+						'label' => __( 'Url', 'rom' ),
 						'key' 	=> 'url',
 						'name' 	=> 'url',
 						'required' => 1,
@@ -448,7 +457,7 @@ function k_init_rom() {
         				),
 					),
 					array (
-						'label' => __( 'File Size', 'romsfun' ),
+						'label' => __( 'File Size', 'rom' ),
 						'key' 	=> 'file_size',
 						'name' 	=> 'file_size',
 						'required' => 0,
@@ -458,7 +467,7 @@ function k_init_rom() {
         				),
 					),
 					array (
-						'label' => __( 'File Type', 'romsfun' ),
+						'label' => __( 'File Type', 'rom' ),
 						'key' 	=> 'file_type',
 						'name' 	=> 'file_type',
 						'required' => 0,
@@ -471,15 +480,15 @@ function k_init_rom() {
 			),	
 
 			array (
-				'label'		    => __( 'Download List (AFF)', 'romsfun' ),
+				'label'		    => __( 'Download List (AFF)', 'rom' ),
 				'key' 		    => 'download_list_aff',
 				'name' 		    => 'download_list_aff',
 				'type' 		    => 'repeater',
 				'layout'	    => 'table',
-				'button_label'  => __( 'Add', 'romsfun' ),
+				'button_label'  => __( 'Add', 'rom' ),
 				'sub_fields'    => array (
 					array (
-						'label' => __( 'Name', 'romsfun' ),
+						'label' => __( 'Name', 'rom' ),
 						'key' 	=> 'name',
 						'name' 	=> 'name',
 						'type' 	=> 'text',
@@ -489,7 +498,7 @@ function k_init_rom() {
         				),
 					),
 					array (
-						'label' => __( 'Url', 'romsfun' ),
+						'label' => __( 'Url', 'rom' ),
 						'key' 	=> 'url',
 						'name' 	=> 'url',
 						'type' 	=> 'url',
@@ -499,7 +508,7 @@ function k_init_rom() {
         				),
 					),
 					array (
-						'label' => __( 'File Size', 'romsfun' ),
+						'label' => __( 'File Size', 'rom' ),
 						'key' 	=> 'file_size',
 						'name' 	=> 'file_size',
 						'type' 	=> 'text',
@@ -509,7 +518,7 @@ function k_init_rom() {
         				),
 					),
 					array (
-						'label' => __( 'File Type', 'romsfun' ),
+						'label' => __( 'File Type', 'rom' ),
 						'key' 	=> 'file_type',
 						'name' 	=> 'file_type',
 						'type' 	=> 'text',
@@ -549,7 +558,7 @@ function k_init_rom() {
 		'fields' 	=> array (
 			array (
 				'key' 	=> 'cat_image',
-				'label' => __( 'Image', 'romsfun' ),
+				'label' => __( 'Image', 'rom' ),
 				'name' 	=> 'cat_image',
 				'type' 	=> 'image',
 				'preview_size'		 => 'thumbnail',
@@ -558,7 +567,7 @@ function k_init_rom() {
 				'return_format' => 'url',
 			),
 			array (
-				'label' => __( 'Original Slug', 'romsfun' ),
+				'label' => __( 'Original Slug', 'rom' ),
 				'key' 	=> 'console_original_slug',
 				'name' 	=> 'console_original_slug',
 				'type' 	=> 'text',
@@ -567,7 +576,7 @@ function k_init_rom() {
 			),
 			array (
 				'key' 	=> 'console_rom_downloads',
-				'label' => __( 'Downloads', 'romsfun' ),
+				'label' => __( 'Downloads', 'rom' ),
 				'name' 	=> 'console_rom_downloads',
 				'type' 	=> 'number',
 				'default_value'		 => 1,
@@ -576,7 +585,7 @@ function k_init_rom() {
 			),
 			array (
 				'key' 	=> 'console_guide',
-				'label' => __( 'Guide', 'romsfun' ),
+				'label' => __( 'Guide', 'rom' ),
 				'name' 	=> 'console_guide',
 				'type' 	=> 'wysiwyg',
 			),
@@ -602,7 +611,7 @@ function k_init_rom() {
 		'fields' 	=> array (
 			array (
 				'key' 	=> 'region_image',
-				'label' => __( 'Image', 'romsfun' ),
+				'label' => __( 'Image', 'rom' ),
 				'name' 	=> 'region_image',
 				'type' 	=> 'image',
 				'show_column' 		 => 1,
@@ -630,7 +639,7 @@ function k_init_rom() {
         'fields' 	=> array (
             array (
                 'key' 	=> 'collection_banner',
-                'label' => __( 'Banner', 'romsfun' ),
+                'label' => __( 'Banner', 'rom' ),
                 'name' 	=> 'collection_banner',
                 'type' 	=> 'image',
                 'return_format' => 'array',
@@ -658,14 +667,14 @@ add_action( 'init', 'k_init_rom' );
 function k_rom_columns_head($cols) {		
 	$cols = array_merge(
 		array_slice( $cols, 0, 1, false ),
-		array( 'thumbnail' => __( 'Image' , 'romsfun' ) ),
+		array( 'thumbnail' => __( 'Image' , 'rom' ) ),
 		array_slice( $cols, 1, 2, false ),
-		array( 'download_list' => __( 'Download list' , 'romsfun' ) ),
-		array( 'download_list_aff' => __( 'Download List (AFF)' , 'romsfun' ) ),
-		array( 'status' => __( 'Status' , 'romsfun' ) ),
-		array( 'hide' => __( 'Hide' , 'romsfun' ) ),
-		array( 'type' => __( 'Type' , 'romsfun' ) ),
-		array( 'views' => __( 'Views' , 'romsfun' ) ),
+		array( 'download_list' => __( 'Download list' , 'rom' ) ),
+		array( 'download_list_aff' => __( 'Download List (AFF)' , 'rom' ) ),
+		array( 'status' => __( 'Status' , 'rom' ) ),
+		array( 'hide' => __( 'Hide' , 'rom' ) ),
+		array( 'type' => __( 'Type' , 'rom' ) ),
+		array( 'views' => __( 'Views' , 'rom' ) ),
 		array_slice( $cols, 3, null, false )
 	);
 	return $cols;
@@ -772,7 +781,7 @@ add_action('restrict_manage_posts', function ($post_type) {
 	);
 	
 	echo '<select name="hide_filter" id="hide_filter">';
-	echo '<option value="">' . __('Hide Status', 'romsfun') . '</option>';
+	echo '<option value="">' . __('Hide Status', 'rom') . '</option>';
 	
 	foreach ($choices as $value => $label) {
 		printf(
@@ -966,7 +975,7 @@ function k_change_hide_status() {
 	$post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 	
 	if (!$post_id) {
-		wp_send_json_error(array('message' => __('Invalid post ID', 'romsfun')));
+		wp_send_json_error(array('message' => __('Invalid post ID', 'rom')));
 		return;
 	}
 	
@@ -1002,8 +1011,8 @@ add_action('wp_ajax_k_change_hide_status', 'k_change_hide_status');
  * Bulk actions to change 'hide' status for multiple roms at once
  */
 add_filter('bulk_actions-edit-rom', function ($bulk_actions) {
-	$bulk_actions['set_hide_public']        = __('Set hide: Public', 'romsfun');
-	$bulk_actions['set_hide_restricted']    = __('Set hide: Restricted', 'romsfun');
+	$bulk_actions['set_hide_public']        = __('Set hide: Public', 'rom');
+	$bulk_actions['set_hide_restricted']    = __('Set hide: Restricted', 'rom');
 	return $bulk_actions;
 });
 
@@ -1059,7 +1068,7 @@ add_action('admin_notices', function () {
 	$count = intval($_GET['bulk_hide_updated']);
 	printf(
 		'<div class="notice notice-success is-dismissible"><p>' .
-		esc_html(_n('%d rom updated.', '%d roms updated.', $count, 'romsfun')) .
+		esc_html(_n('%d rom updated.', '%d roms updated.', $count, 'rom')) .
 		'</p></div>',
 		$count
 	);

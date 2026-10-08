@@ -25,10 +25,10 @@ function k_grabber_init()
     if (function_exists('acf_add_local_field_group')) {
         acf_add_local_field_group(array(
             'key' => 'grabber_settings',
-            'title' => __('Settings', 'romsfun'),
+            'title' => __('Settings', 'rom'),
             'fields' => array(
                 array(
-                    'label' => __('Console', 'romsfun'),
+                    'label' => __('Console', 'rom'),
                     'name' => 'grabber_console',
                     'key' => 'grabber_console',
                     'type' => 'taxonomy',
@@ -37,7 +37,7 @@ function k_grabber_init()
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('Url', 'romsfun'),
+                    'label' => __('Url', 'rom'),
                     'name' => 'grabber_url',
                     'key' => 'grabber_url',
                     'type' => 'url',
@@ -72,11 +72,11 @@ function k_grabber()
 
     $params = $_REQUEST['acf'];
     if (empty($params['grabber_console'])) {
-        _e('Please select console.', 'romsfun');
+        _e('Please select console.', 'rom');
         exit;
     }
     if (empty($params['grabber_url'])) {
-        _e('Please input url.', 'romsfun');
+        _e('Please input url.', 'rom');
         exit;
     }
 
@@ -161,7 +161,7 @@ foreach ($title_variants as $variant) {
 if ($temp_post_id > 0) {
     $game++;
     $stt++;
-    echo json_encode(array('status' => true, 'page' => $page, 'game' => $game, 'stt' => $stt, 'message' => $stt . '. ' . __('Existed:', 'romsfun') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
+    echo json_encode(array('status' => true, 'page' => $page, 'game' => $game, 'stt' => $stt, 'message' => $stt . '. ' . __('Existed:', 'rom') . ' <a href="' . get_edit_post_link($temp_post_id) . '">' . get_the_title($temp_post_id) . '</a><br>'));
     exit();
 } else {
     try {
@@ -218,7 +218,7 @@ if ($temp_post_id > 0) {
                                 }
                             }
                         } catch (Exception $e) {
-                            echo 'Grabber Launch Box ERROR.' . '<br>' . 'romsfun';
+                            echo 'Grabber Launch Box ERROR.' . '<br>' . 'rom';
                         }
 
                         $post_id = wp_insert_post(array(
@@ -299,7 +299,7 @@ wp_set_post_terms($post_id, $pubs, 'pub');
                     }
                     $game++;
                     $stt++;
-                    echo json_encode(array('status' => true, 'page' => $page, 'game' => $game, 'stt' => $stt, 'message' => $stt . '. ' . __('Created:', 'romsfun') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
+                    echo json_encode(array('status' => true, 'page' => $page, 'game' => $game, 'stt' => $stt, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
                     exit;
                 }
             }
@@ -310,7 +310,7 @@ wp_set_post_terms($post_id, $pubs, 'pub');
         echo json_encode(array('status' => true, 'page' => $page, 'game' => $game, 'stt' => $stt));
         exit;
     }
-    echo json_encode(array('status' => false, 'message' => __('Grabber is completed.', 'romsfun')));
+    echo json_encode(array('status' => false, 'message' => __('Grabber is completed.', 'rom')));
     exit;
 }
 

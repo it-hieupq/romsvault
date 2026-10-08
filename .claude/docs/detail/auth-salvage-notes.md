@@ -17,7 +17,7 @@ they used a server↔Google **authorization-code** flow (TLS is the trust anchor
 forgeable.** P2.3 MUST verify for real:
 - Fetch Google JWKS `https://www.googleapis.com/oauth2/v3/certs`, cache in Redis by `kid`.
 - Match the token header `kid` → verify **RS256** signature.
-- Then check claims: `aud === ROMSFUN_GOOGLE_CLIENT_ID`; `iss ∈ {accounts.google.com,
+- Then check claims: `aud === GOOGLE_CLIENT_ID`; `iss ∈ {accounts.google.com,
   https://accounts.google.com}`; `exp > now`; **`iat` fresh (≤ ~5 min)**; `email_verified` truthy.
 - Only `base64url_decode()` (RFC-4648 URL-safe padding) is worth lifting as a helper.
 

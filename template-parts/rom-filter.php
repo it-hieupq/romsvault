@@ -49,20 +49,20 @@ endif;
                      <div class="text-center space-y-4 text-gray-900 mb-8">
                          <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-brand">
                              <span class="w-2 h-2 rounded-full bg-brand"></span>
-                             <?php _e('Play Retro ROMs', 'romsfun') ?>
+                             <?php _e('Play Retro ROMs', 'rom') ?>
                          </p>
                          <h1 class="text-2xl sm:text-4xl font-bold text-gray-900">
-                             <?php echo __('Play') . '<span class="text-romfun-pink">' . ' ' . __('Video Game Roms', 'romsfun') . '</span>' . ' ' . __('on your Computer or Phone', 'romsfun') ?>
+                             <?php echo __('Play') . '<span class="text-romfun-pink">' . ' ' . __('Video Game Roms', 'rom') . '</span>' . ' ' . __('on your Computer or Phone', 'rom') ?>
                          </h1>
                          <p class="text-base text-muted max-w-2xl mx-auto">
-                             <?php _e('Search, filter, and download your favorite retro games from 100,000+ ROMs curated for nostalgia lovers.', 'romsfun') ?>
+                             <?php _e('Search, filter, and download your favorite retro games from 100,000+ ROMs curated for nostalgia lovers.', 'rom') ?>
                          </p>
                      </div>
 
 				<?php
 				else :
 					if (is_search()) :
-						$title = __('Search Results for: ', 'romsfun') . get_search_query();
+						$title = __('Search Results for: ', 'rom') . get_search_query();
 					elseif(is_page()) :
 						$title = get_the_title();
 					elseif (is_tax() || is_category() || is_tag()) :
@@ -104,7 +104,7 @@ endif;
                                    class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
                             <span class="absolute inset-y-0 right-1 flex items-center pr-1">
                                 <button id="searchButton" class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-romfun-pink hover:bg-romfun-pink-dark transition text-xs">
-                                  <?php _e('Search', 'romsfun') ?>
+                                  <?php _e('Search', 'rom') ?>
                                 </button>
                           </span>
                         </label>
@@ -115,14 +115,14 @@ endif;
 
                         <?php if (!is_tax('console')) : ?>
                             <div class="custom-select-wrapper" id="console-select-wrapper">
-                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Console', 'romsfun'); ?></label>
+                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Console', 'rom'); ?></label>
                                 <div class="custom-select-trigger rounded-full" id="console-select-trigger">
-                                    <span class="selected-text" id="console-selected-text"><?php _e('Select Console', 'romsfun'); ?></span>
+                                    <span class="selected-text" id="console-selected-text"><?php _e('Select Console', 'rom'); ?></span>
                                     <span class="arrow"></span>
                                 </div>
                                 <div class="custom-select-dropdown" id="console-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search consoles…', 'romsfun'); ?>" aria-label="<?php esc_attr_e('Search consoles', 'romsfun'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search consoles…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search consoles', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('console', $post_ids, $current_term->term_id) : get_cached_all_terms('console');
@@ -140,11 +140,11 @@ endif;
                                         <?php endforeach; ?>
                                     <?php else : ?>
                                         <div class="custom-select-option">
-                                            <span class="text-gray-500"><?php _e('No consoles available', 'romsfun'); ?></span>
+                                            <span class="text-gray-500"><?php _e('No consoles available', 'rom'); ?></span>
                                         </div>
                                     <?php endif; ?>
                                     <div class="custom-select-clear-wrapper sticky bottom-0 bg-white z-10 px-3 py-2 border-t border-gray-100">
-                                        <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'romsfun'); ?></button>
+                                        <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'rom'); ?></button>
                                     </div>
                                 </div>
                             </div>
@@ -152,14 +152,14 @@ endif;
 
 
                         <div class="custom-select-wrapper" id="genre-select-wrapper">
-                            <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Genre', 'romsfun'); ?></label>
+                            <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Genre', 'rom'); ?></label>
                             <div class="custom-select-trigger rounded-full" id="genre-select-trigger">
-                                <span class="selected-text" id="genre-selected-text"><?php _e('Select Genre', 'romsfun'); ?></span>
+                                <span class="selected-text" id="genre-selected-text"><?php _e('Select Genre', 'rom'); ?></span>
                                 <span class="arrow"></span>
                             </div>
                             <div class="custom-select-dropdown" id="genre-dropdown">
                                 <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                    <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search genres…', 'romsfun'); ?>" aria-label="<?php esc_attr_e('Search genres', 'romsfun'); ?>">
+                                    <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search genres…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search genres', 'rom'); ?>">
                                 </div>
                                 <?php
                                 $terms = ($is_tax && isset($current_term)) ? get_cached_terms('genre', $post_ids, $current_term->term_id) : get_cached_all_terms('genre');
@@ -177,25 +177,25 @@ endif;
                                     <?php endforeach; ?>
                                 <?php else : ?>
                                     <div class="custom-select-option">
-                                        <span class="text-gray-500"><?php _e('No genres available', 'romsfun'); ?></span>
+                                        <span class="text-gray-500"><?php _e('No genres available', 'rom'); ?></span>
                                     </div>
                                 <?php endif; ?>
                                 <div class="custom-select-clear-wrapper sticky bottom-0 bg-white z-10 px-3 py-2 border-t border-gray-100">
-                                    <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'romsfun'); ?></button>
+                                    <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'rom'); ?></button>
                                 </div>
                             </div>
                         </div>
 
 	                        <?php if (!is_tax('collection')) : ?>
                             <div class="custom-select-wrapper" id="collection-select-wrapper">
-                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Collection', 'romsfun'); ?></label>
+                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Collection', 'rom'); ?></label>
                                 <div class="custom-select-trigger rounded-full" id="collection-select-trigger">
-                                    <span class="selected-text" id="collection-selected-text"><?php _e('Select Collection', 'romsfun'); ?></span>
+                                    <span class="selected-text" id="collection-selected-text"><?php _e('Select Collection', 'rom'); ?></span>
                                     <span class="arrow"></span>
                                 </div>
                                 <div class="custom-select-dropdown" id="collection-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search collections…', 'romsfun'); ?>" aria-label="<?php esc_attr_e('Search collections', 'romsfun'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search collections…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search collections', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('collection', $post_ids, $current_term->term_id) : get_cached_all_terms('collection');
@@ -213,11 +213,11 @@ endif;
                                         <?php endforeach; ?>
                                     <?php else : ?>
                                         <div class="custom-select-option">
-                                            <span class="text-gray-500"><?php _e('No collections available', 'romsfun'); ?></span>
+                                            <span class="text-gray-500"><?php _e('No collections available', 'rom'); ?></span>
                                         </div>
                                     <?php endif; ?>
                                     <div class="custom-select-clear-wrapper sticky bottom-0 bg-white z-10 px-3 py-2 border-t border-gray-100">
-                                        <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'romsfun'); ?></button>
+                                        <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'rom'); ?></button>
                                     </div>
                                 </div>
                             </div>
@@ -225,14 +225,14 @@ endif;
 
                             <?php if (!is_tax('type')) : ?>
                             <div class="custom-select-wrapper" id="type-select-wrapper">
-                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Type', 'romsfun'); ?></label>
+                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Type', 'rom'); ?></label>
                                 <div class="custom-select-trigger rounded-full" id="type-select-trigger">
-                                    <span class="selected-text" id="type-selected-text"><?php _e('Select Type', 'romsfun'); ?></span>
+                                    <span class="selected-text" id="type-selected-text"><?php _e('Select Type', 'rom'); ?></span>
                                     <span class="arrow"></span>
                                 </div>
                                 <div class="custom-select-dropdown" id="type-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search types…', 'romsfun'); ?>" aria-label="<?php esc_attr_e('Search types', 'romsfun'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search types…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search types', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('type', $post_ids, $current_term->term_id) : get_cached_all_terms('type');
@@ -250,46 +250,46 @@ endif;
                                         <?php endforeach; ?>
                                     <?php else : ?>
                                         <div class="custom-select-option">
-                                            <span class="text-gray-500"><?php _e('No types available', 'romsfun'); ?></span>
+                                            <span class="text-gray-500"><?php _e('No types available', 'rom'); ?></span>
                                         </div>
                                     <?php endif; ?>
                                     <div class="custom-select-clear-wrapper sticky bottom-0 bg-white z-10 px-3 py-2 border-t border-gray-100">
-                                        <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'romsfun'); ?></button>
+                                        <button type="button" class="custom-select-clear-all w-full px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition"><?php esc_html_e('Clear all', 'rom'); ?></button>
                                     </div>
                                 </div>
                             </div>
                             <?php endif; ?>
 
                             <div class="custom-select-wrapper" id="sort-select-wrapper">
-                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Sort By', 'romsfun'); ?></label>
+                                <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Sort By', 'rom'); ?></label>
                                 <div class="custom-select-trigger rounded-full" id="sort-select-trigger">
-                                    <span class="selected-text" id="sort-selected-text"><?php _e('Select Sort', 'romsfun'); ?></span>
+                                    <span class="selected-text" id="sort-selected-text"><?php _e('Select Sort', 'rom'); ?></span>
                                     <span class="arrow"></span>
                                 </div>
                                 <div class="custom-select-dropdown" id="sort-dropdown">
                                     <div class="custom-select-option">
                                         <input type="radio" id="sort-popular" name="sort" value="popular" <?php checked($current_sort, 'popular', true); ?>>
-                                        <label for="sort-popular"><?php _e('Most Popular', 'romsfun'); ?></label>
+                                        <label for="sort-popular"><?php _e('Most Popular', 'rom'); ?></label>
                                     </div>
                                     <div class="custom-select-option">
                                         <input type="radio" id="sort-downloads" name="sort" value="downloads" <?php checked($current_sort, 'downloads'); ?>>
-                                        <label for="sort-downloads"><?php _e('Most Downloads', 'romsfun'); ?></label>
+                                        <label for="sort-downloads"><?php _e('Most Downloads', 'rom'); ?></label>
                                     </div>
                                     <div class="custom-select-option">
                                         <input type="radio" id="sort-latest" name="sort" value="latest" <?php checked($current_sort, 'latest'); ?>>
-                                        <label for="sort-latest"><?php _e('Latest Update', 'romsfun'); ?></label>
+                                        <label for="sort-latest"><?php _e('Latest Update', 'rom'); ?></label>
                                     </div>
                                     <div class="custom-select-option">
                                         <input type="radio" id="sort-newest" name="sort" value="newest" <?php checked($current_sort, 'newest'); ?>>
-                                        <label for="sort-newest"><?php _e('Newest', 'romsfun'); ?></label>
+                                        <label for="sort-newest"><?php _e('Newest', 'rom'); ?></label>
                                     </div>
                                     <div class="custom-select-option">
                                         <input type="radio" id="sort-oldest" name="sort" value="oldest" <?php checked($current_sort, 'oldest'); ?>>
-                                        <label for="sort-oldest"><?php _e('Oldest', 'romsfun'); ?></label>
+                                        <label for="sort-oldest"><?php _e('Oldest', 'rom'); ?></label>
                                     </div>
                                     <div class="custom-select-option">
                                         <input type="radio" id="sort-alphabetical" name="sort" value="alphabetical" <?php checked($current_sort, 'alphabetical'); ?>>
-                                        <label for="sort-alphabetical"><?php _e('Alphabetical', 'romsfun'); ?></label>
+                                        <label for="sort-alphabetical"><?php _e('Alphabetical', 'rom'); ?></label>
                                     </div>
                                 </div>
                             </div>
@@ -298,7 +298,7 @@ endif;
 
                     <div id="selected-filters-container" class="border-t border-gray-200 py-6 hidden">
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="text-sm font-semibold text-gray-900"> <?php _e('Selected Filters', 'romsfun') ?>:</span>
+                            <span class="text-sm font-semibold text-gray-900"> <?php _e('Selected Filters', 'rom') ?>:</span>
                         </div>
                         <div id="selected-filters" class="flex flex-wrap gap-2"></div>
                     </div>
@@ -306,7 +306,7 @@ endif;
 				<div>
 					<button id="clearFilters"
 						class="inline-flex justify-center px-4 py-2 text-xs bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition font-medium">
-						<?php echo get_svg_icon('reload').' '.__('Clear Filters', 'romsfun') ?>
+						<?php echo get_svg_icon('reload').' '.__('Clear Filters', 'rom') ?>
 					</button>
 				</div>
 			</div>
@@ -326,7 +326,7 @@ endif;
 				$suggested_types = get_filtered_counts( 'type', $suggested_filter_data);
 				if (!empty($suggested_types)) : ?>
 				<div class="suggest-filters pt-6">
-					<h3 class="text-base font-semibold text-gray-900 mb-4"><?php _e('Suggested Filters', 'romsfun'); ?></h3>
+					<h3 class="text-base font-semibold text-gray-900 mb-4"><?php _e('Suggested Filters', 'rom'); ?></h3>
 					<div class="suggest-filters-list flex flex-wrap gap-2"> 
 						<?php foreach ($suggested_types as $term) :
 							$is_selected = in_array($term->term_id, $current_types);

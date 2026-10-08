@@ -826,7 +826,8 @@ function createSearchBox({input, resultsContainer, filterTitle = null}) {
             resultsContainer.hidden = false;
         }
 
-        let api_url = 'https://romsfun.com/api/search?s=' + encodeURIComponent(query);
+        const site_url = (typeof ajax !== 'undefined' && ajax.site_url) ? ajax.site_url : window.location.origin;
+        let api_url = site_url + '/api/search?s=' + encodeURIComponent(query);
 
         if (filterTitle && filterTitle.textContent != 'Browse all ROMS') {
             api_url += '&c=' + encodeURIComponent(filterTitle.textContent);

@@ -23,10 +23,10 @@ function k_grabber_retrostic_init()
 	if (function_exists('acf_add_local_field_group')) {
 		acf_add_local_field_group(array(
 			'key'   => 'grabber_retrostic_settings',
-			'title' => __('Settings', 'romsfun'),
+			'title' => __('Settings', 'rom'),
 			'fields' => array(
 				array(
-					'label'      => __('Console', 'romsfun'),
+					'label'      => __('Console', 'rom'),
 					'name'       => 'grabber_retrostic_console',
 					'key'        => 'grabber_retrostic_console',
 					'type'       => 'taxonomy',
@@ -35,7 +35,7 @@ function k_grabber_retrostic_init()
 					'allow_null' => 1,
 				),
 				array(
-					'label' => __('Type', 'romsfun'),
+					'label' => __('Type', 'rom'),
 					'name' => 'grabber_type',
 					'key' => 'grabber_type',
 					'type' => 'taxonomy',
@@ -44,7 +44,7 @@ function k_grabber_retrostic_init()
 					'allow_null' => 1,
 				),
 				array(
-					'label'       => __('URLs', 'romsfun'),
+					'label'       => __('URLs', 'rom'),
 					'name'        => 'grabber_retrostic_urls',
 					'key'         => 'grabber_retrostic_urls',
 					'type'        => 'textarea',
@@ -72,17 +72,17 @@ function k_grabber_retrostic()
 	$params = $_REQUEST['acf'];
 
 	if (empty($params['grabber_retrostic_console'])) {
-		_e('Please select console.', 'romsfun');
+		_e('Please select console.', 'rom');
 		exit;
 	}
 
 	if (empty($params['grabber_type'])) {
-		_e('Please select type.', 'romsfun');
+		_e('Please select type.', 'rom');
 		exit;
 	}
 
 	if (empty($params['grabber_retrostic_urls'])) {
-		_e('Please input url.', 'romsfun');
+		_e('Please input url.', 'rom');
 		exit;
 	}
 
@@ -94,12 +94,12 @@ function k_grabber_retrostic()
 
 	$urls_array = preg_split('/\r\n|\r|\n/', trim($params['grabber_retrostic_urls']));
 	if (empty($urls_array)) {
-		_e('Please input valid URLs.', 'romsfun');
+		_e('Please input valid URLs.', 'rom');
 		exit;
 	}
 
 	foreach ($urls_array as $url) {
-		_e('Url ' . $index . ': ', 'romsfun');
+		_e('Url ' . $index . ': ', 'rom');
 		$index++;
 
 		switch (true) {
@@ -116,7 +116,7 @@ function k_grabber_retrostic()
 				grabber_romstation_ac($url, $console, $type);
 				break;
 			default:
-				_e('The URL must belong to one of the following domains: <strong>mobygames.com, retrostic.com, igdb.com, romstation.fr</strong>' . '<br>', 'romsfun');
+				_e('The URL must belong to one of the following domains: <strong>mobygames.com, retrostic.com, igdb.com, romstation.fr</strong>' . '<br>', 'rom');
 				break;
 		}
 	}
@@ -153,16 +153,16 @@ function grabber_mobygames_ac($url, $console, $type)
 			$post_id_3 = rom_exists($title_3, $console);
 
 			if ($post_id > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_1 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_2 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_3 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'rom');
 				return;
 			} else {
 
@@ -269,17 +269,17 @@ function grabber_mobygames_ac($url, $console, $type)
 					wp_set_post_terms($post_id, $terms, 'pub');
 				}
 
-				_e('Post created:' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'romsfun');
+				_e('Post created:' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'rom');
 				return;
 			}
 
 			$html->clear();
 			unset($html);
 		} else {
-			_e('Grabber Mobygames ERROR.' . '<br>', 'romsfun');
+			_e('Grabber Mobygames ERROR.' . '<br>', 'rom');
 		}
 	} catch (\Throwable $th) {
-		_e('Grabber Mobygames ERROR.' . '<br>', 'romsfun');
+		_e('Grabber Mobygames ERROR.' . '<br>', 'rom');
 	}
 }
 
@@ -313,16 +313,16 @@ function grabber_retrostic_ac($url, $console, $type)
 
 			// Check exist post
 			if ($post_id > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_1 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_2 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_3 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'rom');
 				return;
 			} else {
 
@@ -401,16 +401,16 @@ function grabber_retrostic_ac($url, $console, $type)
 					add_row('download_list', $download_data, $post_id);
 				}
 
-				_e('Post created: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a><br>', 'romsfun');
+				_e('Post created: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a><br>', 'rom');
 				return;
 			}
 
 			$html->clear();
 			unset($html);
 		}
-		_e('Grabber Retrostic ERROR.<br>', "romsfun");
+		_e('Grabber Retrostic ERROR.<br>', 'rom');
 	} catch (\Throwable $th) {
-		_e('Grabber Retrostic ERROR. ' . $th . '<br>', 'romsfun');
+		_e('Grabber Retrostic ERROR. ' . $th . '<br>', 'rom');
 	}
 }
 
@@ -422,7 +422,8 @@ function grabber_igdb_ac($url, $console, $type)
 		$client_id = 'w38dtppzl9ms96wfq40dm8zuwqtue3';
 		$client_secret = '8bf0jeapi6o5gufogwmkux4mgn4dmb';
 
-		$requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=https://romsfun.com/";
+		$redirect_uri = site_url( '/' );
+		$requestURL = "https://id.twitch.tv/oauth2/token?client_id=$client_id&client_secret=$client_secret&grant_type=$grant_type&redirect_uri=$redirect_uri";
 
 		$options = array(
 			'http' => array(
@@ -458,16 +459,16 @@ function grabber_igdb_ac($url, $console, $type)
 		$post_id_3 = rom_exists($title_3, $console);
 
 		if ($post_id > 0) {
-			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'romsfun');
+			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'rom');
 			return;
 		} elseif ($post_id_1 > 0) {
-			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'romsfun');
+			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'rom');
 			return;
 		} elseif ($post_id_2 > 0) {
-			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'romsfun');
+			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'rom');
 			return;
 		} elseif ($post_id_3 > 0) {
-			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'romsfun');
+			_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'rom');
 			return;
 		} else {
 		}
@@ -558,9 +559,9 @@ function grabber_igdb_ac($url, $console, $type)
 			wp_set_post_terms($post_id, $terms, 'pub');
 		}
 
-		echo __('Post created:', 'romsfun') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>';
+		echo __('Post created:', 'rom') . ' ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>';
 	} catch (\Throwable $th) {
-		_e('Grabber Igdb ERROR.' . '<br>', 'romsfun');
+		_e('Grabber Igdb ERROR.' . '<br>', 'rom');
 	}
 }
 
@@ -639,16 +640,16 @@ function grabber_romstation_ac($url, $console, $type)
 			$post_id_3 = rom_exists($title_3, $console);
 
 			if ($post_id > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_1 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_1) . '" target="_blank">' . get_edit_post_link($post_id_1) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_2 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_2) . '" target="_blank">' . get_edit_post_link($post_id_2) . '</a>' . '<br>', 'rom');
 				return;
 			} elseif ($post_id_3 > 0) {
-				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'romsfun');
+				_e('Post exists: ' . '<a href="' . get_edit_post_link($post_id_3) . '" target="_blank">' . get_edit_post_link($post_id_3) . '</a>' . '<br>', 'rom');
 				return;
 			} else {
 
@@ -705,14 +706,14 @@ function grabber_romstation_ac($url, $console, $type)
 					wp_set_post_terms($post_id, $terms, 'dev');
 				}
 
-				_e('Post created: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a><br>', 'romsfun');
+				_e('Post created: ' . '<a href="' . get_edit_post_link($post_id) . '" target="_blank">' . get_edit_post_link($post_id) . '</a><br>', 'rom');
 				return;
 			}
 		} else {
-			_e('Grabber Romstation ERROR.' . '<br>', 'romsfun');
+			_e('Grabber Romstation ERROR.' . '<br>', 'rom');
 		}
 	} catch (\Throwable $th) {
-		_e('Grabber Romstation ERROR.' . '<br>', 'romsfun');
+		_e('Grabber Romstation ERROR.' . '<br>', 'rom');
 	}
 }
 

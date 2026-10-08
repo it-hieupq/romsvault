@@ -21,10 +21,10 @@ function k_check_duplicate_init() {
 	if ( function_exists('acf_add_local_field_group') ) {
 		acf_add_local_field_group(array(
 			'key'		=> 'check_duplicate_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
 				array(
-					'label' => __( 'Console', 'romsfun' ),
+					'label' => __( 'Console', 'rom' ),
 					'name'  => 'check_duplicate_console',
 					'key'   => 'check_duplicate_console',
 					'type'  => 'taxonomy',
@@ -33,7 +33,7 @@ function k_check_duplicate_init() {
 					'allow_null' => 1,
 				),
 				array(
-					'label' => __( 'Post Status', 'romsfun' ),
+					'label' => __( 'Post Status', 'rom' ),
 					'name'  => 'check_duplicate_post_status',
 					'key'   => 'check_duplicate_post_status',
 					'type'  => 'radio',
@@ -65,7 +65,7 @@ add_action( 'init', 'k_check_duplicate_init' );
 function k_check_duplicate() {
 	$params = $_REQUEST['acf'];
 	if ( empty($params['check_duplicate_console']) ) {
-		_e('Please select console.', 'romsfun');
+		_e('Please select console.', 'rom');
 		exit;
 	}
 
@@ -108,7 +108,7 @@ function k_check_duplicate() {
 		echo json_encode( array( 'status' => true, 'offset' => $offset + 5, 'message' => $message ) );
 	} else {
 		header('Content-Type: application/json');
-		echo json_encode( array( 'status' => false, 'message' => __('Check Duplicate is completed.', 'romsfun') ) );
+		echo json_encode( array( 'status' => false, 'message' => __('Check Duplicate is completed.', 'rom') ) );
 	}
 
 	exit;

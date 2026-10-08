@@ -21,10 +21,10 @@ function k_insert_external_link_aff_init() {
 	if ( function_exists('acf_add_local_field_group') ) {
 		acf_add_local_field_group(array(
 			'key'		=> 'insert_external_link_aff_settings',
-			'title' 	=> __( 'Settings', 'romsfun' ),
+			'title' 	=> __( 'Settings', 'rom' ),
 			'fields' 	=> array (
 				array(
-					'label' => __( 'Console', 'romsfun' ),
+					'label' => __( 'Console', 'rom' ),
 					'name'  => 'insert_external_link_aff_console',
 					'key'   => 'insert_external_link_aff_console',
 					'type'  => 'taxonomy',
@@ -33,19 +33,19 @@ function k_insert_external_link_aff_init() {
 					'allow_null' => 1,
 				),
 				array(
-					'label' => __( 'Url', 'romsfun' ),
+					'label' => __( 'Url', 'rom' ),
 					'name'  => 'insert_external_link_aff_url',
 					'key'   => 'insert_external_link_aff_url',
 					'type'  => 'text',
 				),
 				array(
-					'label' => __( 'Type', 'romsfun' ),
+					'label' => __( 'Type', 'rom' ),
 					'name'  => 'insert_external_link_aff_type',
 					'key'   => 'insert_external_link_aff_type',
 					'type'  => 'text',
 				),
 				array(
-					'label' => __( 'Post Status', 'romsfun' ),
+					'label' => __( 'Post Status', 'rom' ),
 					'name'  => 'insert_external_link_aff_post_status',
 					'key'   => 'insert_external_link_aff_post_status',
 					'type'  => 'radio',
@@ -57,7 +57,7 @@ function k_insert_external_link_aff_init() {
 					'layout' => 'horizontal',
 				),
 				array(
-					'label' => __( 'Remove', 'romsfun' ),
+					'label' => __( 'Remove', 'rom' ),
 					'name'  => 'insert_external_link_aff_remove',
 					'key'   => 'insert_external_link_aff_remove',
 					'type'  => 'true_false',
@@ -84,12 +84,12 @@ function k_insert_external_link_aff() {
 	$params = $_REQUEST['acf'];
 	if ( empty($params['insert_external_link_aff_console']) ) {
 		header('Content-Type: application/json');
-		echo json_encode( array( 'status' => false, 'message' => __('Please select console.', 'romsfun') ) );
+		echo json_encode( array( 'status' => false, 'message' => __('Please select console.', 'rom') ) );
 		exit;
 	}
 	if ( empty($params['insert_external_link_aff_url']) ) {
 		header('Content-Type: application/json');
-		echo json_encode( array( 'status' => false, 'message' => __('Please input url.', 'romsfun') ) );
+		echo json_encode( array( 'status' => false, 'message' => __('Please input url.', 'rom') ) );
 		exit;
 	}
 
@@ -131,7 +131,7 @@ function k_insert_external_link_aff() {
 		} 
 
 		header('Content-Type: application/json');
-		echo json_encode( array( 'status' => false, 'message' => __('Remove External Link Aff is completed.', 'romsfun') ) );
+		echo json_encode( array( 'status' => false, 'message' => __('Remove External Link Aff is completed.', 'rom') ) );
 		
 	} else {
 		$offset = $_REQUEST['offset'];
@@ -275,11 +275,11 @@ function k_insert_external_link_aff() {
 				echo json_encode( array( 'status' => true, 'offset' => $offset + 5, 'message' => $message ) );
 			} else {
 				header('Content-Type: application/json');
-				echo json_encode( array( 'status' => false, 'message' => __('Insert External Link Aff is completed.', 'romsfun') ) );
+				echo json_encode( array( 'status' => false, 'message' => __('Insert External Link Aff is completed.', 'rom') ) );
 			}
 		} else {
 			header('Content-Type: application/json');
-			echo json_encode( array( 'status' => false, 'message' => __('Error. Please contact coder.', 'romsfun') ) );
+			echo json_encode( array( 'status' => false, 'message' => __('Error. Please contact coder.', 'rom') ) );
 		}
     }
     

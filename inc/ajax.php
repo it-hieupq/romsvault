@@ -30,7 +30,7 @@ function k_get_download() {
 	
 	// Validate URL exists
 	if ( empty( $url_to_parse ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unable to parse download URL.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Unable to parse download URL.', 'rom' ) ) );
 	}
 	
 	// Extract download slug from URL
@@ -38,7 +38,7 @@ function k_get_download() {
 	$prefix_pos = strpos( $url_to_parse, $prefix );
 	
 	if ( $prefix_pos === false ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid download URL format.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid download URL format.', 'rom' ) ) );
 	}
 	
 	$download_slug = substr( $url_to_parse, $prefix_pos + strlen( $prefix ) );
@@ -46,32 +46,32 @@ function k_get_download() {
 	
 	// Validate and extract post ID from slug
 	if ( empty( $download_slugs[0] ) || ! preg_match( '/-([0-9]+)$/', $download_slugs[0], $matches ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid post ID in URL.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid post ID in URL.', 'rom' ) ) );
 	}
 	
 	$post_id = absint( $matches[1] );
 	
 	// Validate post_id is positive
 	if ( $post_id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'rom' ) ) );
 	}
 	
 	// Validate post exists and is published
 	$post = get_post( $post_id );
 	if ( ! $post || $post->post_status !== 'publish' ) {
-		wp_send_json_error( array( 'message' => __( 'Post not found or not published.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Post not found or not published.', 'rom' ) ) );
 	}
 	
 	// Validate post type
 	if ( ! valid_downloadable_post_type( $post->post_type ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid post type for download.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid post type for download.', 'rom' ) ) );
 	}
 
 	// Members-only posts (approach C) are NEVER served via this ungated admin-ajax
 	// path. The URL must come from /wp-json/rf/v1/download-url after the member
 	// session is verified. Refuse here so a guest can't bypass the gate.
 	if ( rf_is_restricted( $post_id ) ) {
-		wp_send_json_error( array( 'message' => __( 'Please sign in to download.', 'romsfun' ), 'code' => 'members_only' ) );
+		wp_send_json_error( array( 'message' => __( 'Please sign in to download.', 'rom' ), 'code' => 'members_only' ) );
 	}
 	
 	// Get download lists
@@ -90,26 +90,26 @@ function k_get_download() {
 	
 	// Validate downloads array is not empty
 	if ( empty( $downloads ) ) {
-		wp_send_json_error( array( 'message' => __( 'No download links available.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'No download links available.', 'rom' ) ) );
 	}
 	
 	// Extract file index from URL
 	if ( empty( $download_slugs[1] ) ) {
-		wp_send_json_error( array( 'message' => __( 'File index not specified in URL.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'File index not specified in URL.', 'rom' ) ) );
 	}
 	
 	$file_index = absint( $download_slugs[1] ) - 1;
 	
 	// Validate file index is in range
 	if ( ! isset( $downloads[ $file_index ] ) || empty( $downloads[ $file_index ]['url'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid file index.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid file index.', 'rom' ) ) );
 	}
 	
 	$link = $downloads[ $file_index ];
 	
 	// Validate link data
 	if ( empty( $link['name'] ) || empty( $link['url'] ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid download link data.', 'romsfun' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid download link data.', 'rom' ) ) );
 	}
 	
 	// Apply affiliate codes if applicable
@@ -142,10 +142,10 @@ function k_get_download() {
 		   id="download-link"
 		   class="inline-flex items-center justify-center px-6 py-4 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
 		   rel="nofollow">
-			<?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'romsfun' ) . ' ' . ' (' . $file_size . ')'; ?>
+			<?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'rom' ) . ' ' . ' (' . $file_size . ')'; ?>
 		</a>
 		<p class="text-sm text-gray-500 mt-4">
-			<?php esc_html_e( 'If the download doesn\'t start automatically, click the button above', 'romsfun' ); ?>
+			<?php esc_html_e( 'If the download doesn\'t start automatically, click the button above', 'rom' ); ?>
 		</p>
 	</div>
 	<?php

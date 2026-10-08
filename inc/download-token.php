@@ -52,7 +52,7 @@ function purge_cloudflare_url($urls, $post_id) {
 
     $current_post = get_post($post_id);
 
-    $download_url = 'https://romsfun.com/download/' . $current_post->post_name . '-' . $post_id;
+    $download_url = site_url( '/download/' . $current_post->post_name . '-' . $post_id );
 
     // Add download url
 

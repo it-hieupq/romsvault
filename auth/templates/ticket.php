@@ -55,7 +55,7 @@ $rf_ticket_types = rf_ticket_types();
 </style>
 <section class="py-8 text-gray-900" data-rf-ticket-page data-rf-status-labels="<?php echo esc_attr( wp_json_encode( array_values( rf_ticket_statuses() ) ) ); ?>" data-rf-status-colors="<?php echo esc_attr( wp_json_encode( rf_ticket_status_colors() ) ); ?>">
 	<div class="content-container px-4 sm:px-6 lg:px-8 w-full max-w-6xl">
-		<h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'Create Request', 'romsfun' ); ?></h1>
+		<h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'Create Request', 'rom' ); ?></h1>
 
 		<div class="grid gap-6 lg:grid-cols-3 items-start">
 
@@ -67,36 +67,36 @@ $rf_ticket_types = rf_ticket_types();
 
                     <div class="flex items-center">
                         <svg class="w-8 h-8 block mr-1 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                        <?php esc_html_e( 'You already have an open request. Please close it before creating a new one.', 'romsfun' ); ?>
+                        <?php esc_html_e( 'You already have an open request. Please close it before creating a new one.', 'rom' ); ?>
                     </div>
                 </div>
 
                 <div style="margin: 0">
                     <form data-rf-ticket-form class="bg-white rounded-2xl shadow-md p-6 space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Request type', 'romsfun' ); ?> <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Request type', 'rom' ); ?> <span class="text-red-500">*</span></label>
                             <select name="type" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                                <option value="" disabled selected><?php esc_html_e( '— Select a type —', 'romsfun' ); ?></option>
+                                <option value="" disabled selected><?php esc_html_e( '— Select a type —', 'rom' ); ?></option>
                                 <?php foreach ( $rf_ticket_types as $rf_k => $rf_label ) : ?>
                                     <option value="<?php echo esc_attr( $rf_k ); ?>"><?php echo esc_html( $rf_label ); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Game title', 'romsfun' ); ?> <span class="text-red-500">*</span></label>
-                            <input type="text" name="game_title" maxlength="255" required class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'e.g. The Legend of Zelda', 'romsfun' ); ?>">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Game title', 'rom' ); ?> <span class="text-red-500">*</span></label>
+                            <input type="text" name="game_title" maxlength="255" required class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'e.g. The Legend of Zelda', 'rom' ); ?>">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Reference link', 'romsfun' ); ?> <span class="text-gray-400 font-normal">(<?php esc_html_e( 'optional', 'romsfun' ); ?>)</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Reference link', 'rom' ); ?> <span class="text-gray-400 font-normal">(<?php esc_html_e( 'optional', 'rom' ); ?>)</span></label>
                             <input type="url" name="reference_url" maxlength="512" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="https://">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Details', 'romsfun' ); ?></label>
-                            <textarea name="description" rows="4" maxlength="500" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'Describe your request…', 'romsfun' ); ?>"></textarea>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Details', 'rom' ); ?></label>
+                            <textarea name="description" rows="4" maxlength="500" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'Describe your request…', 'rom' ); ?>"></textarea>
                         </div>
                         <!-- Member: real submit. Guest: sign-in gate (swapped by html.rf-authed). -->
-                        <button type="submit" data-rf-ticket-submit class="rf-authed-only w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Submit request', 'romsfun' ); ?></button>
-                        <button type="button" data-rf-login class="rf-guest-only w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in to submit', 'romsfun' ); ?></button>
+                        <button type="submit" data-rf-ticket-submit class="rf-authed-only w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Submit request', 'rom' ); ?></button>
+                        <button type="button" data-rf-login class="rf-guest-only w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in to submit', 'rom' ); ?></button>
                     </form>
                 </div>
 
@@ -108,8 +108,8 @@ $rf_ticket_types = rf_ticket_types();
 				<!-- Guest: sign-in prompt (mirrors the member panel position) -->
 				<div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
 					<svg class="w-10 h-10 mx-auto mb-3 text-romfun-pink" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0v.75H4.5v-.75z"/></svg>
-					<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to submit a request and track its status.', 'romsfun' ); ?></p>
-					<button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'romsfun' ); ?></button>
+					<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to submit a request and track its status.', 'rom' ); ?></p>
+					<button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
 				</div>
 
 				<!-- Member: current request + lazy history -->
@@ -122,14 +122,14 @@ $rf_ticket_types = rf_ticket_types();
 					</div>
 					<div data-rf-current-card class="hidden"></div>
 					<div data-rf-current-none class="hidden bg-white rounded-xl shadow-md p-10 text-center text-gray-500">
-						<?php esc_html_e( 'You have no open request. Submit one on the left.', 'romsfun' ); ?>
+						<?php esc_html_e( 'You have no open request. Submit one on the left.', 'rom' ); ?>
 					</div>
 
 					<!-- Request history: one accordion card — toggle header + divided item rows -->
 					<div class="mt-6 bg-white rounded-2xl shadow-md overflow-hidden">
 						<button type="button" data-rf-history-toggle aria-expanded="false"
 								class="w-full flex items-center justify-between gap-2 p-4 text-left font-bold text-gray-700 hover:bg-gray-50 transition">
-							<span><?php esc_html_e( 'Recently request history', 'romsfun' ); ?></span>
+							<span><?php esc_html_e( 'Recently request history', 'rom' ); ?></span>
 							<svg class="rf-tk-chev w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
 						</button>
 
@@ -139,7 +139,7 @@ $rf_ticket_types = rf_ticket_types();
 								<div class="h-6 bg-gray-100 rounded"></div>
 							</div>
 							<div data-rf-ticket-list class="hidden divide-y divide-gray-100"></div>
-							<div data-rf-ticket-empty class="hidden p-8 text-center text-gray-500"><?php esc_html_e( 'No past requests yet.', 'romsfun' ); ?></div>
+							<div data-rf-ticket-empty class="hidden p-8 text-center text-gray-500"><?php esc_html_e( 'No past requests yet.', 'rom' ); ?></div>
 						</div>
 					</div>
 

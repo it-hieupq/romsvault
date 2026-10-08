@@ -19,7 +19,7 @@ function k_nav_menu_item( $items, $args ) {
  * Check if a menu item should be marked as active
  * Handles categories, taxonomy terms, post types, and their children
  */
-function romsfun_is_menu_item_active( $item ) {
+function rom_is_menu_item_active( $item ) {
     $is_active = false;
     $current_page_id = get_queried_object_id();
     $current_url = untrailingslashit( ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
@@ -173,7 +173,7 @@ function romsfun_is_menu_item_active( $item ) {
  * Display header navigation menu using WordPress functions
  * Outputs menu items directly without ul/li wrappers
  */
-function romsfun_display_header_menu( $theme_location = 'primary' ) {
+function rom_display_header_menu( $theme_location = 'primary' ) {
     if ( ! has_nav_menu( $theme_location ) ) {
         return;
     }
@@ -192,7 +192,7 @@ function romsfun_display_header_menu( $theme_location = 'primary' ) {
     
     foreach ( $menu_items as $item ) {
         // Check if menu item should be active
-        $is_active = romsfun_is_menu_item_active( $item );
+        $is_active = rom_is_menu_item_active( $item );
         
         // Build classes
         $link_classes = 'header-nav-link font-bold text-romfun-pink rounded-full px-6';
@@ -209,7 +209,7 @@ function romsfun_display_header_menu( $theme_location = 'primary' ) {
 /**
  * Display mobile navigation menu using WordPress functions
  */
-function romsfun_display_mobile_menu( $theme_location = 'primary' ) {
+function rom_display_mobile_menu( $theme_location = 'primary' ) {
     if ( ! has_nav_menu( $theme_location ) ) {
         return;
     }
@@ -228,7 +228,7 @@ function romsfun_display_mobile_menu( $theme_location = 'primary' ) {
     
     foreach ( $menu_items as $item ) {
         // Check if menu item should be active
-        $is_active = romsfun_is_menu_item_active( $item );
+        $is_active = rom_is_menu_item_active( $item );
         
         // Build classes
         $link_classes = 'mobile-menu-item text-center';

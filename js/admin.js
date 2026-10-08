@@ -713,7 +713,7 @@ jQuery(function ($) {
       type: "POST",
       url: ajax.ajax_url,
       data: {
-        action: "romsfun_export_rom_links",
+        action: "rom_export_rom_links",
         console_id: consoleId,
       },
       timeout: 60000,

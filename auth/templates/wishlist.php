@@ -12,17 +12,17 @@ get_header();
 ?>
 <section class="py-8 text-gray-900">
     <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-        <h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'My Wishlist', 'romsfun' ); ?></h1>
+        <h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'My Wishlist', 'rom' ); ?></h1>
 
         <div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
-            <p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to view your wishlist.', 'romsfun' ); ?></p>
-            <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'romsfun' ); ?></button>
+            <p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to view your wishlist.', 'rom' ); ?></p>
+            <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
         </div>
 
         <div class="rf-authed-only" data-rf-wishlist-page>
-            <p class="rf-wish-loading text-gray-500 py-8 text-center"><?php esc_html_e( 'Loading…', 'romsfun' ); ?></p>
+            <p class="rf-wish-loading text-gray-500 py-8 text-center"><?php esc_html_e( 'Loading…', 'rom' ); ?></p>
             <div class="rf-wish-list hidden"></div>
-            <div class="rf-wish-empty hidden bg-white rounded-2xl shadow-md p-8 text-center text-gray-600"><?php esc_html_e( 'Your wishlist is empty.', 'romsfun' ); ?></div>
+            <div class="rf-wish-empty hidden bg-white rounded-2xl shadow-md p-8 text-center text-gray-600"><?php esc_html_e( 'Your wishlist is empty.', 'rom' ); ?></div>
         </div>
     </div>
 </section>

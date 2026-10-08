@@ -181,7 +181,7 @@ class AppSecurity {
                 sprintf( 'Input too long (%d bytes, max %d)', strlen( $input ), $max ),
                 $context,
                 403,
-                __( 'Your input is too long.', 'romsfun' )
+                __( 'Your input is too long.', 'rom' )
             );
         }
     }
@@ -292,7 +292,7 @@ class AppSecurity {
         if ( $id <= 0 ) {
             // Bad ID is a client error, not an attack — use the shared JSON responder
             // WITHOUT writing a [SECURITY BLOCK] log entry (that would flood the log).
-            self::send_error( __( 'Invalid numeric input.', 'romsfun' ), 400 );
+            self::send_error( __( 'Invalid numeric input.', 'rom' ), 400 );
         }
         return $id;
     }
@@ -349,7 +349,7 @@ class AppSecurity {
     private static function block_request( $reason, $context = 'Value', int $status = 403, string $client_message = '' ) {
         self::log_threat( $reason, $context );
         self::send_error(
-            $client_message !== '' ? $client_message : __( 'Your input contains disallowed content. Please revise it and try again.', 'romsfun' ),
+            $client_message !== '' ? $client_message : __( 'Your input contains disallowed content. Please revise it and try again.', 'rom' ),
             $status
         );
     }

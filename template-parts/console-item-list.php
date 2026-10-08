@@ -28,7 +28,7 @@ $type  = $args['type'] ?? [];
                     <span class="inline-flex items-center">
                         <?php
                         $console_downloads = get_field('console_rom_downloads', 'term_' . $term->term_id);
-                        echo get_svg_icon( 'download' ) . number_format( $console_downloads ?: 0, 0, '' ) . ' ' . __( '', 'romsfun' );
+                        echo get_svg_icon( 'download' ) . number_format( $console_downloads ?: 0, 0, '' ) . ' ' . __( '', 'rom' );
                         ?>
                     </span>
                 </div>

@@ -139,9 +139,9 @@ function k_change_download_title($title) {
             if ($title) {
 	            $title = str_replace('%%title%%', $post_title, $title);
 	            $title = str_replace('%%ct_console%%', '', $title);
-	            $title = __('Download', 'romsfun') . ' ' . $title;
+	            $title = __('Download', 'rom') . ' ' . $title;
             } else {
-                $title = __('Download', 'romsfun') . ' ' . $post_title;
+                $title = __('Download', 'rom') . ' ' . $post_title;
             }
         }
     }
@@ -197,7 +197,7 @@ add_filter( 'wp_unique_post_slug_is_bad_attachment_slug', '__return_true' );
  */
 function k_get_social_icons() {
     return array(
-        ''            => __('Select Icon', 'romsfun'),
+        ''            => __('Select Icon', 'rom'),
         'facebook'    => '<svg class="facebook w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/></svg>',
         'telegram'    => '<svg class="telegram w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M23.1117 4.49449C23.4296 2.94472 21.9074 1.65683 20.4317 2.227L2.3425 9.21601C0.694517 9.85273 0.621087 12.1572 2.22518 12.8975L6.1645 14.7157L8.03849 21.2746C8.13583 21.6153 8.40618 21.8791 8.74917 21.968C9.09216 22.0568 9.45658 21.9576 9.70712 21.707L12.5938 18.8203L16.6375 21.8531C17.8113 22.7334 19.5019 22.0922 19.7967 20.6549L23.1117 4.49449ZM3.0633 11.0816L21.1525 4.0926L17.8375 20.2531L13.1 16.6999C12.7019 16.4013 12.1448 16.4409 11.7929 16.7928L10.5565 18.0292L10.928 15.9861L18.2071 8.70703C18.5614 8.35278 18.5988 7.79106 18.2947 7.39293C17.9906 6.99479 17.4389 6.88312 17.0039 7.13168L6.95124 12.876L3.0633 11.0816ZM8.17695 14.4791L8.78333 16.6015L9.01614 15.321C9.05253 15.1209 9.14908 14.9366 9.29291 14.7928L11.5128 12.573L8.17695 14.4791Z"></path> </g></svg>',
         'twitter'     => '<svg class="twitter w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>',
@@ -224,7 +224,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
     	$terms = get_terms(array('taxonomy' => 'console', 'hide_empty' => false));
         ?>
         <select name="console" style="width: 90px;">
-	        <option value=""><?php _e('Console', 'romsfun'); ?></option>
+	        <option value=""><?php _e('Console', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['console'])? $_GET['console']:'';
 	            foreach ($terms as $term) {
@@ -245,7 +245,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
      $terms = get_terms(array('taxonomy' => 'type', 'hide_empty' => false));
         ?>
         <select name="type" style="width: 90px;">
-	        <option value=""><?php _e('Type', 'romsfun'); ?></option>
+	        <option value=""><?php _e('Type', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['type'])? $_GET['type']:'';
 	            foreach ($terms as $term) {
@@ -268,9 +268,9 @@ function k_admin_posts_filter_restrict_manage_posts() {
 		
 	// Trường nhập liệu tìm kiếm từ khóa trong Download Links & Note
 ?>
-<input type="text" name="download_keyword" placeholder="<?php _e('Search keyword in links', 'romsfun'); ?>" value="<?php echo isset($_GET['download_keyword']) ? esc_attr(sanitize_text_field($_GET['download_keyword'])) : ''; ?>" />
+<input type="text" name="download_keyword" placeholder="<?php _e('Search keyword in links', 'rom'); ?>" value="<?php echo isset($_GET['download_keyword']) ? esc_attr(sanitize_text_field($_GET['download_keyword'])) : ''; ?>" />
 
-<input type="text" name="note_download" placeholder="<?php _e('Search keyword in File Type', 'romsfun'); ?>" value="<?php echo isset($_GET['note_download']) ? esc_attr(sanitize_text_field($_GET['note_download'])) : ''; ?>" />
+<input type="text" name="note_download" placeholder="<?php _e('Search keyword in File Type', 'rom'); ?>" value="<?php echo isset($_GET['note_download']) ? esc_attr(sanitize_text_field($_GET['note_download'])) : ''; ?>" />
 
 
 
@@ -284,7 +284,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
         );
         ?>
         <select name="download_links">
-	        <option value=""><?php _e('Download Links', 'romsfun'); ?></option>
+	        <option value=""><?php _e('Download Links', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['download_links'])? $_GET['download_links']:'';
 	            foreach ($values as $label => $value) {
@@ -308,7 +308,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
         );
         ?>
         <select name="status">
-	        <option value=""><?php _e('Status', 'romsfun'); ?></option>
+	        <option value=""><?php _e('Status', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['status'])? $_GET['status']:'';
 	            foreach ($values as $label => $value) {
@@ -331,7 +331,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
     	$terms = get_terms(array('taxonomy' => 'emulator_console', 'hide_empty' => false));
         ?>
         <select name="emulator_console" style="width: 90px;">
-	        <option value=""><?php _e('Console', 'romsfun'); ?></option>
+	        <option value=""><?php _e('Console', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['emulator_console'])? $_GET['emulator_console']:'';
 	            foreach ($terms as $term) {
@@ -351,7 +351,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
     	$terms = get_terms(array('taxonomy' => 'os', 'hide_empty' => false));
         ?>
         <select name="os" style="width: 90px;">
-	        <option value=""><?php _e('OS', 'romsfun'); ?></option>
+	        <option value=""><?php _e('OS', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['os'])? $_GET['os']:'';
 	            foreach ($terms as $term) {
@@ -925,7 +925,7 @@ function k_comment_pagination($total, $per_page, $current_page, $base_url = '') 
 //create function return list svg icons
 function svg_icons() {
     return array(
-            ''           => __( 'Select Icon', 'romsfun' ),
+            ''           => __( 'Select Icon', 'rom' ),
             'home'       => '<svg class="inline mr-[2px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="18px" height="18px" fill="currentColor"><path d="M240-144q-40 0-68-28t-28-68v-249q0-20 7.5-37.5T173-558l240-231q14-14 31.5-20.5T480-816q18 0 35.5 6.5T547-789l38 37-297 291v173h384v-173L532-598l106-104 149 144q14 14 21.5 31.5T816-489v249q0 40-28 68t-68 28H240Z"/></svg>',
             'sort'       => '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="18px" height="18px" fill="#000000"><path d="M480-432 48-648l432-216 432 216-432 216Zm0 168L72-468l80-40 328 163 328-163 80 40-408 204Zm0 168L72-300l80-40 328 163 328-163 80 40L480-96Z"/></svg>',
             'type'       => '<svg class="inline mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="18px" height="18px" fill="currentColor"><path d="M425-144v-241L217-265l-55-95 208-120-208-120 55-95 208 120v-241h110v241l208-120 55 95-208 120 208 120-55 95-208-120v241H425Z"/></svg>',

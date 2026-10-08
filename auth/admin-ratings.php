@@ -43,12 +43,12 @@ class RF_Ratings_List_Table extends WP_List_Table {
 
 	public function get_columns() {
 		return array(
-			'member'     => __( 'Member', 'romsfun' ),
-			'post'       => __( 'Post', 'romsfun' ),
-			'score'      => __( 'Rating', 'romsfun' ),
-			'content'    => __( 'Review', 'romsfun' ),
-			'created_at' => __( 'Date', 'romsfun' ),
-			'status'     => __( 'Status', 'romsfun' ),
+			'member'     => __( 'Member', 'rom' ),
+			'post'       => __( 'Post', 'rom' ),
+			'score'      => __( 'Rating', 'rom' ),
+			'content'    => __( 'Review', 'rom' ),
+			'created_at' => __( 'Date', 'rom' ),
+			'status'     => __( 'Status', 'rom' ),
 		);
 	}
 
@@ -87,9 +87,9 @@ class RF_Ratings_List_Table extends WP_List_Table {
 		};
 
 		return array(
-			'all'     => $link( '', __( 'All', 'romsfun' ), $c['total'] ),
-			'visible' => $link( 'visible', __( 'Visible', 'romsfun' ), $c['visible'] ),
-			'hidden'  => $link( 'hidden', __( 'Hidden', 'romsfun' ), $c['hidden'] ),
+			'all'     => $link( '', __( 'All', 'rom' ), $c['total'] ),
+			'visible' => $link( 'visible', __( 'Visible', 'rom' ), $c['visible'] ),
+			'hidden'  => $link( 'hidden', __( 'Hidden', 'rom' ), $c['hidden'] ),
 		);
 	}
 
@@ -154,13 +154,13 @@ class RF_Ratings_List_Table extends WP_List_Table {
 	public function column_member( $item ) {
 		$name = $item['member_name']
 			? esc_html( $item['member_name'] )
-			: '<em>' . esc_html__( '(deleted member)', 'romsfun' ) . '</em>';
+			: '<em>' . esc_html__( '(deleted member)', 'rom' ) . '</em>';
 		$email = $item['member_email'] ? '<br><small>' . esc_html( $item['member_email'] ) . '</small>' : '';
 
 		$id         = (int) $item['id'];
 		$hidden     = (int) $item['status'] === 0;
 		$toggle     = $hidden ? 'unhide' : 'hide';
-		$label      = $hidden ? __( 'Unhide', 'romsfun' ) : __( 'Hide', 'romsfun' );
+		$label      = $hidden ? __( 'Unhide', 'rom' ) : __( 'Hide', 'rom' );
 		$toggle_url = wp_nonce_url(
 			admin_url( 'admin.php?page=rf-ratings&action=' . $toggle . '&review=' . $id ),
 			'rf_rating_' . $toggle . '_' . $id
@@ -169,12 +169,12 @@ class RF_Ratings_List_Table extends WP_List_Table {
 			admin_url( 'admin.php?page=rf-ratings&action=delete&review=' . $id ),
 			'rf_rating_delete_' . $id
 		);
-		$confirm = esc_js( __( 'Delete this review permanently?', 'romsfun' ) );
+		$confirm = esc_js( __( 'Delete this review permanently?', 'rom' ) );
 		$actions = array(
 			$toggle  => '<a href="' . esc_url( $toggle_url ) . '">' . esc_html( $label ) . '</a>',
 			'delete' => '<a href="' . esc_url( $delete_url ) . '" style="color:#b32d2e"'
 				. ' onclick="return confirm(\'' . $confirm . '\')">'
-				. esc_html__( 'Delete', 'romsfun' ) . '</a>',
+				. esc_html__( 'Delete', 'rom' ) . '</a>',
 		);
 
 		return '<strong>' . $name . '</strong>' . $email . $this->row_actions( $actions );
@@ -191,7 +191,7 @@ class RF_Ratings_List_Table extends WP_List_Table {
 			: '<strong>' . $title . '</strong>';
 		if ( $edit ) {
 			$out .= '<div class="row-actions"><span class="edit">'
-				. '<a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit', 'romsfun' ) . '</a>'
+				. '<a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit', 'rom' ) . '</a>'
 				. '</span></div>';
 		}
 		return $out;
@@ -205,7 +205,7 @@ class RF_Ratings_List_Table extends WP_List_Table {
 	}
 
 	public function column_content( $item ) {
-		return $item['content'] ? esc_html( $item['content'] ) : '<em>' . esc_html__( '(no text)', 'romsfun' ) . '</em>';
+		return $item['content'] ? esc_html( $item['content'] ) : '<em>' . esc_html__( '(no text)', 'rom' ) . '</em>';
 	}
 
 	public function column_created_at( $item ) {
@@ -214,8 +214,8 @@ class RF_Ratings_List_Table extends WP_List_Table {
 
 	public function column_status( $item ) {
 		return (int) $item['status'] === 0
-			? '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Hidden', 'romsfun' ) . '</span>'
-			: '<span style="color:#008a20">' . esc_html__( 'Visible', 'romsfun' ) . '</span>';
+			? '<span style="color:#b32d2e;font-weight:600">' . esc_html__( 'Hidden', 'rom' ) . '</span>'
+			: '<span style="color:#008a20">' . esc_html__( 'Visible', 'rom' ) . '</span>';
 	}
 
 	public function column_default( $item, $column_name ) {
@@ -223,7 +223,7 @@ class RF_Ratings_List_Table extends WP_List_Table {
 	}
 
 	public function no_items() {
-		esc_html_e( 'No reviews found.', 'romsfun' );
+		esc_html_e( 'No reviews found.', 'rom' );
 	}
 }
 
@@ -233,8 +233,8 @@ class RF_Ratings_List_Table extends WP_List_Table {
  */
 function rf_ratings_admin_menu(): void {
 	add_menu_page(
-		__( 'Ratings & Reviews', 'romsfun' ),
-		__( 'Ratings & Reviews', 'romsfun' ),
+		__( 'Ratings & Reviews', 'rom' ),
+		__( 'Ratings & Reviews', 'rom' ),
 		'manage_options',
 		'rf-ratings',
 		'rf_ratings_render_page',
@@ -256,7 +256,7 @@ function rf_ratings_handle_action(): void {
 		return;
 	}
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You are not allowed to manage reviews.', 'romsfun' ) );
+		wp_die( esc_html__( 'You are not allowed to manage reviews.', 'rom' ) );
 	}
 
 	$review_id = (int) ( $_GET['review'] ?? 0 );
@@ -288,20 +288,20 @@ add_action( 'admin_init', 'rf_ratings_handle_action' );
  */
 function rf_ratings_render_page(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You are not allowed to manage reviews.', 'romsfun' ) );
+		wp_die( esc_html__( 'You are not allowed to manage reviews.', 'rom' ) );
 	}
 
 	$table = new RF_Ratings_List_Table();
 	$table->prepare_items();
 
 	$notices = array(
-		'hide'   => __( 'Review hidden.', 'romsfun' ),
-		'unhide' => __( 'Review is visible again.', 'romsfun' ),
-		'delete' => __( 'Review deleted.', 'romsfun' ),
+		'hide'   => __( 'Review hidden.', 'rom' ),
+		'unhide' => __( 'Review is visible again.', 'rom' ),
+		'delete' => __( 'Review deleted.', 'rom' ),
 	);
 	?>
 	<div class="wrap">
-		<h1 class="wp-heading-inline"><?php esc_html_e( 'Ratings &amp; Reviews', 'romsfun' ); ?></h1>
+		<h1 class="wp-heading-inline"><?php esc_html_e( 'Ratings &amp; Reviews', 'rom' ); ?></h1>
 		<?php if ( isset( $_GET['updated'] ) && isset( $notices[ $_GET['updated'] ] ) ) : ?>
 			<div class="notice notice-success is-dismissible"><p>
 				<?php echo esc_html( $notices[ $_GET['updated'] ] ); ?>
@@ -312,7 +312,7 @@ function rf_ratings_render_page(): void {
 		<form method="get">
 			<input type="hidden" name="page" value="rf-ratings" />
 			<input type="hidden" name="status" value="<?php echo esc_attr( rf_ratings_status_filter() ); ?>" />
-			<?php $table->search_box( __( 'Search reviews', 'romsfun' ), 'rf-ratings' ); ?>
+			<?php $table->search_box( __( 'Search reviews', 'rom' ), 'rf-ratings' ); ?>
 			<?php rf_admin_per_page_field( rf_admin_today_badge( rf_admin_today_count( rf_member_rating_table(), false ) ) ); ?>
 			<?php $table->display(); ?>
 		</form>

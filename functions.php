@@ -16,7 +16,7 @@ if ( ! function_exists( 'k_setup' ) ) :
  * as indicating support for post thumbnails.
  */
 function k_setup() {
-	load_theme_textdomain( 'romsfun', get_template_directory() . '/languages' );
+	load_theme_textdomain( 'rom', get_template_directory() . '/languages' );
 
 	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
@@ -52,15 +52,15 @@ add_action( 'after_setup_theme', 'k_setup' );
 
 /**
  * Register nav menu locations on init instead of after_setup_theme so the
- * translated labels don't load the 'romsfun' textdomain before init
+ * translated labels don't load the 'rom' textdomain before init
  * (WP 6.7 _load_textdomain_just_in_time notice).
  */
 function k_register_nav_menus() {
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
-		'primary'    => esc_html__( 'Primary Navigation', 'romsfun' ),
-		'site-nav'   => esc_html__( 'Site navigation', 'romsfun' ),
-		'footer-nav' => esc_html__( 'Footer navigation', 'romsfun' ),
+		'primary'    => esc_html__( 'Primary Navigation', 'rom' ),
+		'site-nav'   => esc_html__( 'Site navigation', 'rom' ),
+		'footer-nav' => esc_html__( 'Footer navigation', 'rom' ),
 	) );
 }
 add_action( 'init', 'k_register_nav_menus' );
@@ -93,7 +93,7 @@ add_action( 'after_setup_theme', 'k_content_width', 0 );
 /**
  * Enqueue scripts and styles.
  */
-function romsfun_enqueue_scripts() {
+function rom_enqueue_scripts() {
     wp_enqueue_style(
         'main-style',
         get_stylesheet_uri(),
@@ -156,9 +156,11 @@ function romsfun_enqueue_scripts() {
         true
     );
 	
-	// Localize script with AJAX URL, comment nonce, and rating nonce
+	// Localize script with AJAX URL, comment nonce, and rating nonce.
+	// site_url comes from WP_SITEURL (wp-config) so JS never hardcodes the domain.
 	$localize_data = array(
 		'ajax_url' => admin_url( 'admin-ajax.php' ),
+		'site_url' => untrailingslashit( site_url() ),
 	);
 	
 	// Check if dynamic nonce should be enabled (for specific pages)
@@ -229,16 +231,16 @@ function romsfun_enqueue_scripts() {
         );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'romsfun_enqueue_scripts' );
+add_action( 'wp_enqueue_scripts', 'rom_enqueue_scripts' );
 
 /**
  * Enqueue admin scripts and styles.
  */
-function romsfun_admin_scripts() {
+function rom_admin_scripts() {
 	wp_enqueue_script( 'admin-js', get_template_directory_uri() . '/js/admin.js', array('jquery'), 2, true );
 	wp_localize_script( 'admin-js', 'ajax', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 }
-add_action( 'admin_enqueue_scripts', 'romsfun_admin_scripts' );
+add_action( 'admin_enqueue_scripts', 'rom_admin_scripts' );
 
 // 1. customize ACF path
 //add_filter('acf/settings/path', 'k_acf_settings_path');
@@ -473,7 +475,7 @@ function k_modify_main_query( $query ): void {
 add_action( 'pre_get_posts', 'k_modify_main_query' );
 
 
-function get_romsfun_page_templates(): array {
+function get_rom_page_templates(): array {
 	return array(
 		'page-emulators.php',
 		'page-roms.php',

@@ -1,5 +1,5 @@
 /**
- * RomsFun sendBeacon Tracking
+ * Romsvault sendBeacon Tracking
  * 
  * Tracks views and downloads via sendBeacon to bypass Cloudflare caching.
  * Uses sessionStorage to prevent duplicate tracking.

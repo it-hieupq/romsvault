@@ -8,9 +8,9 @@
 
 <div class="alert alert-danger py-20 text-center">
     <h2 class="text-4xl font-bold text-gray-900 py-6">
-	    <?php _e('Content not found!', 'romsfun'); ?>
+	    <?php _e('Content not found!', 'rom'); ?>
     </h2>
     <p>
-        <?php _e('Your content you request may not available right now, please try later.', 'romsfun'); ?>
+        <?php _e('Your content you request may not available right now, please try later.', 'rom'); ?>
     </p>
 </div>

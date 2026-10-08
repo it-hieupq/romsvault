@@ -46,12 +46,12 @@ while ( have_posts() ) : the_post();
                                 </div>
 
                                 <span class="ml-2 text-sm text-gray-600"><?php echo $score; ?></span>
-                                <span class="ml-2 text-sm text-gray-500">(<?php echo $count . ' ' . _n( 'review', 'reviews', $count, 'romsfun' ); ?>)</span>
+                                <span class="ml-2 text-sm text-gray-500">(<?php echo $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ); ?>)</span>
                             </div>
 
 							<?php if ( $key = get_field('downloads', $post->ID) ) : ?>
                                 <span class="text-gray-400">•</span>
-                                <span class="text-sm text-gray-600"><?php echo number_format( $key ?: 0, 0, '', ',' ). ' ' . __( 'downloads', 'romsfun' ); ?></span>
+                                <span class="text-sm text-gray-600"><?php echo number_format( $key ?: 0, 0, '', ',' ). ' ' . __( 'downloads', 'rom' ); ?></span>
 							<?php endif; ?>
 
 							<?php if ( $key = get_field('file_size', $post->ID) ) : ?>
@@ -76,7 +76,7 @@ while ( have_posts() ) : the_post();
 
 							<?php if( $key = get_field('released', $post->ID) ) : ?>
                                 <div class="flex justify-between py-1">
-                                    <span class="text-gray-600"><?php _e('Release Date', 'romsfun') ?></span>
+                                    <span class="text-gray-600"><?php _e('Release Date', 'rom') ?></span>
                                     <span class="font-semibold text-gray-700"><?php echo wpautop($key); ?></span>
                                 </div>
 							<?php endif; ?>
@@ -86,7 +86,7 @@ while ( have_posts() ) : the_post();
 							if ( !is_wp_error($terms) && !empty($terms) ) :
 								?>
                                 <div class="flex justify-between py-1">
-                                    <span class="text-gray-600"><?php _e('Region', 'romsfun') ?></span>
+                                    <span class="text-gray-600"><?php _e('Region', 'rom') ?></span>
                                     <span class="text-romfun-pink">
                                         <?php
                                         foreach ( $terms as $term_id => $term_name ) : ?>
@@ -105,7 +105,7 @@ while ( have_posts() ) : the_post();
                                 <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
                                     <a href="<?php echo home_url( 'download/' . $download_slug ); ?>"
                                        class="inline-block px-8 py-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold">
-				                        <?php echo get_svg_icon('save') . __( 'Download Emulator', 'romsfun' ) ?>
+				                        <?php echo get_svg_icon('save') . __( 'Download Emulator', 'rom' ) ?>
                                     </a>
                                 </span>
 	                    <?php endif; ?>
@@ -117,7 +117,7 @@ while ( have_posts() ) : the_post();
 
 			<?php if ( $screenshots = get_field('image') ): ?>
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Screenshots', 'romsfun' ); ?></h2>
+                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Screenshots', 'rom' ); ?></h2>
 
                     <div id="romGallery" class="flex flex-nowrap gap-3 overflow-x-auto py-2 px-1">
 						<?php
@@ -141,7 +141,7 @@ while ( have_posts() ) : the_post();
 
 			<?php if ( $post->post_content !== '' ) : ?>
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Description', 'romsfun' ); ?></h2>
+                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Description', 'rom' ); ?></h2>
                     <div class="prose max-w-none text-gray-700 revert">
 						<?php the_content(); ?>
                     </div>
@@ -168,7 +168,7 @@ while ( have_posts() ) : the_post();
 				if ( $query->have_posts() ) :?>
 
                     <div class="mb-8">
-                        <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e('Related Emulators', 'romsfun') ?></h2>
+                        <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e('Related Emulators', 'rom') ?></h2>
                         <div class="space-y-4">
 							<?php
 							while ( $query->have_posts() ) : $query->the_post();

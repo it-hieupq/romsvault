@@ -21,7 +21,7 @@
 	if ( $query->have_posts() ) :
 	?>
 		<section class="mb-4">
-			<h4 class="h5 font-weight-bold text-uppercase mb-3"><?php _e('Popular Roms', 'romsfun'); ?></h4>
+			<h4 class="h5 font-weight-bold text-uppercase mb-3"><?php _e('Popular Roms', 'rom'); ?></h4>
 
 			<?php 
 			while ( $query->have_posts() ) : $query->the_post();
@@ -44,7 +44,7 @@
 	if ( $query->have_posts() ) :
 	?>
 		<section class="mb-4">
-			<h4 class="h5 font-weight-bold text-uppercase mb-3"><?php _e('Popular Emulators', 'romsfun'); ?></h4>
+			<h4 class="h5 font-weight-bold text-uppercase mb-3"><?php _e('Popular Emulators', 'rom'); ?></h4>
 
 			<?php 
 			while ( $query->have_posts() ) : $query->the_post();

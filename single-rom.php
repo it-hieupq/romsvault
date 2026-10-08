@@ -52,14 +52,14 @@ while ( have_posts() ) : the_post();
                                 </div>
 
                                 <span class="ml-2 text-sm text-gray-600"><?php echo $score; ?></span>
-                                <span class="ml-2 text-sm text-gray-500">(<?php echo $count . ' ' . _n( 'review', 'reviews', $count, 'romsfun' ); ?>)</span>
+                                <span class="ml-2 text-sm text-gray-500">(<?php echo $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ); ?>)</span>
                             </div>
 
                             <span class="text-gray-400">•</span>
                             <span class="text-sm text-gray-600">
                                 <?php
                                 $download = get_field('downloads', $post->ID);
-                                echo number_format( $download ?: 0, 0, '', ',' ) . ' ' . __( 'downloads', 'romsfun' ); ?>
+                                echo number_format( $download ?: 0, 0, '', ',' ) . ' ' . __( 'downloads', 'rom' ); ?>
                             </span>
 
                             <span class="text-gray-400">•</span>
@@ -102,7 +102,7 @@ while ( have_posts() ) : the_post();
                                     <tr class="odd:bg-gray-100">
                                         <td class="rounded-l-full font-semibold py-3 pl-4 text-gray-600">
                                             <div class="flex">
-                                                <?php echo get_svg_icon( 'released' ) . __( 'Release Date', 'romsfun' ) ?>
+                                                <?php echo get_svg_icon( 'released' ) . __( 'Release Date', 'rom' ) ?>
                                             </div>
                                         </td>
                                         <td class="font-semibold text-gray-900 rounded-r-full text-right pr-4"><?php echo wpautop( $released ); ?></td>
@@ -115,7 +115,7 @@ while ( have_posts() ) : the_post();
                                     <tr class="odd:bg-gray-100">
                                         <td class="rounded-l-full font-semibold py-3 pl-4 text-gray-600">
                                             <div class="flex">
-                                                <?php echo get_svg_icon( 'collection' ) . __( 'Collection', 'romsfun' ) ?>
+                                                <?php echo get_svg_icon( 'collection' ) . __( 'Collection', 'rom' ) ?>
                                             </div>
                                         </td>
                                         <td class="text-romfun-pink rounded-r-full text-right pr-4 font-semibold">
@@ -139,7 +139,7 @@ while ( have_posts() ) : the_post();
                                 if ( !is_wp_error( $terms ) && !empty( $terms ) ) : ?>
                                     <tr class="odd:bg-gray-100">
                                         <td class="rounded-l-full font-semibold py-3 pl-4 text-gray-600">
-                                            <?php echo get_svg_icon( 'type' ) . __( 'Type', 'romsfun' ) ?>
+                                            <?php echo get_svg_icon( 'type' ) . __( 'Type', 'rom' ) ?>
                                         </td>
                                         <td class="text-romfun-pink rounded-r-full text-right pr-4 font-semibold">
                                             <?php
@@ -164,7 +164,7 @@ while ( have_posts() ) : the_post();
                                     <tr class="odd:bg-gray-100">
                                         <td class="rounded-l-full font-semibold py-3 pl-4 text-gray-600">
                                             <div class="flex">
-                                                <?php echo get_svg_icon( 'joystick' ) . __( 'Publisher', 'romsfun' ) ?>
+                                                <?php echo get_svg_icon( 'joystick' ) . __( 'Publisher', 'rom' ) ?>
                                             </div>
                                         </td>
                                         <td class="text-romfun-pink rounded-r-full text-right pr-4 font-semibold">
@@ -189,7 +189,7 @@ while ( have_posts() ) : the_post();
                                     ?>
                                     <tr class="odd:bg-gray-100">
                                         <td class=" rounded-l-full font-semibold py-3 pl-4 text-gray-600">
-                                            <?php echo get_svg_icon( 'dev' ) . __( 'Developer', 'romsfun' ) ?>
+                                            <?php echo get_svg_icon( 'dev' ) . __( 'Developer', 'rom' ) ?>
                                         </td>
                                         <td class="text-romfun-pink rounded-r-full text-right pr-4 font-semibold">
                                             <?php
@@ -214,7 +214,7 @@ while ( have_posts() ) : the_post();
                                     ?>
                                     <tr class="odd:bg-gray-100">
                                         <td class="rounded-l-full font-semibold py-3 pl-4 text-gray-600">
-                                            <?php echo get_svg_icon( 'region' ) . __( 'Region', 'romsfun' ) ?>
+                                            <?php echo get_svg_icon( 'region' ) . __( 'Region', 'rom' ) ?>
                                         </td>
                                         <td class="text-romfun-pink rounded-r-full text-right pr-4 font-semibold">
                                             <?php
@@ -242,14 +242,14 @@ while ( have_posts() ) : the_post();
                                 <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
                                     <a href="<?php echo home_url( 'download/' . $download_slug ); ?>"
                                        class="inline-flex px-8 py-2 mb-2 mr-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold">
-				                        <?php echo get_svg_icon('save') . __( 'Download ROM', 'romsfun' ) ?>
+				                        <?php echo get_svg_icon('save') . __( 'Download ROM', 'rom' ) ?>
                                     </a>
 
 			                        <?php $term = get_term_by('slug', $console->slug, 'emulator_console');
 			                        if ( !is_wp_error( $term ) && !empty( $term ) && $term->count > 0 ) : ?>
                                         <a href="<?php echo get_term_link( $term->term_id ); ?>"
                                            class="inline-flex px-6 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition font-semibold">
-					                        <?php echo get_svg_icon('emulator') . __( 'Download', 'romsfun' ) .' ' . $term->name .' ' . __('Emulator', 'romsfun') ?>
+					                        <?php echo get_svg_icon('emulator') . __( 'Download', 'rom' ) .' ' . $term->name .' ' . __('Emulator', 'rom') ?>
                                         </a>
 			                        <?php endif; ?>
                                 </span>
@@ -262,7 +262,7 @@ while ( have_posts() ) : the_post();
 
             <?php if ( $screenshots = get_field( 'image' ) ): ?>
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Screenshots', 'romsfun' ); ?></h2>
+                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Screenshots', 'rom' ); ?></h2>
 
                     <div id="romGallery" class="flex flex-nowrap gap-3 overflow-x-auto py-2 px-1">
                         <?php
@@ -286,7 +286,7 @@ while ( have_posts() ) : the_post();
 
             <?php if ( $post->post_content !== '' ) : ?>
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Description', 'romsfun' ); ?></h2>
+                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Description', 'rom' ); ?></h2>
                     <div class="prose max-w-none text-gray-700">
                         <?php the_content(); ?>
                     </div>
@@ -321,7 +321,7 @@ while ( have_posts() ) : the_post();
 
                     <div class="mb-8">
                         <h2 class="text-lg font-bold mb-4 text-gray-900">
-                            <?php echo esc_html( sprintf( __( 'Others ROM in %s Collection', 'romsfun' ), $primary_collection->name ) ); ?>
+                            <?php echo esc_html( sprintf( __( 'Others ROM in %s Collection', 'rom' ), $primary_collection->name ) ); ?>
                         </h2>
                         <div class="horizontal-scroll-container -mx-2 px-2">
                             <div class="horizontal-scroll-wrapper">
@@ -357,7 +357,7 @@ while ( have_posts() ) : the_post();
                 if ( $query->have_posts() ) :?>
 
                     <div class="mb-8">
-                        <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Related ROMs', 'romsfun' ) ?></h2>
+                        <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Related ROMs', 'rom' ) ?></h2>
                         <div class="horizontal-scroll-container -mx-2 px-2">
                             <div class="horizontal-scroll-wrapper">
                                 <?php
@@ -393,7 +393,7 @@ while ( have_posts() ) : the_post();
             <section class="py- text-gray-900 mt-8 mb-8">
                 <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
                     <h2 class="text-lg font-semibold mb-4">
-                        <?php _e( 'Related Articles', 'romsfun' ); ?>
+                        <?php _e( 'Related Articles', 'rom' ); ?>
                     </h2>
 
                     <div class="horizontal-scroll-container">

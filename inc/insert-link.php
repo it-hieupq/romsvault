@@ -22,10 +22,10 @@ function k_insert_link_init()
     if (function_exists('acf_add_local_field_group')) {
         acf_add_local_field_group(array(
             'key' => 'insert_link_settings',
-            'title' => __('Settings', 'romsfun'),
+            'title' => __('Settings', 'rom'),
             'fields' => array(
                 array(
-                    'label' => __('Console', 'romsfun'),
+                    'label' => __('Console', 'rom'),
                     'name' => 'insert_link_console',
                     'key' => 'insert_link_console',
                     'type' => 'taxonomy',
@@ -34,19 +34,19 @@ function k_insert_link_init()
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('Url', 'romsfun'),
+                    'label' => __('Url', 'rom'),
                     'name' => 'insert_link_url',
                     'key' => 'insert_link_url',
                     'type' => 'text',
                 ),
                 array(
-                    'label' => __('Type', 'romsfun'),
+                    'label' => __('Type', 'rom'),
                     'name' => 'insert_link_type',
                     'key' => 'insert_link_type',
                     'type' => 'text',
                 ),
                 array(
-                    'label' => __('Post Status', 'romsfun'),
+                    'label' => __('Post Status', 'rom'),
                     'name' => 'insert_link_post_status',
                     'key' => 'insert_link_post_status',
                     'type' => 'radio',
@@ -58,7 +58,7 @@ function k_insert_link_init()
                     'layout' => 'horizontal',
                 ),
                 array(
-                    'label' => __('Remove', 'romsfun'),
+                    'label' => __('Remove', 'rom'),
                     'name' => 'insert_link_remove',
                     'key' => 'insert_link_remove',
                     'type' => 'true_false',
@@ -93,11 +93,11 @@ function k_insert_link()
     $params = $_REQUEST['acf'];
 
     if (empty($params['insert_link_console'])) {
-        _e('Please select console.', 'romsfun');
+        _e('Please select console.', 'rom');
         exit;
     }
     if (empty($params['insert_link_url'])) {
-        _e('Please input url.', 'romsfun');
+        _e('Please input url.', 'rom');
         exit;
     }
 
@@ -136,7 +136,7 @@ function k_insert_link()
         }
 
         header('Content-Type: application/json');
-        echo json_encode(array('status' => false, 'message' => __('Remove Link is completed.', 'romsfun')));
+        echo json_encode(array('status' => false, 'message' => __('Remove Link is completed.', 'rom')));
 
     } else {
 
@@ -212,7 +212,7 @@ function k_insert_link()
                             preg_match('/href="(.*?)"/ui', $element, $link_matches);
                             $link = $link_matches[1];
 
-                            $link = trim('https://statics.romsfun.com/' . $link);
+                            $link = trim('https://statics.romsvault.com/' . $link);
 
                             preg_match('/<div class="hidden whitespace-nowrap text-right mx-2 w-1\/6 sm:block">(.*?)<\/div>/ui', $element, $size_matches);
 
@@ -275,7 +275,7 @@ function k_insert_link()
                     delete_post_meta(2, 'dit_me_' . $console);
 
                     header('Content-Type: application/json');
-                    echo json_encode(array('status' => false, 'message' => __('Insert Link is completed.', 'romsfun')));
+                    echo json_encode(array('status' => false, 'message' => __('Insert Link is completed.', 'rom')));
                 }
             }
 
@@ -332,11 +332,11 @@ function k_edit_download_links()
         <input type="hidden" name="field" value="<?php echo $field; ?>">
         <table class="widefat">
             <tr>
-                <th><?php _e('Name', 'romsfun'); ?></th>
-                <th><?php _e('Link', 'romsfun'); ?></th>
-                <th><?php _e('Size', 'romsfun'); ?></th>
-                <th><?php _e('Type', 'romsfun'); ?></th>
-                <th><?php _e('Xóa', 'romsfun'); ?></th>
+                <th><?php _e('Name', 'rom'); ?></th>
+                <th><?php _e('Link', 'rom'); ?></th>
+                <th><?php _e('Size', 'rom'); ?></th>
+                <th><?php _e('Type', 'rom'); ?></th>
+                <th><?php _e('Xóa', 'rom'); ?></th>
             </tr>
 
             <?php
@@ -365,9 +365,9 @@ function k_edit_download_links()
         </table>
         <div style="display: flex; justify-content: space-between; margin-top: 10px;">
             <a class="button button-primary k-close-download-links"
-               ref="javascript:void(0);"><?php _e('Close', 'romsfun'); ?></a>
-            <button class="button button-primary k-save-download-links" type="submit"><?php _e('Save', 'romsfun'); ?></button>
-            <a class="button button-primary k-add-download-link" href="javascript:void(0);"><?php _e('Add', 'romsfun'); ?></a>
+               ref="javascript:void(0);"><?php _e('Close', 'rom'); ?></a>
+            <button class="button button-primary k-save-download-links" type="submit"><?php _e('Save', 'rom'); ?></button>
+            <a class="button button-primary k-add-download-link" href="javascript:void(0);"><?php _e('Add', 'rom'); ?></a>
         </div>
     </form>
     <?php
@@ -479,8 +479,8 @@ function k_edit_text_field()
         <input type="hidden" name="field" value="<?php echo $field; ?>">
         <textarea style="width: 100%; height: 80px;" name="text"><?php the_field($field, $post_id); ?></textarea>
         <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-            <a class="button button-primary k-close-text-field" ref="javascript:void(0);"><?php _e('Close', 'romsfun'); ?></a>
-            <button class="button button-primary k-save-text-field" type="submit"><?php _e('Save', 'romsfun'); ?></button>
+            <a class="button button-primary k-close-text-field" ref="javascript:void(0);"><?php _e('Close', 'rom'); ?></a>
+            <button class="button button-primary k-save-text-field" type="submit"><?php _e('Save', 'rom'); ?></button>
         </div>
     </form>
     <?php
