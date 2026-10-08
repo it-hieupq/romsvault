@@ -64,42 +64,6 @@ function k_breadcrumb() {
                     }
                     wp_reset_postdata();
                 }
-            } elseif (is_tax('pack_console')) {
-                $args = array(
-                    'post_type' => 'page',
-                    'posts_per_page' => 1,
-                    'no_found_rows' => true,
-                    'meta_key' => '_wp_page_template',
-                    'meta_value' => 'page-packs.php'
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        ?>
-                        <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                        <?php
-                    }
-                    wp_reset_postdata();
-                }
-            } elseif (is_tax('lib_console')) {
-                $args = array(
-                    'post_type' => 'page',
-                    'posts_per_page' => 1,
-                    'no_found_rows' => true,
-                    'meta_key' => '_wp_page_template',
-                    'meta_value' => 'page-libraries.php'
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        ?>
-                        <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                        <?php
-                    }
-                    wp_reset_postdata();
-                }
             }
 
             // If post is a custom post type
@@ -177,42 +141,6 @@ function k_breadcrumb() {
                         'no_found_rows' => true,
                         'meta_key' => '_wp_page_template',
                         'meta_value' => 'page-emulators.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                } elseif (is_singular('pack')) {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-packs.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                } elseif (is_singular('library')) {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-libraries.php'
                     );
                     $query = new WP_Query($args);
                     if ($query->have_posts()) {
@@ -317,42 +245,6 @@ function k_breadcrumb() {
                         'no_found_rows' => true,
                         'meta_key' => '_wp_page_template',
                         'meta_value' => 'page-emulators.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                } elseif ($taxonomy_terms[0]->taxonomy == 'pack_console') {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-packs.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                } elseif ($taxonomy_terms[0]->taxonomy == 'lib_console') {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-libraries.php'
                     );
                     $query = new WP_Query($args);
                     if ($query->have_posts()) {

@@ -325,72 +325,6 @@ function k_admin_posts_filter_restrict_manage_posts() {
         <?php
     }
     
-    // Filters for 'library' post type
-    if ( 'library' == $type ) {
-    	// Library Console filter
-    	$terms = get_terms(array('taxonomy' => 'lib_console', 'hide_empty' => false));
-        ?>
-        <select name="lib_console" style="width: 90px;">
-	        <option value=""><?php _e('Console', 'romsfun'); ?></option>
-	        <?php
-	            $current_v = isset($_GET['lib_console'])? $_GET['lib_console']:'';
-	            foreach ($terms as $term) {
-	                printf
-	                    (
-	                        '<option value="%s"%s>%s</option>',
-	                        $term->slug,
-	                        $term->slug == $current_v? ' selected="selected"':'',
-	                        $term->name
-	                    );
-	                }
-	        ?>
-        </select>
-
-<?php
-    	// Library Type filter
-    	$terms = get_terms(array('taxonomy' => 'lib_type', 'hide_empty' => false));
-        ?>
-        <select name="lib_type" style="width: 90px;">
-	        <option value=""><?php _e('Type', 'romsfun'); ?></option>
-	        <?php
-	            $current_v = isset($_GET['lib_type'])? $_GET['lib_type']:'';
-	            foreach ($terms as $term) {
-	                printf
-	                    (
-	                        '<option value="%s"%s>%s</option>',
-	                        $term->slug,
-	                        $term->slug == $current_v? ' selected="selected"':'',
-	                        $term->name
-	                    );
-	                }
-	        ?>
-        </select>
-        <?php
-    }
-    
-    // Filters for 'pack' post type
-    if ( 'pack' == $type ) {
-    	// Pack Console filter
-    	$terms = get_terms(array('taxonomy' => 'pack_console', 'hide_empty' => false));
-        ?>
-        <select name="pack_console" style="width: 90px;">
-	        <option value=""><?php _e('Console', 'romsfun'); ?></option>
-	        <?php
-	            $current_v = isset($_GET['pack_console'])? $_GET['pack_console']:'';
-	            foreach ($terms as $term) {
-	                printf
-	                    (
-	                        '<option value="%s"%s>%s</option>',
-	                        $term->slug,
-	                        $term->slug == $current_v? ' selected="selected"':'',
-	                        $term->name
-	                    );
-	                }
-	        ?>
-        </select>
-        <?php
-    }
-    
     // Filters for 'emulator' post type
     if ( 'emulator' == $type ) {
     	// Emulator Console filter
@@ -491,49 +425,6 @@ if (isset($_GET['note_download']) && $_GET['note_download'] != '') {
 		// Lọc theo statsus
     	if ( isset($_GET['status']) && $_GET['status'] != '' ) {
 	        $query->query_vars['post_status'] = $_GET['status'];
-    	}
-    }
-    
-    // Filters for 'library' post type
-    if ( 'library' == $type && is_admin() && $pagenow=='edit.php' ) {
-    	// Initialize tax_query if not exists
-    	if ( !isset($query->query_vars['tax_query']) || !is_array($query->query_vars['tax_query']) ) {
-    		$query->query_vars['tax_query'] = array();
-    	}
-    	
-    	// Filter by lib_console taxonomy
-    	if ( isset($_GET['lib_console']) && $_GET['lib_console'] != '' ) {
-	        $query->query_vars['tax_query'][] = array(
-	        	'taxonomy' => 'lib_console',
-	        	'field'    => 'slug',
-	        	'terms'    => sanitize_text_field($_GET['lib_console'])
-	        );
-    	}
-    	
-    	// Filter by lib_type taxonomy
-    	if ( isset($_GET['lib_type']) && $_GET['lib_type'] != '' ) {
-	        $query->query_vars['tax_query'][] = array(
-	        	'taxonomy' => 'lib_type',
-	        	'field'    => 'slug',
-	        	'terms'    => sanitize_text_field($_GET['lib_type'])
-	        );
-    	}
-    }
-    
-    // Filters for 'pack' post type
-    if ( 'pack' == $type && is_admin() && $pagenow=='edit.php' ) {
-    	// Initialize tax_query if not exists
-    	if ( !isset($query->query_vars['tax_query']) || !is_array($query->query_vars['tax_query']) ) {
-    		$query->query_vars['tax_query'] = array();
-    	}
-    	
-    	// Filter by pack_console taxonomy
-    	if ( isset($_GET['pack_console']) && $_GET['pack_console'] != '' ) {
-	        $query->query_vars['tax_query'][] = array(
-	        	'taxonomy' => 'pack_console',
-	        	'field'    => 'slug',
-	        	'terms'    => sanitize_text_field($_GET['pack_console'])
-	        );
     	}
     }
     

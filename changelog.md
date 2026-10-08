@@ -1,12 +1,6 @@
 v1.0
 - build tailwindcss
 
-
-Remove all acf lib
-remove aff_15
-add config redis
-update lại menu site navigation -> primary
-
 Consolidated Nonce Generation:
 - Implemented whitelist validation for nonce actions (comment, rating, report)
 - Updated JS handlers to use unified `get_nonce` action

@@ -306,10 +306,8 @@ function rf_wishlist_on_deleted( $post_id ) {
  */
 function rf_post_type_meta( $post_type ) {
 	$map = array(
-		'rom'      => array( 'label' => 'ROM',  'tax' => 'console' ),
-		'pack'     => array( 'label' => 'Hack', 'tax' => 'pack_console' ),
-		'emulator' => array( 'label' => 'Emu',  'tax' => 'emulator_console' ),
-		'library'  => array( 'label' => 'Lib',  'tax' => 'lib_console' ),
+		'rom'      => array( 'label' => 'ROM', 'tax' => 'console' ),
+		'emulator' => array( 'label' => 'Emu', 'tax' => 'emulator_console' ),
 	);
 	return isset( $map[ $post_type ] ) ? $map[ $post_type ] : array( 'label' => ucfirst( (string) $post_type ), 'tax' => '' );
 }

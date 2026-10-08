@@ -26,10 +26,19 @@ This file provides guidance to Claude Code when working with this repository.
 
 ## Reference Documentation
 
-Two auto-generated maps of the theme live next to this file. **Read them for orientation, but treat them as potentially STALE** — both were generated around 2026-01 and the code has moved since (e.g. `TaxonomyCacheManager`, filter/export features). Before relying on any specific detail, verify it against the real `/inc/setting-*.php` files, ACF exports, and template files. If you find a discrepancy, trust the code and mention the drift.
+Three hand-traced maps of the theme live next to this file, **re-verified against the code on 2026-10-08**. Read them for orientation. `functions.php` is still the single source of truth for what actually loads — if a doc and the code disagree, **trust the code, fix the doc, and tell the user**.
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) — post types, taxonomies, URL & custom rewrite rules, template hierarchy, key subsystems (download tokens, AJAX tracking, hide-status).
-- [DATA_DICTIONARY.md](./DATA_DICTIONARY.md) — CPT/taxonomy definitions, ACF field groups & keys, AJAX endpoints and their security model.
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — 2 CPT (`rom`, `emulator`), taxonomies, URL & custom rewrite rules, real template hierarchy, subsystems (tracking beacon `/t`, download token, restricted gating, caching, grabber), full AJAX/REST surface, **§ 10 Known debt**.
+- [DATA_DICTIONARY.md](./DATA_DICTIONARY.md) — ACF field groups & keys, options pages, post/term meta, 7 member tables, Redis keys & transients, endpoint surface (incl. endpoints that were **removed**).
+- [MEMBER_SYSTEM.md](./MEMBER_SYSTEM.md) — Google login (RS256/JWKS), Redis session, origin guard, throttle & caps, 18 `rf/v1` routes, member pages, 6 admin pages.
+
+Historical plans & specs (design rationale, not current state) live in `.claude/docs/`:
+`plan/google-login-members.md`, `plan/2026-08-06-member-request-ticket.md`, `plan/RATING_PLAN.md`,
+`plan/wishlist_plan_v2.md`, `plan/wishlist_v5_loadtest.md`, `spec/2026-08-06-member-request-ticket-design.md`,
+`brd/google-login-members.html`, `detail/auth-salvage-notes.md`.
+Operational test plan: [`docs/tracking-test-plan.md`](../docs/tracking-test-plan.md).
+
+**Pack & Library CPTs no longer exist.** Any `pack` / `library` / `pack_console` / `lib_console` code you meet was removed on 2026-10-08 (see ARCHITECTURE.md § 10.1). The theme has exactly two CPTs: `rom` and `emulator` — do not reintroduce those branches.
 
 ## Token Efficiency Rule (STRICT)
 

@@ -2,17 +2,17 @@ server
 {
     listen 80;
     listen 443 ssl http2 ;
-    server_name romsfun.com;
+    server_name romsvault.com;
     index index.php index.html index.htm default.php default.htm default.html;
-    root /www/wwwroot/romsfun.com/;
-    include /www/server/panel/vhost/nginx/extension/romsfun.com/*.conf;
+    root /www/wwwroot/romsvault.com/;
+    include /www/server/panel/vhost/nginx/extension/romsvault.com/*.conf;
 
 
 
     #SSL-START SSL related configuration, do NOT delete or modify the next line of commented-out 404 rules
     #error_page 404/404.html;
-        ssl_certificate    /www/server/panel/vhost/cert/romsfun.com/fullchain.pem;
-        ssl_certificate_key    /www/server/panel/vhost/cert/romsfun.com/privkey.pem;
+        ssl_certificate    /www/server/panel/vhost/cert/romsvault.com/fullchain.pem;
+        ssl_certificate_key    /www/server/panel/vhost/cert/romsvault.com/privkey.pem;
         ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
         ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
         ssl_prefer_server_ciphers on;
@@ -35,7 +35,7 @@ server
     #PHP-INFO-END
 
     #REWRITE-START URL rewrite rule reference, any modification will invalidate the rewrite rules set by the panel
-    include /www/server/panel/vhost/rewrite/romsfun.com.conf;
+    include /www/server/panel/vhost/rewrite/romsvault.com.conf;
     #REWRITE-END
 
     # Forbidden files or directories
@@ -71,7 +71,7 @@ server
     location = /t {
         include       fastcgi_params;
         fastcgi_pass  unix:/tmp/php-cgi-83.sock;
-        fastcgi_param SCRIPT_FILENAME $document_root/wp-content/themes/romsfun/tracking/track.php;
+        fastcgi_param SCRIPT_FILENAME $document_root/wp-content/themes/romsvault/tracking/track.php;
 
         fastcgi_connect_timeout 1s;
         fastcgi_send_timeout    2s;
@@ -81,10 +81,10 @@ server
         add_header Cache-Control "no-store" always;
     }
 
-    location ^~ /wp-content/themes/romsfun/tracking/ {
+    location ^~ /wp-content/themes/romsvault/tracking/ {
         deny all;
     }
 
     access_log off; # Disable with aapanel
-    error_log  /www/wwwlogs/romsfun.com.error.log;
+    error_log  /www/wwwlogs/romsvault.com.error.log;
 }

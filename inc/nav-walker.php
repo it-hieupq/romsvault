@@ -151,13 +151,6 @@ function romsfun_is_menu_item_active( $item ) {
                     return true;
                 }
             }
-            
-            // Check if menu item links to Packs page template and we're viewing Packs
-            if ( $template === 'page-packs.php' ) {
-                if ( is_singular( 'pack' ) || is_tax( 'pack_console' ) ) {
-                    return true;
-                }
-            }
         }
     }
     

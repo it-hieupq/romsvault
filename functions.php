@@ -7,13 +7,6 @@
  * @package romsvault
  */
 
-/**
- * Load class files early to ensure they're available before templates
- */
-//require get_template_directory() . '/caching/TaxonomyCacheManager.php';
-//require get_template_directory() . '/caching/RomCacheManager.php';
-//require get_template_directory() . '/caching/ConfigCacheManager.php';
-
 if ( ! function_exists( 'k_setup' ) ) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -410,7 +403,7 @@ function rf_enqueue_tracking_script(): void {
         }
     }
     // Check for single post pages
-    elseif (is_singular(['rom', 'emulator', 'pack', 'library', 'post'])) {
+    elseif (is_singular(['rom', 'emulator', 'post'])) {
         $post_id = get_the_ID();
         $track_type = 'view';
     }
@@ -439,35 +432,6 @@ add_action('wp_enqueue_scripts', 'rf_enqueue_tracking_script');
 
 function get_sort_list(): array {
 	return array('newest', 'oldest', 'popular', 'downloads', 'alphabetical', 'latest');
-}
-
-function genDownloadToken() {
-    $cookieName = 'dl_token';
-    $cookieExpTimeSeconds = 600;
-    if (!empty($_COOKIE[$cookieName])) {
-        return $_COOKIE[$cookieName];
-    }
-    $ch = curl_init('https://cloud.romspure.com/auth');
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Accept: application/json',
-        'Content-Type: application/json'
-    ));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array("t" => 1)));
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-    $response = curl_exec($ch);
-    $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ($httpCode !== 200) {
-        return '';
-    }
-    $data = json_decode($response, true);
-    if ($data === null || empty($data['token'])) {
-        return '';
-    }
-    setcookie($cookieName, $data['token'], '1.0' + $cookieExpTimeSeconds);
-    return $data['token'];
 }
 
 //add_action('save_post', 'update_post_date_now');
@@ -513,15 +477,13 @@ function get_romsfun_page_templates(): array {
 	return array(
 		'page-emulators.php',
 		'page-roms.php',
-		'page-packs.php',
-		'page-libraries.php',
 		'page-collections.php' );
 }
 
 add_filter('the_content', function ($content) {
 
 	if (
-		! is_singular(array('post', 'pack', 'rom', 'emulator', 'library')) ||
+		! is_singular(array('post', 'rom', 'emulator')) ||
 		! in_the_loop() ||
 		! is_main_query()
 	) {
