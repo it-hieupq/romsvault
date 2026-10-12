@@ -171,7 +171,7 @@ console thì không có URL dùng được — permalink rơi về dạng query,
 | Type archive | `/{type_slug}/` — **không prefix** |
 | Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
 | Emulator console archive | `/emulators/{slug}/` (+ `/page/{n}/`) |
-| Download | `/download/{post_name}-{post_id}[/{file_index}]` |
+| Download | `{permalink của post}` + `download/[{file_index}/]` |
 | Member | `/wishlist/` · `/profile/` · `/request/` |
 | Tracking beacon | `POST /t` — nginx map thẳng vào PHP-FPM |
 
@@ -222,19 +222,32 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
   tiên. Emulator không có term `emulator_console` giữ URL dạng query `?emulator={slug}`,
   vẫn resolve được.
 
-### 5.5 Endpoint `/download`
+### 5.5 Endpoint `download` — nằm trên permalink của post
 
-- `add_rewrite_endpoint( 'download', EP_ROOT )` trong `inc/utility.php` (hook `init`).
-- `template_redirect` → `k_download_template_redirect()` nạp `download.php`.
-- Slug dạng `{post_name}-{post_id}`; segment thứ 2 (nếu có) là **file index 1-based**.
-- SEO: `/download/*` bị `noindex`, bỏ canonical, override title + meta description qua
-  các filter `wpseo_*` trong `inc/utility.php`.
+`/roms/{console}/{post_name}/download/` và `/roms/{console}/{post_name}/download/{n}/`
+(tương tự dưới `/emulators/`).
+
+- Rule nằm **cạnh rule single của từng post type** (§ 5.2, § 5.4): nó resolve chính post
+  đó rồi set `download=1`, cộng `download_file` khi có file index. ⇒ `$wp_query` là một
+  query singular thật, `is_singular()` **true**, `get_queried_object()` trả post.
+- Query var `download` + `download_file` đăng ký bằng filter `query_vars` trong
+  `inc/utility.php`. `download_file` **1-based**; rule chỉ nhận `[1-9][0-9]*` nên
+  `/download/0/` và `/download/abc/` rơi về 404.
+- `template_redirect` → `k_download_template_redirect()` nạp `download.php`. Slug không
+  khớp post nào ⇒ giữ nguyên 404 của WP.
+- `download.php` lấy post bằng `get_queried_object()`, dựng mọi link con từ
+  `get_permalink()`. Không có `download_file` ⇒ liệt kê mọi file; có ⇒ trang tải 1 file.
+- `inc/ajax.php:k_get_download()` nhận `post_id` + `file` qua `$_POST`
+  (`#download-container[data-post][data-file]` → `js/main.js`).
+- SEO: trang download `noindex,follow`, canonical trỏ **permalink của post**, title +
+  meta description override qua các filter `wpseo_*` trong `inc/utility.php`.
 - **`redirect_canonical`** bị tắt **chỉ** khi query var `download` hoặc `rf_page` có giá
-  trị — hai route này là query var, không phải query WP thật. Mọi URL khác vẫn được WP
-  chuẩn hoá (trailing slash, segment console sai).
+  trị. Với download đây là **điều kiện sống còn**: query resolve về post, nên nếu không
+  tắt thì WP 301 `/.../download/` về permalink của post. Mọi URL khác vẫn được WP chuẩn
+  hoá (trailing slash, segment console sai).
 
 > ⚠️ File index đánh trên mảng **đã merge** `download_list` + `download_list_aff`.
-> Đổi thứ tự hoặc số lượng item sẽ làm lệch mọi URL `/download/.../{n}` đã chia sẻ.
+> Đổi thứ tự hoặc số lượng item sẽ làm lệch mọi URL `.../download/{n}/` đã chia sẻ.
 
 ### 5.6 Khi nào rewrite rules được flush
 
@@ -360,8 +373,8 @@ get_download_token() = base64( XOR( "{client_ip}|{timestamp}", <key hardcode> ) 
   `auth/actions/download.php:rf_build_download_url()`, và AJAX action `get_download_token`.
 
 **Cloudflare purge:** filter `cloudflare_purge_by_url` → `purge_cloudflare_url()` thêm
-`/download/{post_name}-{ID}` cùng `/download/.../{index}` cho mọi file vào danh sách purge.
-URL dựng bằng `site_url()` (đọc `WP_SITEURL` từ `wp-config.php`).
+`.../download/` cùng `.../download/{index}/` cho mọi file vào danh sách purge. URL dựng
+bằng `get_permalink()`.
 
 ### 7.3 Restricted content (field `hide`)
 

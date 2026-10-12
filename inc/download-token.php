@@ -50,9 +50,7 @@ function get_download_token() {
 add_filter('cloudflare_purge_by_url', 'purge_cloudflare_url', 10, 2);
 function purge_cloudflare_url($urls, $post_id) {
 
-    $current_post = get_post($post_id);
-
-    $download_url = site_url( '/download/' . $current_post->post_name . '-' . $post_id );
+    $download_url = trailingslashit( get_permalink( $post_id ) ) . 'download/';
 
     // Add download url
 
@@ -77,7 +75,7 @@ function purge_cloudflare_url($urls, $post_id) {
     }
 
     foreach ( $downloads as $key => $value ) {
-        $urls[] = $download_url . '/' . ($key + 1);
+        $urls[] = $download_url . ($key + 1) . '/';
     }
 
     // send to cloudflare

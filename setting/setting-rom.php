@@ -822,16 +822,20 @@ add_action('parse_query', function ($query) {
 });
 
 /**
- * One rule for every rom: /roms/{console}/{post_name}/.
+ * Rom URLs: /roms/{console}/{post_name}/ and the download endpoint on top of it,
+ * /roms/{console}/{post_name}/download/[{file_index}]/.
  *
- * post_name alone identifies the rom, so the console segment is not matched - that
- * replaces the former one-rule-per-term set (82 rules) and means adding, renaming or
- * deleting a console no longer needs a rewrite flush. A rom reached through the wrong
- * console segment still resolves and redirect_canonical 301s it to its permalink.
- * The lookahead keeps WP's own taxonomy endpoints (/roms/{console}/feed/) reachable.
+ * post_name alone identifies the rom, so the console segment is never matched: these
+ * rules do not depend on the console term list and survive any term change without a
+ * flush. A rom reached through the wrong console segment still resolves and
+ * redirect_canonical 301s it to its permalink. The lookahead on the single rule keeps
+ * WP's own taxonomy endpoints (/roms/{console}/feed/) reachable, and download_file is
+ * 1-based - absent means the page lists every file.
  */
 add_filter('rewrite_rules_array', function ($rules) {
 	$new_rules = array(
+		'roms/[^/]+/([^/]+)/download/([1-9][0-9]*)/?$'    => 'index.php?post_type=rom&name=$matches[1]&download=1&download_file=$matches[2]',
+		'roms/[^/]+/([^/]+)/download/?$'             => 'index.php?post_type=rom&name=$matches[1]&download=1',
 		'roms/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$' => 'index.php?post_type=rom&name=$matches[1]',
 	);
 	

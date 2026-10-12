@@ -390,15 +390,10 @@ function rf_enqueue_tracking_script(): void {
     $track_type = null;
     $post_id = 0;
 
-    // Check for download page with valid file index
+    // Only a single-file download page counts as a download, not the file list.
     if (!empty($wp_query->query_vars['download'])) {
-        $download_slug = sanitize_text_field($wp_query->query_vars['download']);
-        $download_slugs = explode('/', $download_slug);
-        
-        // Only track if file index exists (e.g., /download/slug-123/1)
-        if (!empty($download_slugs[1]) && is_numeric($download_slugs[1])) {
-            preg_match('/-([0-9]+)$/', $download_slugs[0], $matches);
-            $post_id = isset($matches[1]) ? absint($matches[1]) : 0;
+        if (absint(get_query_var('download_file')) > 0) {
+            $post_id = get_queried_object_id();
             if ($post_id > 0) {
                 $track_type = 'download';
             }

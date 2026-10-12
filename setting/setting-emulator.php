@@ -179,13 +179,18 @@ function k_change_emulator_link($post_link, $post, $leavename, $sample) {
 add_filter('post_type_link', 'k_change_emulator_link', 10, 4);
 
 /**
- * One rule for every emulator, mirroring the rom rule. post_name alone identifies
- * the emulator, so the console segment is not matched and the rule never depends on
- * the term list. The archive rules WP generates for emulator_console sit one segment
- * up, and the lookahead leaves their /emulators/{console}/feed/ endpoints alone.
+ * Emulator URLs, mirroring the rom rules: /emulators/{console}/{post_name}/ and the
+ * download endpoint /emulators/{console}/{post_name}/download/[{file_index}]/.
+ *
+ * post_name alone identifies the emulator, so the console segment is never matched and
+ * the rules never depend on the term list. The archive rules WP generates for
+ * emulator_console sit one segment up, and the lookahead on the single rule leaves
+ * their /emulators/{console}/feed/ endpoints alone.
  */
 add_filter('rewrite_rules_array', function ($rules) {
 	$new_rules = array(
+		'emulators/[^/]+/([^/]+)/download/([1-9][0-9]*)/?$'    => 'index.php?post_type=emulator&name=$matches[1]&download=1&download_file=$matches[2]',
+		'emulators/[^/]+/([^/]+)/download/?$'             => 'index.php?post_type=emulator&name=$matches[1]&download=1',
 		'emulators/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$' => 'index.php?post_type=emulator&name=$matches[1]',
 	);
 

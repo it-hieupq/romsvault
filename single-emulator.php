@@ -99,11 +99,11 @@ while ( have_posts() ) : the_post();
                         </div>
 
 	                    <?php if ( get_field('download_list', $post->ID) || get_field('download_list_aff', $post->ID) ) :
-			                    $download_slug = $post->post_name . '-' . $post->ID;
+			                    $download_url = trailingslashit( get_permalink( $post ) ) . 'download/';
 			                    $rf_restricted = rf_is_restricted( $post->ID );
 			                    if ( $rf_restricted ) rf_render_restricted_notice(); ?>
                                 <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
-                                    <a href="<?php echo home_url( 'download/' . $download_slug ); ?>"
+                                    <a href="<?php echo esc_url( $download_url ); ?>"
                                        class="inline-block px-8 py-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold">
 				                        <?php echo get_svg_icon('save') . __( 'Download Emulator', 'rom' ) ?>
                                     </a>

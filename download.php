@@ -6,34 +6,19 @@
  * @package romsvault
  */
 
-// Validate download query var exists
-global $wp_query;
-if ( empty( $wp_query->query_vars['download'] ) ) {
+// The rewrite rule resolves the post itself, so the queried object IS the download
+// target. $file_number is 1-based; 0 means "list every file".
+$post = get_queried_object();
+if ( ! $post instanceof WP_Post || ! valid_downloadable_post_type( $post->post_type ) ) {
     wp_redirect( home_url() );
     exit;
 }
 
-$download_slug  = sanitize_text_field( $wp_query->query_vars['download'] );
-$download_slugs = explode( '/', $download_slug );
+$post_id       = $post->ID;
+$file_number   = absint( get_query_var( 'download_file' ) );
+$download_base = trailingslashit( get_permalink( $post_id ) ) . 'download/';
 
 get_header();
-
-// Validate and extract post ID from slug
-if ( empty( $download_slugs[0] ) || ! preg_match( '/-([0-9]+)$/', $download_slugs[0], $matches ) ) {
-    get_template_part( 'template-parts/content-none' );
-    get_footer();
-    exit;
-}
-
-$post_id = absint( $matches[1] );
-
-// Validate post exists and is ROM type
-$post = get_post( $post_id );
-if ( ! $post || $post->post_status !== 'publish' || ! valid_downloadable_post_type( $post->post_type ) ) {
-    get_template_part( 'template-parts/content-none' );
-    get_footer();
-    exit;
-}
 
 // Get download lists
 $normal_downloads = get_field( 'download_list', $post_id );
@@ -131,7 +116,7 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
 
 <?php
 // Display download lists if no specific file is selected
-if ( empty( $download_slugs[1] ) ) :
+if ( ! $file_number ) :
     // Normal downloads section
     if ( is_array( $normal_downloads ) && ! empty( $normal_downloads ) ) :
         ?>
@@ -160,7 +145,7 @@ if ( empty( $download_slugs[1] ) ) :
                                 <tr class="odd:bg-gray-100">
                                     <td class="pl-4 py-2 rounded-l-full font-semibold text-romfun-pink">
                                         <a target="_blank"
-                                           href="<?php echo esc_url( home_url( 'download/' . $download_slug . '/' . $file_index ) ); ?>"
+                                           href="<?php echo esc_url( $download_base . $file_index . '/' ); ?>"
                                            class="hover:underline">
                                             <?php echo $value['name'] . ' ' . get_svg_icon( 'open' ); ?>
                                         </a>
@@ -211,7 +196,7 @@ if ( empty( $download_slugs[1] ) ) :
                                 <tr class="odd:bg-gray-100">
                                     <td class="pl-4 py-2 rounded-l-full font-semibold text-romfun-pink">
                                         <a target="_blank"
-                                           href="<?php echo esc_url( home_url( 'download/' . $download_slug . '/' . $file_index ) ); ?>"
+                                           href="<?php echo esc_url( $download_base . $file_index . '/' ); ?>"
                                            class="hover:underline">
                                             <?php echo $value['name'] . ' ' . get_svg_icon( 'open' ); ?>
                                         </a>
@@ -234,8 +219,8 @@ if ( empty( $download_slugs[1] ) ) :
     endif;
 
 // Display download page for specific file
-elseif ( isset( $download_slugs[1] ) ) :
-    $file_index = absint( $download_slugs[1] ) - 1;
+elseif ( $file_number ) :
+    $file_index = $file_number - 1;
 
     // Validate file index
     if ( ! isset( $downloads[ $file_index ] ) || empty( $downloads[ $file_index ]['url'] ) ) {
@@ -284,7 +269,7 @@ elseif ( isset( $download_slugs[1] ) ) :
                 <h1 class="text-base font-bold text-gray-500 py-4 text-center">
                     <?php echo esc_html( __( 'You are downloading', 'rom' ) . ' ' . $file_name . ' (' . $file_type . ')'); ?>
                 </h1>
-                <div id="download-container" class="text-center py-6" data-ajax-url="<?php echo esc_attr( admin_url('admin-ajax.php') ); ?>">
+                <div id="download-container" class="text-center py-6" data-ajax-url="<?php echo esc_attr( admin_url('admin-ajax.php') ); ?>" data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $file_number ); ?>">
                     <?php if ( $rf_members ) : ?>
                     <!-- Restricted: countdown + button are for active members only (guests/blocked
                          see the notice below). Wrap them here rather than putting rf-authed-only on
@@ -312,7 +297,7 @@ elseif ( isset( $download_slugs[1] ) ) :
                     <div id="download-button" class="hidden">
                         <a href="<?php echo $rf_members ? '#' : esc_url( $download_url ); ?>"
                            id="download-link"
-                           <?php if ( $rf_members ) : ?>data-rf-download data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $download_slugs[1] ); ?>"<?php endif; ?>
+                           <?php if ( $rf_members ) : ?>data-rf-download data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $file_number ); ?>"<?php endif; ?>
                            class="inline-flex items-center justify-center px-6 py-4 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
                            rel="nofollow">
                             <?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'rom' ). ' ' . ' (' . $file_size . ')'; ?>
@@ -398,7 +383,6 @@ elseif ( isset( $download_slugs[1] ) ) :
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $base_slug = $download_slugs[0]; // Use only the post slug, not the full download slug
                                     foreach ( $normal_downloads as $key => $value ) :
                                         // Skip if this is the current file being downloaded (only if it's a normal file)
                                         if ( ( $file_index < $normal_count && $key === $file_index ) || empty( $value['name'] ) || empty( $value['url'] ) ) {
@@ -408,7 +392,7 @@ elseif ( isset( $download_slugs[1] ) ) :
                                         ?>
                                         <tr>
                                             <td class="text-romfun-pink font-semibold py-2">
-                                                <a href="<?php echo esc_url( home_url( 'download/' . $base_slug . '/' . $other_file_index ) ); ?>"
+                                                <a href="<?php echo esc_url( $download_base . $other_file_index . '/' ); ?>"
                                                    class="hover:underline">
                                                     <?php echo esc_html( $value['name'] ); ?>
                                                 </a>
@@ -443,7 +427,6 @@ elseif ( isset( $download_slugs[1] ) ) :
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $base_slug = $download_slugs[0]; // Use only the post slug, not the full download slug
                                     foreach ( $aff_downloads as $key => $value ) :
                                         $aff_index = $key + $normal_count;
                                         if ( $aff_index === $file_index || empty( $value['name'] ) || empty( $value['url'] ) ) {
@@ -453,7 +436,7 @@ elseif ( isset( $download_slugs[1] ) ) :
                                         ?>
                                         <tr>
                                             <td class="text-romfun-pink font-semibold py-2">
-                                                <a href="<?php echo esc_url( home_url( 'download/' . $base_slug . '/' . $other_file_index ) ); ?>"
+                                                <a href="<?php echo esc_url( $download_base . $other_file_index . '/' ); ?>"
                                                    class="hover:underline">
                                                     <?php echo esc_html( $value['name'] ); ?>
                                                 </a>

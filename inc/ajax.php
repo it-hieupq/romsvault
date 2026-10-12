@@ -20,42 +20,13 @@ add_action( 'wp_ajax_k_update_post_views', 'k_update_post_views' );
  */
 function k_get_download() {
 	AppSecurity::set_security_headers();
-	// Parse URL from HTTP_REFERER or REQUEST_URI
-	$url_to_parse = '';
-	if ( isset( $_SERVER['HTTP_REFERER'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-		$url_to_parse = $_SERVER['HTTP_REFERER'];
-	} elseif ( isset( $_SERVER['REQUEST_URI'] ) && ! empty( $_SERVER['REQUEST_URI'] ) ) {
-		$url_to_parse = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-	}
-	
-	// Validate URL exists
-	if ( empty( $url_to_parse ) ) {
-		wp_send_json_error( array( 'message' => __( 'Unable to parse download URL.', 'rom' ) ) );
-	}
-	
-	// Extract download slug from URL
-	$prefix = '/download/';
-	$prefix_pos = strpos( $url_to_parse, $prefix );
-	
-	if ( $prefix_pos === false ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid download URL format.', 'rom' ) ) );
-	}
-	
-	$download_slug = substr( $url_to_parse, $prefix_pos + strlen( $prefix ) );
-	$download_slugs = explode( '/', $download_slug );
-	
-	// Validate and extract post ID from slug
-	if ( empty( $download_slugs[0] ) || ! preg_match( '/-([0-9]+)$/', $download_slugs[0], $matches ) ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid post ID in URL.', 'rom' ) ) );
-	}
-	
-	$post_id = absint( $matches[1] );
-	
-	// Validate post_id is positive
-	if ( $post_id <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'rom' ) ) );
-	}
-	
+	$_POST = AppSecurity::validate_input( $_POST );
+
+	// The download page posts its own target: post id + 1-based file index. Both come
+	// from data attributes on #download-container, not from the referer.
+	$post_id     = AppSecurity::validate_number( $_POST['post_id'] ?? 0 );
+	$file_number = absint( $_POST['file'] ?? 0 );
+
 	// Validate post exists and is published
 	$post = get_post( $post_id );
 	if ( ! $post || $post->post_status !== 'publish' ) {
@@ -93,12 +64,11 @@ function k_get_download() {
 		wp_send_json_error( array( 'message' => __( 'No download links available.', 'rom' ) ) );
 	}
 	
-	// Extract file index from URL
-	if ( empty( $download_slugs[1] ) ) {
-		wp_send_json_error( array( 'message' => __( 'File index not specified in URL.', 'rom' ) ) );
+	if ( $file_number <= 0 ) {
+		wp_send_json_error( array( 'message' => __( 'File index not specified.', 'rom' ) ) );
 	}
-	
-	$file_index = absint( $download_slugs[1] ) - 1;
+
+	$file_index = $file_number - 1;
 	
 	// Validate file index is in range
 	if ( ! isset( $downloads[ $file_index ] ) || empty( $downloads[ $file_index ]['url'] ) ) {

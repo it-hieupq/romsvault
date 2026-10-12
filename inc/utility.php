@@ -105,14 +105,9 @@ add_filter( 'wpseo_robots', 'k_add_noindex_to_download', 10, 1 );
 /**
  * Remove canonical from download 
  */
-function k_remove_canonical_from_download( $canonical ) { 
-    global $wp_query;
-    if ( ! empty( $wp_query->query_vars['download'] ) ) {
-        $download_slug = $wp_query->query_vars['download'];
-        $download_slugs = explode('/', $download_slug);
-        if ( preg_match('/-([0-9]+)$/', $download_slugs[0], $matches) ) {
-            $canonical = get_the_permalink($matches[1]);
-        }
+function k_remove_canonical_from_download( $canonical ) {
+    if ( get_query_var( 'download' ) ) {
+        $canonical = get_permalink( get_queried_object_id() );
     }
     return $canonical;
 }
@@ -122,14 +117,11 @@ add_filter( 'wpseo_canonical', 'k_remove_canonical_from_download', 99, 1 );
  * Add download title
  */
 function k_change_download_title($title) {
-    global $wp_query;
-    if ( ! empty( $wp_query->query_vars['download'] ) ) {
-        $download_slug = $wp_query->query_vars['download'];
-        $download_slugs = explode('/', $download_slug);
-        if ( ! preg_match('/-([0-9]+)$/', $download_slugs[0], $matches) ) {
+    if ( get_query_var( 'download' ) ) {
+        $post_id = get_queried_object_id();
+        if ( ! $post_id ) {
             return $title;
         }
-        $post_id = $matches[1];
 
         if ( get_field('download_title', $post_id) ) {
             $title = get_field('download_title', $post_id);
@@ -153,15 +145,10 @@ add_filter('wpseo_title', 'k_change_download_title');
  * Add download description
  */
 function k_change_download_desc($desc) {
-    global $wp_query;
-    if ( ! empty( $wp_query->query_vars['download'] ) ) {
-        $download_slug = $wp_query->query_vars['download'];
-        $download_slugs = explode('/', $download_slug);
-        if ( preg_match('/-([0-9]+)$/', $download_slugs[0], $matches) ) {
-            $custom_desc = get_field('_yoast_wpseo_metadesc', $matches[1]);
-            if ( ! empty( $custom_desc ) ) {
-                $desc = $custom_desc;
-            }
+    if ( get_query_var( 'download' ) ) {
+        $custom_desc = get_field('_yoast_wpseo_metadesc', get_queried_object_id());
+        if ( ! empty( $custom_desc ) ) {
+            $desc = $custom_desc;
         }
     }
     return $desc;
@@ -169,18 +156,23 @@ function k_change_download_desc($desc) {
 add_filter('wpseo_metadesc', 'k_change_download_desc');
 
 /**
- * Add download endpoint
+ * Query vars of the download endpoint. The rules that set them live next to the single
+ * rule of each post type (setting/setting-rom.php, setting/setting-emulator.php):
+ * /roms/{console}/{post_name}/download/[{file_index}]/ resolves the post itself and
+ * adds download=1, plus download_file for a single file (1-based).
  */
-function k_add_download_endpoint() {
-    add_rewrite_endpoint( 'download', EP_ROOT );
-}
-add_action( 'init', 'k_add_download_endpoint' );
+add_filter( 'query_vars', function ( $vars ) {
+    $vars[] = 'download';
+    $vars[] = 'download_file';
+    return $vars;
+} );
 
 /**
- * /download/* and the member pages are query-var routes, not real WP queries, so
- * canonical redirection would send them somewhere else. Cancel it for those two
- * only: everywhere else WP keeps normalising URLs (trailing slash, a rom reached
- * through the wrong console segment, ...).
+ * The download endpoint resolves to its own rom/emulator, so canonical redirection
+ * would send /.../download/ back to the post permalink; the member pages are query-var
+ * routes with no post behind them at all. Cancel it for those two only: everywhere else
+ * WP keeps normalising URLs (trailing slash, a rom reached through the wrong console
+ * segment, ...).
  */
 add_filter( 'redirect_canonical', function ( $redirect_url ) {
     if ( get_query_var( 'download' ) || get_query_var( 'rf_page' ) ) {
@@ -190,13 +182,11 @@ add_filter( 'redirect_canonical', function ( $redirect_url ) {
 } );
 
 function k_download_template_redirect() {
-    global $wp_query;
-
-    if ( empty( $wp_query->query_vars['download'] ) ) {
+    // A slug that matches no post keeps WP's own 404 instead of the download page.
+    if ( ! get_query_var( 'download' ) || is_404() ) {
         return;
-    }   
+    }
 
-    $wp_query->is_404 = false;
     require get_template_directory() . '/download.php';
     exit;
 }

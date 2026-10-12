@@ -150,7 +150,7 @@ Field duy nhất: `home_content` (**flexible_content**)
 
 **Index ở URL download là 1-based.** `rf_build_download_url()` và `download.php` merge
 `download_list` + `download_list_aff` (đúng thứ tự đó) rồi index vào mảng **đã merge** ⇒
-**đổi thứ tự hoặc số lượng item sẽ làm lệch mọi URL `/download/.../{n}` đã chia sẻ.**
+**đổi thứ tự hoặc số lượng item sẽ làm lệch mọi URL `.../download/{n}/` đã chia sẻ.**
 
 ---
 

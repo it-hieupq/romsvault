@@ -1088,6 +1088,15 @@ function showCopyMessage(buttonElement) {
             console.error('AJAX URL not available');
             return;
         }
+
+        // The page carries its own download target; the server no longer reads the referer.
+        const postId = downloadContainer.getAttribute('data-post');
+        const fileNumber = downloadContainer.getAttribute('data-file');
+
+        if (!postId || !fileNumber) {
+            console.error('Download target not available');
+            return;
+        }
         
         // Call AJAX immediately when page loads
         (function() {
@@ -1117,7 +1126,7 @@ function showCopyMessage(buttonElement) {
                 console.error('Failed to load download link');
             };
             
-            xhr.send('action=k_get_download');
+            xhr.send('action=k_get_download&post_id=' + encodeURIComponent(postId) + '&file=' + encodeURIComponent(fileNumber));
         })();
         
         // Update countdown every second

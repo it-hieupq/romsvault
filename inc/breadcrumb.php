@@ -88,7 +88,7 @@ function k_breadcrumb() {
             ?>
             <li class="flex items-center"><span class="text-gray-500"><?php echo $custom_tax_name; ?></span></li>
             <?php
-        } else if (is_single()) {
+        } else if (is_single() && empty($wp_query->query_vars['download'])) {
 
             // If post is a custom post type
             $post_type = get_post_type();
@@ -195,10 +195,7 @@ function k_breadcrumb() {
                 <?php
             }
         } else if (!empty($wp_query->query_vars['download'])) {
-            $download_slug = $wp_query->query_vars['download'];
-            $download_slugs = explode('/', $download_slug);
-            preg_match('/-([0-9]+)$/', $download_slugs[0], $matches);
-            $post_id = $matches[1];
+            $post_id = get_queried_object_id();
 
             // Get post type and corresponding taxonomy
             $post = get_post($post_id);
