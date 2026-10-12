@@ -567,14 +567,6 @@ function k_init_rom() {
 				'return_format' => 'url',
 			),
 			array (
-				'label' => __( 'Original Slug', 'rom' ),
-				'key' 	=> 'console_original_slug',
-				'name' 	=> 'console_original_slug',
-				'type' 	=> 'text',
-				'show_column' 		 => 1,
-				'show_column_weight' => 510,
-			),
-			array (
 				'key' 	=> 'console_rom_downloads',
 				'label' => __( 'Downloads', 'rom' ),
 				'name' 	=> 'console_rom_downloads',
@@ -829,27 +821,19 @@ add_action('parse_query', function ($query) {
 	$query->set('meta_query', $meta_query);
 });
 
+/**
+ * One rule for every rom: /roms/{console}/{post_name}/.
+ *
+ * post_name alone identifies the rom, so the console segment is not matched - that
+ * replaces the former one-rule-per-term set (82 rules) and means adding, renaming or
+ * deleting a console no longer needs a rewrite flush. A rom reached through the wrong
+ * console segment still resolves and redirect_canonical 301s it to its permalink.
+ * The lookahead keeps WP's own taxonomy endpoints (/roms/{console}/feed/) reachable.
+ */
 add_filter('rewrite_rules_array', function ($rules) {
-	$terms = get_terms(array(
-		'taxonomy' => 'console',
-		'hide_empty' => false,
-	));
-	
-	if (is_wp_error($terms) || empty($terms)) {
-		return $rules;
-	}
-	
-	$new_rules = array();
-	
-	foreach ($terms as $term) {
-		$term_slug = get_field('console_original_slug', 'term_' . $term->term_id);
-		
-		// Sử dụng console_original_slug nếu có, nếu không thì fallback về slug mặc định
-		$console_slug = !empty($term_slug) ? sanitize_title($term_slug) : $term->slug;
-		
-		// Tạo rewrite rule riêng cho từng console
-		$new_rules['roms/' . $console_slug . '/([^/]*)\.html$'] = 'index.php?post_type=rom&name=$matches[1]';
-	}
+	$new_rules = array(
+		'roms/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$' => 'index.php?post_type=rom&name=$matches[1]',
+	);
 	
 	return $new_rules + $rules;
 });
@@ -878,6 +862,12 @@ function k_rewrite_type_taxonomy_link($wp_rewrite) {
 }
 add_filter('generate_rewrite_rules', 'k_rewrite_type_taxonomy_link');
 
+// Those rules are generated per type term, so a new, renamed or deleted term has no
+// root-level rule until the rewrite rules are rebuilt.
+add_action( 'created_type', 'flush_rewrite_rules', 10, 0 );
+add_action( 'edited_type', 'flush_rewrite_rules', 10, 0 );
+add_action( 'delete_type', 'flush_rewrite_rules', 10, 0 );
+
 add_filter('preview_post_link', function($preview_link, $post) {
 	if ($post->post_type === 'rom') {
 		return add_query_arg([
@@ -900,14 +890,7 @@ add_filter('post_type_link', function ($permalink, $post, $leavename = false, $s
 		return $permalink;
 	}
 
-	$term = $terms[0];
-	$term_id = $term->term_id;
-	
-	// Get console_original_slug from ACF field (using 'term_' format)
-	$console_original_slug = get_field('console_original_slug', 'term_' . $term_id);
-	
-	// Use console_original_slug if exists, otherwise fallback to default slug
-	$console_slug = !empty($console_original_slug) ? sanitize_title($console_original_slug) : $term->slug;
+	$console_slug = $terms[0]->slug;
 
 	if ($leavename) {
 		$post_name = '%postname%';
@@ -920,7 +903,7 @@ add_filter('post_type_link', function ($permalink, $post, $leavename = false, $s
 		}
 	}
 
-	return home_url( 'roms/' . $console_slug . '/' . $post_name . '.html' );
+	return home_url( 'roms/' . $console_slug . '/' . $post_name . '/' );
 
 }, 10, 4);
 

@@ -172,10 +172,22 @@ add_filter('wpseo_metadesc', 'k_change_download_desc');
  * Add download endpoint
  */
 function k_add_download_endpoint() {
-    remove_action('template_redirect', 'redirect_canonical');
     add_rewrite_endpoint( 'download', EP_ROOT );
 }
 add_action( 'init', 'k_add_download_endpoint' );
+
+/**
+ * /download/* and the member pages are query-var routes, not real WP queries, so
+ * canonical redirection would send them somewhere else. Cancel it for those two
+ * only: everywhere else WP keeps normalising URLs (trailing slash, a rom reached
+ * through the wrong console segment, ...).
+ */
+add_filter( 'redirect_canonical', function ( $redirect_url ) {
+    if ( get_query_var( 'download' ) || get_query_var( 'rf_page' ) ) {
+        return false;
+    }
+    return $redirect_url;
+} );
 
 function k_download_template_redirect() {
     global $wp_query;
@@ -515,38 +527,17 @@ function rom_exists($title, $console_id)
 
 }
 
-function disable_cache()
-{
-
-    if (!defined('LSCACHE_NO_CACHE')) {
-        define('LSCACHE_NO_CACHE', true);
-    }
-
-    header('cache-control: no-cache, must-revalidate, max-age=0');
-    header('cf-apo-via: origin,page-rules');
-    header('cf-edge-cache: no-cache');
-
-}
-
 add_action( 'template_redirect', 'handle_hide_urls' );
 function handle_hide_urls() {
 
-    if ( is_single() ) :
-        $hide_type = get_field( 'hide' );
-        if ( $hide_type == 'download' || $hide_type == 'all' ) {
-            disable_cache();
+    if ( ! is_single() ) {
+        return;
+    }
 
-            if ( $hide_type == 'all' && ! wp_is_mobile() ) {
-                global $wp_query;
-                $wp_query->set_404();
-            }
-        }
-
-        if ( isset( $_GET['hide']  ) && $_GET['hide'] == 1 ) {
-            update_field( 'hide', 'restricted', get_the_ID() );
-        }
-
-    endif;
+    // Editor shortcut: ?hide=1 on a single flips it to restricted.
+    if ( isset( $_GET['hide'] ) && $_GET['hide'] == 1 && current_user_can( 'edit_post', get_the_ID() ) ) {
+        update_field( 'hide', 'restricted', get_the_ID() );
+    }
 }
 
 // Find "Hack" - /wp-admin/edit.php?post_type=rom&find_hack=1

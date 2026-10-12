@@ -24,9 +24,9 @@ function k_init_emulator() {
 			'has_archive' 		=> false,
 		'show_in_rest'      => true,
 		'supports' 			=> array('title', 'editor', 'thumbnail', 'comments'),
-		'rewrite' 			=> array(
-				'slug' 			=> 'emulators/%console%',
-			),
+		// The permalink (post_type_link) and the single rule are built by this file,
+		// exactly as for rom, so WP must not generate any rule for this post type.
+		'rewrite' 			=> false,
 		)
 	);
 
@@ -52,7 +52,11 @@ function k_init_emulator() {
 			'public'            	=> true,
 			'show_admin_column' 	=> true,
 			'show_in_rest'			=> true,
-			'rewrite' 				=> array('slug' => 'emulator-console', 'hierarchical' => true),
+			'rewrite' 				=> array(
+				'slug'         => 'emulators',
+				'with_front'   => false,
+				'hierarchical' => false,
+			),
 		) 
 	);
 
@@ -148,61 +152,42 @@ add_filter('manage_emulator_posts_columns', 'k_emulator_columns_head');
 add_action('manage_emulator_posts_custom_column', 'k_emulator_columns_content', 10, 2);
 
 /**
- * Rewrite emulator_console link
- */
-function k_rewrite_emulator_console_link($wp_rewrite) {
-    $terms = get_terms( array(
-        'taxonomy' 	 => 'emulator_console',
-        'hide_empty' => false,
-    ) );
-    if ( ! empty($terms) ) {
-	    foreach ( $terms as $term ) {
-	        $rules['emulators/' . $term->slug . '/?$'] = 'index.php?' . $term->taxonomy . '=' . $term->slug;
-	        $rules['emulators/' . $term->slug . '/page/?([0-9]{1,})/?$'] = 'index.php?' . $term->taxonomy . '=' . $term->slug . '&paged=' . $wp_rewrite->preg_index( 1 );
-		}
-
-	    // merge with global rules
-	    $wp_rewrite->rules = $rules + $wp_rewrite->rules;	
-	}
-}
-add_filter('generate_rewrite_rules', 'k_rewrite_emulator_console_link');
-
-add_filter('term_link', 'k_change_emulator_console_link', 10, 3);
-function k_change_emulator_console_link( $url, $term, $taxonomy ) {
-	if ( $taxonomy == 'emulator_console' )
-		return home_url('emulators/' . $term->slug);
-	else 
-		return $url;
-}
-
-/**
- * Change emulator link
+ * Emulator permalink: /emulators/{emulator_console}/{post_name}/.
+ *
+ * The post type has rewrite => false, so WP hands us ?emulator={slug} here and the
+ * first emulator_console term supplies the console segment. An emulator with no term
+ * keeps that query-var URL, which still resolves.
  */
 function k_change_emulator_link($post_link, $post, $leavename, $sample) {
-	$terms = get_the_terms( $post->ID, 'emulator_console' );
-    if ( ! is_wp_error($terms) && ! empty($terms) ) {
-    	$term_slug = $terms[0]->slug;
-    	if ( ! empty($terms[0]->parent) )
-    		$term_slug = get_term($terms[0]->parent)->slug . '/' . $term_slug;
-		
-		if ( ! empty($post->post_name) ) {
-			$post_link = home_url( 'emulators/' . ( $leavename ? '%postname%' : $post->post_name ) . '.html' );
-		}
+	if ( $post->post_type !== 'emulator' ) {
+		return $post_link;
 	}
 
-	return $post_link;
+	$terms = get_the_terms( $post->ID, 'emulator_console' );
+	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		return $post_link;
+	}
+
+	// %emulator% is the token get_sample_permalink() expects for this post type.
+	$post_name = $leavename ? '%emulator%' : $post->post_name;
+	if ( empty( $post_name ) ) {
+		return $post_link;
+	}
+
+	return home_url( 'emulators/' . $terms[0]->slug . '/' . $post_name . '/' );
 }
 add_filter('post_type_link', 'k_change_emulator_link', 10, 4);
 
 /**
- * Single rule for /emulators/{post_name}.html. The pattern does not depend on any
- * emulator_console term, so it is added unconditionally.
+ * One rule for every emulator, mirroring the rom rule. post_name alone identifies
+ * the emulator, so the console segment is not matched and the rule never depends on
+ * the term list. The archive rules WP generates for emulator_console sit one segment
+ * up, and the lookahead leaves their /emulators/{console}/feed/ endpoints alone.
  */
-function rewrite_emulator_link($rules) {
+add_filter('rewrite_rules_array', function ($rules) {
 	$new_rules = array(
-		'emulators/([^/]*)\.html$' => 'index.php?post_type=emulator&name=$matches[1]',
+		'emulators/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$' => 'index.php?post_type=emulator&name=$matches[1]',
 	);
 
 	return $new_rules + $rules;
-}
-add_filter('rewrite_rules_array', 'rewrite_emulator_link');
+});
