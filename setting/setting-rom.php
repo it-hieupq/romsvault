@@ -116,6 +116,30 @@ function k_init_rom() {
 	);
 
 	/**
+	 * Add language taxonomy
+	 */
+	register_taxonomy('language', array('rom'),
+		array(
+			'labels'            => array(
+				'name'              => __( 'Language', 'rom' ),
+				'singular_name'     => __( 'Language', 'rom' ),
+				'search_items'      => __( 'Search Language', 'rom' ),
+				'all_items'         => __( 'All Language', 'rom' ),
+				'parent_item'       => __( 'Parent Language', 'rom' ),
+				'parent_item_colon' => __( 'Parent Language:', 'rom' ),
+				'edit_item'         => __( 'Edit Language', 'rom' ),
+				'update_item'       => __( 'Update Language', 'rom' ),
+				'add_new_item'      => __( 'Add Language', 'rom' ),
+				'new_item_name'     => __( 'Language Name', 'rom' ),
+				'menu_name'         => __( 'Language', 'rom' ),
+			),
+			'hierarchical'      	=> true,
+			'public'            	=> true,
+            'rewrite' 				=> array('hierarchical' => false),
+		) 
+	);
+
+	/**
 	 * Add genre taxonomy
 	 */
 	register_taxonomy('genre', array('rom'), 
@@ -918,38 +942,6 @@ add_filter('term_link', function ($termlink, $term, $taxonomy) {
 	}
 	return $termlink;
 }, 10, 3);
-
-// 301 redirect from old URL /type/term-name/ to new URL /term-name/
-add_action('template_redirect', function() {
-	// Only process on frontend, not admin
-	if (is_admin() || wp_doing_ajax() || wp_doing_cron()) {
-		return;
-	}
-	
-	$request_uri = $_SERVER['REQUEST_URI'];
-	$parsed_url = parse_url($request_uri);
-	$path = isset($parsed_url['path']) ? trim($parsed_url['path'], '/') : '';
-	
-	// Check if URL starts with 'type/'
-	if (preg_match('#^type/([^/]+)(/.*)?$#', $path, $matches)) {
-		$term_slug = $matches[1];
-		$remaining_path = isset($matches[2]) ? $matches[2] : '';
-		
-		// Check if term exists
-		$term = get_term_by('slug', $term_slug, 'type');
-		if ($term && !is_wp_error($term)) {
-			$new_url = home_url('/' . $term_slug . $remaining_path);
-			
-			// add query string if exists
-			if (!empty($parsed_url['query'])) {
-				$new_url .= '?' . $parsed_url['query'];
-			}
-			
-			wp_redirect($new_url, 301);
-			exit;
-		}
-	}
-}, 1); // Priority 1 to run early
 
 add_action('after_switch_theme', function () {
 	flush_rewrite_rules();
