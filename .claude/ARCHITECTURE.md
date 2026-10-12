@@ -110,16 +110,12 @@ Taxonomy: `console`, `collection`, `region`, `genre`, `dev`, `pub`, `type`
 |---|---|
 | `public` | `true` |
 | `has_archive` | `false` |
-| `rewrite` | `slug: emulators/%console%` |
+| `rewrite` | **`false`** — URL dựng hoàn toàn bằng filter (§ 5.4) |
 | `supports` | `title`, `editor`, `thumbnail`, **`comments`** |
 | `show_in_rest` | `true` |
 | `menu_position` / `menu_icon` | `5` / `dashicons-album` |
 
 Taxonomy: `emulator_console`, `os`
-
-> Tag `%console%` trong `rewrite.slug` **chưa bao giờ được register** bằng
-> `add_rewrite_tag()`. Vô hại vì `post_type_link` (`k_change_emulator_link()`) ghi đè
-> permalink thành `/emulators/{slug}.html`, nhưng là cấu hình chết — đừng dựa vào nó.
 
 ---
 
@@ -141,17 +137,16 @@ Taxonomy: `emulator_console`, `os`
 
 | Taxonomy | `hierarchical` | `rewrite` | Template |
 |---|---|---|---|
-| `emulator_console` | `true` | `slug: emulator-console` → **`term_link` ghi đè thành `/emulators/{slug}`** | `taxonomy-emulator_console.php` |
+| `emulator_console` | `true` | `slug: emulators`, `with_front: false`, `hierarchical: false` | `taxonomy-emulator_console.php` |
 | `os` | `true` | default, `hierarchical: true` | `taxonomy.php` |
 
 ### 4.3 `console` có `default_term` — mọi `rom` luôn có console
 
 `console` đăng kèm `'default_term' => [ 'name' => 'Unknown', 'slug' => 'unknown' ]`.
 
-Lý do: `console` **là** thứ dựng permalink ROM (`post_type_link`) và sinh rewrite rules
-per-term, nên một `rom` không có console thì không có URL dùng được — permalink rơi về
-dạng query và không khớp rule `.html` nào, breadcrumb trống, `rom_exists()` mất khả năng
-chống trùng.
+Lý do: `console` **là** thứ dựng permalink ROM (`post_type_link`), nên một `rom` không có
+console thì không có URL dùng được — permalink rơi về dạng query, breadcrumb trống,
+`rom_exists()` mất khả năng chống trùng.
 
 - WP tạo term này **ngay trong `register_taxonomy()`** (không lazy) và lưu
   `wp_options.default_term_console`.
@@ -159,7 +154,7 @@ chống trùng.
   (`wp_insert_post()` của `k_grabber_multi`) — khác với validation ở tầng form, vốn chỉ
   chặn được editor.
 - ⚠️ Nó **không chặn** sai sót, chỉ đảm bảo URL hợp lệ. ROM thiếu console vẫn publish êm
-  tại `/roms/unknown/{slug}.html` và search engine index được.
+  tại `/roms/unknown/{slug}/` và search engine index được.
   Soi tồn đọng: `edit.php?post_type=rom&console=unknown`.
 
 ---
@@ -170,11 +165,11 @@ chống trùng.
 
 | Nội dung | URL |
 |---|---|
-| ROM single | `/roms/{console_original_slug \|\| console_slug}/{post_name}.html` |
+| ROM single | `/roms/{console_slug}/{post_name}/` |
 | Console archive | `/roms/{console_slug}/` |
 | Collection | `/collection/{slug}/` |
 | Type archive | `/{type_slug}/` — **không prefix** |
-| Emulator single | `/emulators/{post_name}.html` |
+| Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
 | Emulator console archive | `/emulators/{slug}/` (+ `/page/{n}/`) |
 | Download | `/download/{post_name}-{post_id}[/{file_index}]` |
 | Member | `/wishlist/` · `/profile/` · `/request/` |
@@ -184,18 +179,20 @@ chống trùng.
 
 Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 
-1. **`rewrite_rules_array`** — lặp **mọi** term `console`, đọc ACF `console_original_slug`
-   (fallback `$term->slug`), sinh **một rule riêng cho từng console**:
+1. **`rewrite_rules_array`** — **một rule duy nhất** cho mọi ROM:
    ```
-   roms/{console_slug}/([^/]*)\.html$   →   index.php?post_type=rom&name=$matches[1]
+   roms/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$   →   index.php?post_type=rom&name=$matches[1]
    ```
-2. **`post_type_link`** — dựng permalink theo chiều ngược lại từ term `console` đầu tiên
-   của post. Post không có term `console` → trả permalink gốc.
+   Segment console **không được match** — `post_name` một mình đã xác định ROM. Rule vì thế
+   không phụ thuộc danh sách term: thêm, đổi tên hay xoá console **không cần flush**.
+   Lookahead giữ nguyên endpoint taxonomy `/roms/{console}/feed/` và `/embed/`.
+2. **`post_type_link`** — dựng permalink từ slug của term `console` đầu tiên của post.
+   Post không có term `console` → trả permalink gốc.
 3. **`preview_post_link`** — ROM preview chuyển sang `?post_type=rom&p={ID}&preview=true`,
-   vì rule `.html` không khớp bản nháp.
+   vì rule trên không khớp bản nháp.
 
-> ⚠️ Vì rule được sinh **per-term**, mỗi lần thêm/sửa console hoặc đổi
-> `console_original_slug` đều **phải flush rewrite rules**, nếu không URL mới trả 404.
+> ROM truy cập qua segment console **sai** vẫn resolve, rồi `redirect_canonical` 301 về
+> permalink đúng (§ 5.5).
 
 ### 5.3 Taxonomy `type` — chiếm URL gốc
 
@@ -210,13 +207,20 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 
 ### 5.4 Emulator
 
-Trong `setting/setting-emulator.php`:
+Đối xứng với ROM. Trong `setting/setting-emulator.php`:
 
-- **`generate_rewrite_rules`** → `k_rewrite_emulator_console_link()`: `emulators/{slug}/`
-  + pagination cho mỗi term.
-- **`rewrite_rules_array`** → `rewrite_emulator_link()`: thêm `emulators/([^/]*)\.html$`.
-- **`term_link`** → `/emulators/{slug}` (bỏ prefix `emulator-console`).
-- **`post_type_link`** → `/emulators/{post_name}.html`.
+- **CPT `rewrite: false`** ⇒ WP không sinh rule nào cho post type này.
+- **Taxonomy `emulator_console` mang thẳng prefix `emulators`** ⇒ WP tự sinh toàn bộ rule
+  archive (`/emulators/{slug}/`, `/page/{n}/`, feed, embed). Không có `term_link` override,
+  không có rule viết tay per-term.
+- **`rewrite_rules_array`** — một rule duy nhất cho single, cùng dạng ROM:
+  ```
+  emulators/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$   →   index.php?post_type=emulator&name=$matches[1]
+  ```
+  Archive nông hơn single đúng một segment nên hai bên không tranh nhau.
+- **`post_type_link`** → `/emulators/{emulator_console_slug}/{post_name}/` theo term đầu
+  tiên. Emulator không có term `emulator_console` giữ URL dạng query `?emulator={slug}`,
+  vẫn resolve được.
 
 ### 5.5 Endpoint `/download`
 
@@ -225,6 +229,9 @@ Trong `setting/setting-emulator.php`:
 - Slug dạng `{post_name}-{post_id}`; segment thứ 2 (nếu có) là **file index 1-based**.
 - SEO: `/download/*` bị `noindex`, bỏ canonical, override title + meta description qua
   các filter `wpseo_*` trong `inc/utility.php`.
+- **`redirect_canonical`** bị tắt **chỉ** khi query var `download` hoặc `rf_page` có giá
+  trị — hai route này là query var, không phải query WP thật. Mọi URL khác vẫn được WP
+  chuẩn hoá (trailing slash, segment console sai).
 
 > ⚠️ File index đánh trên mảng **đã merge** `download_list` + `download_list_aff`.
 > Đổi thứ tự hoặc số lượng item sẽ làm lệch mọi URL `/download/.../{n}` đã chia sẻ.
@@ -235,6 +242,7 @@ Trong `setting/setting-emulator.php`:
 |---|---|
 | `after_switch_theme` | `setting/setting-rom.php`, `auth/setting-member.php` |
 | `admin_init` + guard option `rf_member_pages_rw` | `auth/member-pages.php` — **bump giá trị option khi thêm route member mới** |
+| `created_type` / `edited_type` / `delete_type` | `setting/setting-rom.php` — rule root-level của `type` là thứ duy nhất còn sinh per-term |
 
 ---
 
@@ -511,7 +519,8 @@ hiện chỉ trả về literal English. i18n chưa thật sự hoạt động.
    `auth/setting-member.php`, nơi tên bảng chỉ đến từ `$wpdb->prefix`.
 5. **Không hardcode domain** — PHP dùng `site_url()` / `home_url()` / `content_url()`;
    JS dùng `ajax.site_url`.
-6. **Flush rewrite rules** sau khi đổi console slug, `console_original_slug`, term `type`,
-   hoặc thêm route member (kèm bump option `rf_member_pages_rw`).
+6. **Flush rewrite rules** sau khi thêm route member (kèm bump option
+   `rf_member_pages_rw`). Rule của `rom`, `emulator` và hai taxonomy console đều generic
+   nên không cần; term `type` tự flush bằng hook.
 7. **Verify** — sau sửa PHP: `php -l <file>`; sau sửa JS: `node --check <file>`.
 8. **Không stage** `tailwindcss/node_modules/`, `assets/css/output.css`, lockfile.

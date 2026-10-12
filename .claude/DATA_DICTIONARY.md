@@ -28,7 +28,7 @@ Theme có đúng **2 CPT**.
 |---|---|
 | `public` | `true` |
 | `has_archive` | `false` |
-| `rewrite` | `slug: emulators/%console%` (tag `%console%` chưa register — dead) |
+| `rewrite` | `false` — URL dựng bằng filter |
 | `supports` | `title`, `editor`, `thumbnail`, `comments` |
 | `show_in_rest` | `true` |
 
@@ -52,7 +52,7 @@ Theme có đúng **2 CPT**.
 ### Của `emulator`
 | Taxonomy | `hierarchical` | Rewrite slug |
 |---|---|---|
-| `emulator_console` | `true` | `emulator-console` → **override thành `/emulators/{slug}`** |
+| `emulator_console` | `true` | `emulators` (`with_front: false`, `hierarchical: false`) |
 | `os` | `true` | default |
 
 `console` có `'default_term' => ['name' => 'Unknown', 'slug' => 'unknown']` ⇒ **mọi `rom`
@@ -108,7 +108,6 @@ khác trong DB đều coi là public.
 | Key / Name | Type | Default | Ghi chú |
 |---|---|---|---|
 | `cat_image` | image | — | `return_format: url` |
-| `console_original_slug` | text | — | **driver của URL rewrite ROM** — sửa phải flush rewrite |
 | `console_rom_downloads` | number | `1` | aggregate, cộng bởi `tracking/flush.php` |
 | `console_guide` | wysiwyg | — | |
 
@@ -217,7 +216,6 @@ options page `options`, không ở đây.
 
 | Meta key | Taxonomy | Ai ghi |
 |---|---|---|
-| `console_original_slug` | `console` | admin (ACF) — **ảnh hưởng rewrite rules** |
 | `console_rom_downloads` | `console` | `tracking/flush.php:rftrk_add_term_meta()` |
 | `emulator_console_downloads` | `emulator_console` | `tracking/flush.php:rftrk_add_term_meta()` |
 | `cat_image`, `console_guide` | `console` | admin |
