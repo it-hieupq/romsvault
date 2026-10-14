@@ -12,11 +12,11 @@ get_header();
 ?>
 <section class="py-8 text-gray-900">
     <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-        <h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'My Wishlist', 'rom' ); ?></h1>
+        <h1 class="text-2xl font-bold mb-6 text-rom-pink"><?php esc_html_e( 'My Wishlist', 'rom' ); ?></h1>
 
         <div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
             <p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to view your wishlist.', 'rom' ); ?></p>
-            <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
+            <button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
         </div>
 
         <div class="rf-authed-only" data-rf-wishlist-page>

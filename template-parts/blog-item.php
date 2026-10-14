@@ -20,7 +20,7 @@
                 </span>
             </div>
             <h3 class="text-base font-bold line-clamp-2">
-                <a class="hover:text-romfun-pink" href="<?php the_permalink(); ?>">
+                <a class="hover:text-rom-pink" href="<?php the_permalink(); ?>">
 				<?php the_title() ?>
                 </a>
             </h3>

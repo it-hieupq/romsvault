@@ -40,7 +40,11 @@ $card_thumb = get_the_post_thumbnail_url( $card_id, 'thumbnail' );
 
 		<?php if ( $card_count > 0 ) : ?>
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-white text-[11px] font-bold backdrop-blur-sm shadow-sm">
-                <span class="text-amber-400 text-[10px]">&#9733;</span>
+                <?php // SVG, not a star glyph: the body webfont is a latin-only subset, so a
+                      // literal U+2605 falls through to whatever the OS happens to provide. ?>
+                <svg class="w-2.5 h-2.5 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z"/>
+                </svg>
                 <span><?php echo esc_html( round( $card_score, 1 ) ); ?></span>
             </div>
 		<?php endif; ?>

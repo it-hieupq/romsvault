@@ -55,7 +55,7 @@ $rf_ticket_types = rf_ticket_types();
 </style>
 <section class="py-8 text-gray-900" data-rf-ticket-page data-rf-status-labels="<?php echo esc_attr( wp_json_encode( array_values( rf_ticket_statuses() ) ) ); ?>" data-rf-status-colors="<?php echo esc_attr( wp_json_encode( rf_ticket_status_colors() ) ); ?>">
 	<div class="content-container px-4 sm:px-6 lg:px-8 w-full max-w-6xl">
-		<h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'Create Request', 'rom' ); ?></h1>
+		<h1 class="text-2xl font-bold mb-6 text-rom-pink"><?php esc_html_e( 'Create Request', 'rom' ); ?></h1>
 
 		<div class="grid gap-6 lg:grid-cols-3 items-start">
 
@@ -95,8 +95,8 @@ $rf_ticket_types = rf_ticket_types();
                             <textarea name="description" rows="4" maxlength="500" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'Describe your request…', 'rom' ); ?>"></textarea>
                         </div>
                         <!-- Member: real submit. Guest: sign-in gate (swapped by html.rf-authed). -->
-                        <button type="submit" data-rf-ticket-submit class="rf-authed-only w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Submit request', 'rom' ); ?></button>
-                        <button type="button" data-rf-login class="rf-guest-only w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in to submit', 'rom' ); ?></button>
+                        <button type="submit" data-rf-ticket-submit class="rf-authed-only w-full px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Submit request', 'rom' ); ?></button>
+                        <button type="button" data-rf-login class="rf-guest-only w-full px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition"><?php esc_html_e( 'Sign in to submit', 'rom' ); ?></button>
                     </form>
                 </div>
 
@@ -107,9 +107,9 @@ $rf_ticket_types = rf_ticket_types();
 
 				<!-- Guest: sign-in prompt (mirrors the member panel position) -->
 				<div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
-					<svg class="w-10 h-10 mx-auto mb-3 text-romfun-pink" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0v.75H4.5v-.75z"/></svg>
+					<svg class="w-10 h-10 mx-auto mb-3 text-rom-pink" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0v.75H4.5v-.75z"/></svg>
 					<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to submit a request and track its status.', 'rom' ); ?></p>
-					<button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
+					<button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
 				</div>
 
 				<!-- Member: current request + lazy history -->

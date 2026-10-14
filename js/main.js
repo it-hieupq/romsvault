@@ -589,7 +589,7 @@ function updateSelectedFilters() {
     // Create badges for each selected filter
     selectedFilters.forEach(filter => {
         const badge = document.createElement('div');
-        badge.className = 'inline-flex items-center gap-2 px-3 py-1 bg-romfun-pink text-white rounded-full text-sm font-medium';
+        badge.className = 'inline-flex items-center gap-2 px-3 py-1 bg-rom-pink text-white rounded-full text-sm font-medium';
         badge.setAttribute('data-filter-type', filter.type);
         badge.setAttribute('data-filter-value', filter.value);
 
@@ -601,7 +601,7 @@ function updateSelectedFilters() {
 
         badge.innerHTML = `
                 <div class="inline-flex items-center">${iconHtmlWhite ? `<span class="mr-1">${iconHtmlWhite}</span>` : ''} <span>${filter.label}</span></div>
-                <button type="button" class="remove-filter-btn ml-1 hover:bg-romfun-pink-dark rounded-full p-0.5 transition-colors" aria-label="Remove filter">
+                <button type="button" class="remove-filter-btn ml-1 hover:bg-rom-pink-dark rounded-full p-0.5 transition-colors" aria-label="Remove filter">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -653,10 +653,10 @@ document.querySelectorAll('.suggested-filter-badge').forEach(badge => {
             // Update badge style
             if (!isSelected) {
                 this.classList.remove('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
-                this.classList.add('bg-romfun-pink', 'text-white');
+                this.classList.add('bg-rom-pink', 'text-white');
                 this.setAttribute('data-selected', 'true');
             } else {
-                this.classList.remove('bg-romfun-pink', 'text-white');
+                this.classList.remove('bg-rom-pink', 'text-white');
                 this.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
                 this.setAttribute('data-selected', 'false');
             }
@@ -682,9 +682,9 @@ function updateSuggestedFilterBadges() {
 
             if (isSelected) {
                 badge.classList.remove('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
-                badge.classList.add('bg-romfun-pink', 'text-white');
+                badge.classList.add('bg-rom-pink', 'text-white');
             } else {
-                badge.classList.remove('bg-romfun-pink', 'text-white');
+                badge.classList.remove('bg-rom-pink', 'text-white');
                 badge.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
             }
         }
@@ -863,7 +863,7 @@ function createSearchBox({input, resultsContainer, filterTitle = null}) {
                 let titleHighlighted = highlightText(item.title, query);
                 let displayTitle = titleHighlighted;
 
-                const consoleTitle = `<span class="inline-block bg-white text-romfun-pink text-xs border border-romfun-pink px-3 py-1 mr-1 mb-1 rounded-full">${item.console}</span> `;
+                const consoleTitle = `<span class="inline-block bg-white text-rom-pink text-xs border border-rom-pink px-3 py-1 mr-1 mb-1 rounded-full">${item.console}</span> `;
 
                 const titleSpan = document.createElement('span');
                 titleSpan.innerHTML = consoleTitle + displayTitle;

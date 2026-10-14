@@ -7,7 +7,7 @@
 	<div class="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
 		<div class="flex-1">
 			<h3 class="font-black text-sm mb-2 text-gray-900">
-				<a href="<?php echo get_permalink() ?>" class="hover:text-romfun-pink">
+				<a href="<?php echo get_permalink() ?>" class="hover:text-rom-pink">
 					<?php the_title() ?>
 				</a>
 			</h3>
@@ -24,7 +24,7 @@
 				$terms = wp_get_post_terms(get_the_ID(), 'os', ['fields' => 'id=>name']);
 				if ( !is_wp_error($terms) && !empty($terms) ) :
 					foreach ($terms as $term_id => $term_name) :
-                        echo '<a class="px-3 py-1 rounded-full text-xs border border-romfun-pink font-semibold text-romfun-pink" href="' . get_term_link($term_id) . '">' . $term_name . '</a>';
+                        echo '<a class="px-3 py-1 rounded-full text-xs border border-rom-pink font-semibold text-rom-pink" href="' . get_term_link($term_id) . '">' . $term_name . '</a>';
 					endforeach;
 				endif;
 				?>
@@ -32,14 +32,14 @@
 		</div>
 		<div class="flex items-center gap-3 sm:items-end">
 			<span class="badge badge-info text-xs">
-                <span class="text-romfun-pink"><?php echo get_svg_icon('download')?></span>
+                <span class="text-rom-pink"><?php echo get_svg_icon('download')?></span>
                 <?php
                 $downloads = get_field('downloads', get_the_ID());
                 echo number_format($downloads ?: 0, 0, '', ',') . ' ' . __('downloads', 'rom');
                 ?>
             </span>
 			<span class="badge badge-info text-xs inline-flex items-center">
-                <span class="text-romfun-pink"><?php echo get_svg_icon('size')?></span>
+                <span class="text-rom-pink"><?php echo get_svg_icon('size')?></span>
 				<?php the_field('file_size', get_the_ID()); ?>
 			</span>
 		</div>

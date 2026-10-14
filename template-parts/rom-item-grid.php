@@ -9,7 +9,7 @@
         </div>
         <div class="p-4">
 
-            <h3 class="font-bold text-sm pb-3 text-gray-800 hover:text-romfun-pink">
+            <h3 class="font-bold text-sm pb-3 text-gray-800 hover:text-rom-pink">
                 <a href="<?php the_permalink(); ?>">
                     <?php the_title() ?>
                 </a>
@@ -19,7 +19,7 @@
             $terms = get_the_terms(get_the_ID(), 'console');
             if (!is_wp_error($terms) && !empty($terms)) :
                 $term = $terms[0];
-                echo '<a class="inline-block bg-white text-romfun-pink text-xs border font-semibold border-romfun-pink px-3 py-1 mr-1 mb-1 rounded-full" href="' . get_term_link($term->term_id) . '">' . $term->name . '</a>';
+                echo '<a class="inline-block bg-white text-rom-pink text-xs border font-semibold border-rom-pink px-3 py-1 mr-1 mb-1 rounded-full" href="' . get_term_link($term->term_id) . '">' . $term->name . '</a>';
             endif;
 
             $terms = get_the_terms(get_the_ID(), 'type');
@@ -32,13 +32,13 @@
 
             <div class="flex items-center justify-between pt-4">
                 <span class="text-xs">
-                    <span class="text-romfun-pink"><?php echo get_svg_icon( 'download' ) ?></span>
+                    <span class="text-rom-pink"><?php echo get_svg_icon( 'download' ) ?></span>
                     <?php
                     $download = get_post_meta(get_the_ID(), 'downloads', true);
                     echo number_format( $download ?: 0, 0, '', ',' ); ?>
                 </span>
                 <span class="text-xs inline-flex items-center">
-                    <span class="text-romfun-pink"><?php echo get_svg_icon( 'size' ) ?></span>
+                    <span class="text-rom-pink"><?php echo get_svg_icon( 'size' ) ?></span>
 	                <?php
                     $file_size = get_post_meta(get_the_ID(), 'file_size', true);
                     if ( empty($file_size) ) {

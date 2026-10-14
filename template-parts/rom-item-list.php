@@ -7,7 +7,7 @@
 	<div class="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
 		<div class="flex-1">
 			<h3 class="font-black mb-2 text-gray-900">
-                <a href="<?php echo get_permalink() ?>" class="hover:text-romfun-pink">
+                <a href="<?php echo get_permalink() ?>" class="hover:text-rom-pink">
 	                <?php the_title() ?>
                 </a>
 			</h3>
@@ -29,13 +29,13 @@
 				    $terms = get_the_terms(get_the_ID(), 'type');
 					if ( !is_wp_error($terms) && !empty($terms) ) :
 						foreach ($terms as $term) :
-                            echo '<a class="px-4 py-1 rounded-full text-romfun-pink border border-brand/50 text-xs font-semibold mr-1" href="' . get_brows_page_url().'?types[]='. $term->term_id . '">' . $term->name . '</a>';
+                            echo '<a class="px-4 py-1 rounded-full text-rom-pink border border-brand/50 text-xs font-semibold mr-1" href="' . get_brows_page_url().'?types[]='. $term->term_id . '">' . $term->name . '</a>';
 						endforeach;
 					else :
 						$terms = get_the_terms(get_the_ID(), 'collection');
                         if (!is_wp_error($terms) && !empty($terms)) :
                             foreach ($terms as $term) :
-                                echo '<a class="px-4 py-1 rounded-full bg-white text-romfun-pink border border-romfun-pink text-xs font-semibold mr-1" href="' . get_brows_page_url().'?collections[]='. $term->term_id . '">' . $term->name . '</a>';
+                                echo '<a class="px-4 py-1 rounded-full bg-white text-rom-pink border border-rom-pink text-xs font-semibold mr-1" href="' . get_brows_page_url().'?collections[]='. $term->term_id . '">' . $term->name . '</a>';
                             endforeach;
                         endif;
                     endif;
@@ -44,13 +44,13 @@
 		</div>
 		<div class="flex items-center gap-3 sm:items-end">
             <span class="badge badge-info text-xs">
-                <span class="text-romfun-pink"><?php echo get_svg_icon('download')?></span>
+                <span class="text-rom-pink"><?php echo get_svg_icon('download')?></span>
                 <?php
                 $download = get_post_meta(get_the_ID(), 'downloads', true);
                 echo number_format( $download ?: 0 , 0, '', ','); ?>
             </span>
 			<span class="badge badge-info text-xs inline-flex items-center">
-                <span class="text-romfun-pink"><?php echo get_svg_icon('size')?></span>
+                <span class="text-rom-pink"><?php echo get_svg_icon('size')?></span>
 				<?php
                 $file_size = get_post_meta(get_the_ID(), 'file_size', true);
                 if ( empty($file_size) ) {

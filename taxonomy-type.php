@@ -144,7 +144,7 @@ $filter_data = array(
                     else : ?>
                         <div class="bg-white rounded-lg shadow-md p-8 text-center">
                             <p class="text-gray-600 text-lg"><?php _e('No ROMs found matching your filters.', 'rom'); ?></p>
-                            <a href="<?php echo get_term_link($type->term_id, 'type'); ?>" class="inline-block mt-4 px-6 py-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition">
+                            <a href="<?php echo get_term_link($type->term_id, 'type'); ?>" class="inline-block mt-4 px-6 py-2 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition">
                                 <?php _e('Clear Filters', 'rom'); ?>
                             </a>
                         </div>

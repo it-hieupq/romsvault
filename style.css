@@ -31,7 +31,7 @@ body {
     right: 30px;
     width: 50px;
     height: 50px;
-    background-color: #e91e63;
+    background-color: #d81b60;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -43,7 +43,7 @@ body {
 }
 
 .scroll-to-top:hover {
-    background-color: #c2185b;
+    background-color: #ad1457;
     transform: translateY(-3px);
 }
 
@@ -58,25 +58,39 @@ body {
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
 }
 
-.horizontal-scroll-container::-webkit-scrollbar {
-    height: 8px;
+/* Scrollbars, site-wide default — not scoped to a class, so the page scrollbar and
+   every scrollable box get the same thin pink bar.
+   Giving ::-webkit-scrollbar an explicit size also takes Chrome and Safari off
+   macOS' overlay behaviour: the bar then owns its own 4px band under the content
+   instead of floating over it, and stays put while the box can still be dragged.
+   scrollbar-width/-color must NOT be set for those two — setting either switches
+   them back to the standard overlay bar and these rules stop applying — so the
+   standard properties are handed to Firefox alone, which has no ::-webkit- bar. */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
 }
 
-.horizontal-scroll-container::-webkit-scrollbar-track {
-    background: transparent;
+::-webkit-scrollbar-track {
+    background: #f5f7f8;
 }
 
-.horizontal-scroll-container::-webkit-scrollbar-thumb {
-    background-color: rgba(155, 155, 155, 0.5);
-    border-radius: 4px;
+::-webkit-scrollbar-thumb {
+    background: #d81b60;
+    border-radius: 2px;
 }
 
-.horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(155, 155, 155, 0.7);
+::-webkit-scrollbar-thumb:hover {
+    background: #ad1457;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #d81b60 #f5f7f8;
+    }
 }
 
 .horizontal-scroll-wrapper {
@@ -105,41 +119,6 @@ body {
     padding: 16px 0;
     margin: 0 -4px;
 }
-
-.carousel-button {
-    background-color: #e91e63;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    flex-shrink: 0;
-}
-
-.carousel-button:hover:not(.disabled):not(:disabled) {
-    background-color: #c2185b;
-    transform: scale(1.1);
-}
-
-.carousel-button.disabled,
-.carousel-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.carousel-button.disabled:hover,
-.carousel-button:disabled:hover {
-    background-color: #e91e63;
-    transform: none;
-}
-
 /* Badge styles for Popular ROMs */
 .badge {
     display: inline-flex;
@@ -151,24 +130,11 @@ body {
     color: #374151;
     border: 1px solid #e5e7eb;
 }
-
-.badge-genre {
-    background-color: #e0e7ff;
-    color: #3730a3;
-    border-color: #c7d2fe;
-}
-
 .badge-info {
     background-color: #f3f4f6;
     color: #6b7280;
     border-color: #e5e7eb;
 }
-
-.carousel-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 /* Header Menu Styles */
 /* Mobile Menu Styles */
 .mobile-menu-overlay {
@@ -292,12 +258,12 @@ body {
 }
 
 .custom-select-trigger:hover {
-    border-color: #e91e63;
+    border-color: #d81b60;
 }
 
 .custom-select-trigger.active {
-    border-color: #e91e63;
-    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+    border-color: #d81b60;
+    box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
 }
 
 .custom-select-trigger .selected-text {
@@ -362,7 +328,7 @@ body {
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: #e91e63;
+    accent-color: #d81b60;
 }
 
 .custom-select-option input[type="radio"] {
@@ -370,7 +336,7 @@ body {
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: #e91e63;
+    accent-color: #d81b60;
 }
 
 .custom-select-option label {
@@ -400,24 +366,6 @@ body {
 }
 
 /* Scrollbar styling for dropdown */
-.custom-select-dropdown::-webkit-scrollbar {
-    width: 8px;
-}
-
-.custom-select-dropdown::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.custom-select-dropdown::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 4px;
-}
-
-.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
-    background: #999;
-}
-
 .revert * {
     all: revert;
     max-width: 100%;
@@ -472,7 +420,7 @@ body {
     top: 0;
     bottom: 0;
     width: 4px;
-    background-color: #e91e63;
+    background-color: #d81b60;
 }
 
 .toast.success::before {
@@ -779,11 +727,11 @@ html.rf-authed .rf-authed-only { display: revert; }
   cursor: pointer; vertical-align: middle;
   transition: color .15s ease, border-color .15s ease, transform .1s ease;
 }
-.rf-wish-btn:hover { color: #e91e63; border-color: #e91e63; }
+.rf-wish-btn:hover { color: #d81b60; border-color: #d81b60; }
 .rf-wish-btn:active { transform: scale(.92); }
 .rf-wish-btn svg { width: 1.15rem; height: 1.15rem; }
-.rf-wish-btn.is-active { color: #e91e63; border-color: #e91e63; }
-.rf-wish-btn.is-active svg { fill: #e91e63; }
+.rf-wish-btn.is-active { color: #d81b60; border-color: #d81b60; }
+.rf-wish-btn.is-active svg { fill: #d81b60; }
 .rf-wish-btn[disabled] { opacity: .6; cursor: default; }
 
 /* wishlist page — simple 2-column list rows */
@@ -805,7 +753,7 @@ html.rf-authed .rf-authed-only { display: revert; }
   border-radius: 9999px; cursor: pointer;
   transition: color .15s ease, background .15s ease;
 }
-.rf-wl-remove:hover { color: #e91e63; background: #fdecf2; }
+.rf-wl-remove:hover { color: #d81b60; background: #fdecf2; }
 .rf-wl-remove svg { width: 1.2rem; height: 1.2rem; }
 .rf-wl-remove[disabled] { opacity: .5; cursor: default; }
 /* Blocked members can't modify their wishlist — hide the remove control (the
@@ -829,18 +777,11 @@ html.rf-blocked .rf-inactive-only { display: revert; }
 }
 .rf-wl-badges { display: flex; flex-wrap: wrap; gap: .35rem; }
 .rf-badge { display: inline-block; padding: .12rem .55rem; border-radius: 9999px; font-size: .7rem; font-weight: 600; line-height: 1.5; color: #fff; }
-.rf-badge-rom      { background: #e91e63; } /* ROM  — pink */
-.rf-badge-pack     { background: #7c3aed; } /* Hack — purple */
-.rf-badge-emulator { background: #2563eb; } /* Emu  — blue */
-.rf-badge-library  { background: #0d9488; } /* Lib  — teal */
+/* Built at runtime as 'rf-badge-' + type_key (auth/js/auth.js), so these two only
+   look unreferenced; the library/pack variants went with those post types. */
+.rf-badge-rom      { background: #d81b60; } /* rom — pink */
+.rf-badge-emulator { background: #2563eb; } /* emulator — blue */
 .rf-badge-console { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
-
-/* members-only download notice (shown to guests instead of the button) */
-.rf-restricted-note { background: #fff7ed; border: 1px solid #fed7aa; border-radius: .75rem; padding: 1rem 1.25rem; margin: .25rem 0 .5rem; }
-.rf-restricted-note p { margin: 0 0 .6rem; color: #9a3412; font-size: .9rem; }
-.rf-restricted-signin { display: inline-flex; align-items: center; padding: .5rem 1.25rem; background: #e91e63; color: #fff; border: 0; border-radius: 9999px; font-weight: 600; font-size: .85rem; cursor: pointer; transition: background .15s ease; }
-.rf-restricted-signin:hover { background: #c2185b; }
-
 /* mobile "Sign in with Google" button — pinned to bottom, auto width, centered */
 .rf-mobile-login { margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0; }
 .rf-login-btn {
@@ -877,14 +818,39 @@ body.rf-webview .rf-webview-banner { display: block; }
 body.rf-webview .rf-gsi-slot { display: none; }
 
 /* Display-only rating stars (custom, replaces RateYo). JS fills .rating with these. */
-.rf-stars { position: relative; display: inline-block; font-size: 1rem; line-height: 1; color: #d1d5db; font-family: Arial, "Segoe UI Symbol", sans-serif; }
-.rf-stars::before { content: "\2605\2605\2605\2605\2605"; }
-.rf-stars-fill { position: absolute; top: 0; left: 0; height: 100%; overflow: hidden; white-space: nowrap; color: #f5b301; }
-.rf-stars-fill::before { content: "\2605\2605\2605\2605\2605"; }
+/* Stars are drawn as SVG tiles, not U+2605 text: the glyph is absent from the
+   body webfont subset and each OS substitutes a different shape, which showed up
+   as the grey track and the gold fill rendering as two different stars. One tile
+   is 1.1em wide (star 1em + gap), so five of them span 5.5em and the fill's inline
+   width percentage still maps straight onto the score. */
+.rf-stars {
+  position: relative;
+  display: inline-block;
+  width: 5.5em;
+  height: 1em;
+  font-size: 1rem;
+  line-height: 1;
+  vertical-align: -0.125em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'%3E%3Cpath fill='%23d1d5db' d='M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z'/%3E%3C/svg%3E");
+  background-size: 1.1em 1em;
+  background-repeat: repeat-x;
+}
+.rf-stars-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'%3E%3Cpath fill='%23f5b301' d='M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z'/%3E%3C/svg%3E");
+  background-size: 1.1em 1em;
+  background-repeat: repeat-x;
+}
 
 /* Rating input (member review form) — clickable stars, no library. */
 .rf-star-input { display: inline-flex; gap: .15rem; }
-.rf-star-btn { background: none; border: 0; padding: 0; cursor: pointer; font-size: 1.75rem; line-height: 1; color: #d1d5db; transition: color .12s ease; }
+/* Same font stack as .rf-stars: the body webfont is a latin-only subset with no
+   U+2605, so an inherited stack leaves the glyph to the OS fallback. */
+.rf-star-btn { background: none; border: 0; padding: 0; cursor: pointer; font-family: Arial, "Segoe UI Symbol", sans-serif; font-size: 1.75rem; line-height: 1; color: #d1d5db; transition: color .12s ease; }
 .rf-star-btn.is-on { color: #f5b301; }
 .rf-star-btn:hover { color: #f5b301; }
 

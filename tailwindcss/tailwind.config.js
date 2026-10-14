@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Ruby pink. 'primary' is the canonical name; 'romfun-pink' and 'brand'
+        // Ruby pink. 'primary' is the canonical name; 'rom-pink' and 'brand'
         // are the legacy aliases still used across the templates and point at
         // the same values so the whole site shifts together.
         primary: {
@@ -21,9 +21,9 @@ module.exports = {
           light: '#fdf2f8',
           accent: '#ec4899',
         },
-        'romfun-pink': '#d81b60',
-        'romfun-pink-dark': '#ad1457',
-        'romfun-pink-light': '#f06292',
+        'rom-pink': '#d81b60',
+        'rom-pink-dark': '#ad1457',
+        'rom-pink-light': '#f06292',
         brand: {
           DEFAULT: '#d81b60',
           dark: '#ad1457',
@@ -60,7 +60,7 @@ module.exports = {
       boxShadow: {
         'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03)',
         'card': '0 4px 16px -2px rgba(15, 23, 42, 0.04)',
-        'card-hover': '0 14px 28px -6px rgba(233, 30, 99, 0.12)',
+        'card-hover': '0 14px 28px -6px rgba(216, 27, 96, 0.12)',
         'glow-primary': '0 8px 24px -4px rgba(216, 27, 96, 0.35)',
       },
     },

@@ -37,7 +37,7 @@ while ( have_posts() ) : the_post();
 
                     <div class="lg:w-2/3 p-6 lg:p-8 bg-white rounded-xl shadow-md">
 						<?php k_breadcrumb(); ?>
-                        <h1 class="text-xl lg:text-2xl font-bold mb-4 text-romfun-pink"><?php the_title() ?></h1>
+                        <h1 class="text-xl lg:text-2xl font-bold mb-4 text-rom-pink"><?php the_title() ?></h1>
                         <div class="flex flex-wrap items-center gap-4 mb-4">
                             <div class="flex items-center">
                                 <div class="d-flex align-items-center min-w-[5rem]">
@@ -61,7 +61,7 @@ while ( have_posts() ) : the_post();
                         </div>
 
                         <div class="flex flex-wrap gap-2 mb-6">
-							<a class="px-4 py-1 rounded-full text-romfun-pink border border-brand/50 text-xs font-semibold" href="<?php echo get_term_link( $console->term_id ); ?>"> <?php echo $console->name; ?> </a>
+							<a class="px-4 py-1 rounded-full text-rom-pink border border-brand/50 text-xs font-semibold" href="<?php echo get_term_link( $console->term_id ); ?>"> <?php echo $console->name; ?> </a>
 							
 							<?php
 							$terms    = wp_get_post_terms( $post->ID, 'os', array( 'fields' => 'id=>name' ) );
@@ -87,7 +87,7 @@ while ( have_posts() ) : the_post();
 								?>
                                 <div class="flex justify-between py-1">
                                     <span class="text-gray-600"><?php _e('Region', 'rom') ?></span>
-                                    <span class="text-romfun-pink">
+                                    <span class="text-rom-pink">
                                         <?php
                                         foreach ( $terms as $term_id => $term_name ) : ?>
                                             <a href="<?php echo get_term_link($term_id); ?>"><?php echo $term_name; ?></a>
@@ -104,7 +104,7 @@ while ( have_posts() ) : the_post();
 			                    if ( $rf_restricted ) rf_render_restricted_notice(); ?>
                                 <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
                                     <a href="<?php echo esc_url( $download_url ); ?>"
-                                       class="inline-block px-8 py-2 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold">
+                                       class="inline-block px-8 py-2 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold">
 				                        <?php echo get_svg_icon('save') . __( 'Download Emulator', 'rom' ) ?>
                                     </a>
                                 </span>

@@ -19,7 +19,7 @@
 				endif;
 				?>
 
-	            <h1 class="text-xl lg:text-2xl font-bold text-romfun-pink text-center"><?php echo $title; ?></h1>
+	            <h1 class="text-xl lg:text-2xl font-bold text-rom-pink text-center"><?php echo $title; ?></h1>
 			
                 <div class="flex justify-center py-5">
                     <?php k_breadcrumb(); ?>
@@ -32,7 +32,7 @@
                                    value="<?php echo get_search_query(); ?>"
                                    class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40">
                             <span class="absolute inset-y-0 right-1 flex items-center pr-1">
-                                <button class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-romfun-pink hover:bg-romfun-pink-dark transition">
+                                <button class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-rom-pink hover:bg-rom-pink-dark transition">
                                   <?php _e('Search', 'rom') ?>
                                 </button>
                               </span>

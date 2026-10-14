@@ -36,9 +36,9 @@ while ( have_posts() ) : the_post();
 
 				<!-- Guest: sign-in prompt (auth.js reveals it for signed-out visitors) -->
 				<div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
-					<svg class="w-10 h-10 mx-auto mb-3 text-romfun-pink" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+					<svg class="w-10 h-10 mx-auto mb-3 text-rom-pink" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
 					<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to send us a message.', 'rom' ); ?></p>
-					<button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
+					<button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
 				</div>
 
 				<!-- Member: contact form (submit => POST rf/v1/contact) -->
@@ -51,7 +51,7 @@ while ( have_posts() ) : the_post();
 						<label class="block text-sm font-semibold text-gray-700 mb-1"><?php esc_html_e( 'Message', 'rom' ); ?> <span class="text-red-500">*</span></label>
 						<textarea name="content" rows="6" maxlength="512" required class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="<?php esc_attr_e( 'How can we help you?', 'rom' ); ?>"></textarea>
 					</div>
-					<button type="submit" data-rf-contact-submit class="w-full px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Send message', 'rom' ); ?></button>
+					<button type="submit" data-rf-contact-submit class="w-full px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition disabled:opacity-50 disabled:cursor-not-allowed"><?php esc_html_e( 'Send message', 'rom' ); ?></button>
 				</form>
 
 			</div>

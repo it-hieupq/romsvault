@@ -15,7 +15,7 @@ if ( $rows ) :
             <div class="content-container p-4 sm:px-6 lg:px-8 w-full bg-white rounded-xl shadow-lg">
 
                 <h3 class="text-lg font-semibold mb-8 flex items-center text-gray-600">
-                    <span class="w-3 h-3 rounded-full bg-romfun-pink mr-2"></span>
+                    <span class="w-3 h-3 rounded-full bg-rom-pink mr-2"></span>
 		            <?php echo $row['title'] ?>
                 </h3>
 
@@ -33,7 +33,7 @@ if ( $rows ) :
                                 <img src="<?php echo $image; ?>" alt="<?php echo $term->name; ?>" />
                             </div>
                             <div class="console-info bg-white px-3 py-6">
-                                <div class="font-bold text-base text-center mb-6 hover:text-romfun-pink"><?php echo $term->name ?></div>
+                                <div class="font-bold text-base text-center mb-6 hover:text-rom-pink"><?php echo $term->name ?></div>
                                 <div class="text-xs text-gray-500 flex justify-between">
                                     <span class="inline-flex items-center">
                                         <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>

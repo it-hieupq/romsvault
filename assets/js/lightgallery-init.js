@@ -24,13 +24,15 @@ jQuery(function ($) {
             return;
         }
 
-        // Ensure plugin lgThumbnail exists (optional)
+        // Both plugins are optional; track the thumbnail one separately because the
+        // thumbnail options below depend on it specifically, not on plugin count.
         const plugins = [];
-        if (typeof lgThumbnail !== 'undefined') {
+        const hasThumbnail = typeof lgThumbnail !== 'undefined';
+        if (hasThumbnail) {
             plugins.push(lgThumbnail);
-        } else {
-            // it's ok if thumbnail plugin missing; we'll still init without it
-            // console.warn('lgThumbnail not found — thumbnails disabled.');
+        }
+        if (typeof lgVideo !== 'undefined') {
+            plugins.push(lgVideo);
         }
 
         // If there is an older instance attached, destroy it first (safety)
@@ -52,11 +54,13 @@ jQuery(function ($) {
         // Initialize once
         try {
             const instance = lightGallery(gallery, {
-                selector: 'a',
+                // Slides are the anchors carrying data-src: the screenshots plus the
+                // youtube tile, which lgVideo turns into a playable slide.
+                selector: 'a[data-src]',
                 plugins: plugins,
-                thumbnail: !!plugins.length, // enable thumbnail only if plugin present
+                thumbnail: hasThumbnail, // enable thumbnail only if that plugin is present
                 animateThumb: true,
-                showThumbByDefault: !!plugins.length,
+                showThumbByDefault: hasThumbnail,
                 preload: 1,
                 speed: 450,
                 loop: true,

@@ -75,7 +75,7 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
         <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
             <div class="prose max-w-none bg-white p-6 rounded-2xl shadow-xl">
                 <?php k_breadcrumb(); ?>
-                <h1 class="text-romfun-pink text-2xl font-bold">
+                <h1 class="text-rom-pink text-2xl font-bold">
                     <?php echo esc_html( __( 'Download', 'rom' ) . ' ' . get_the_title( $post_id ) . ' ' . $post->post_type ); ?>
                 </h1>
                 <div class="flex items-center pt-2 pb-6">
@@ -93,8 +93,8 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
                 </div>
 
                 <?php if ( $console && $guide = get_field( 'console_guide', 'term_' . $console->term_id ) ) : ?>
-                    <div class="bg-romfun-pink/10 p-4 rounded-xl shadow-lg mb-6">
-                        <div class="font-bold text-romfun-pink mb-3 flex items-center">
+                    <div class="bg-rom-pink/10 p-4 rounded-xl shadow-lg mb-6">
+                        <div class="font-bold text-rom-pink mb-3 flex items-center">
                             <?php echo get_svg_icon( 'noti' ) . ' ' . esc_html( __( 'Note', 'rom' ) ); ?>
                         </div>
                         <?php echo wp_kses_post( $guide ); ?>
@@ -143,7 +143,7 @@ if ( ! $file_number ) :
                                 $file_index = $key + 1;
                                 ?>
                                 <tr class="odd:bg-gray-100">
-                                    <td class="pl-4 py-2 rounded-l-full font-semibold text-romfun-pink">
+                                    <td class="pl-4 py-2 rounded-l-full font-semibold text-rom-pink">
                                         <a target="_blank"
                                            href="<?php echo esc_url( $download_base . $file_index . '/' ); ?>"
                                            class="hover:underline">
@@ -194,7 +194,7 @@ if ( ! $file_number ) :
                                 $file_index = $key + 1 + $normal_count;
                                 ?>
                                 <tr class="odd:bg-gray-100">
-                                    <td class="pl-4 py-2 rounded-l-full font-semibold text-romfun-pink">
+                                    <td class="pl-4 py-2 rounded-l-full font-semibold text-rom-pink">
                                         <a target="_blank"
                                            href="<?php echo esc_url( $download_base . $file_index . '/' ); ?>"
                                            class="hover:underline">
@@ -282,8 +282,8 @@ elseif ( $file_number ) :
                     <div id="download-loading" class="space-y-4">
                         <div class="flex justify-center">
                             <div class="relative w-12 h-12">
-                                <div class="absolute inset-0 border-4 border-romfun-pink/20 rounded-full"></div>
-                                <div class="absolute inset-0 border-4 border-transparent border-t-romfun-pink rounded-full animate-spin"></div>
+                                <div class="absolute inset-0 border-4 border-rom-pink/20 rounded-full"></div>
+                                <div class="absolute inset-0 border-4 border-transparent border-t-rom-pink rounded-full animate-spin"></div>
                             </div>
                         </div>
                         <p class="text-sm text-gray-500" id="countdown-text">
@@ -298,7 +298,7 @@ elseif ( $file_number ) :
                         <a href="<?php echo $rf_members ? '#' : esc_url( $download_url ); ?>"
                            id="download-link"
                            <?php if ( $rf_members ) : ?>data-rf-download data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $file_number ); ?>"<?php endif; ?>
-                           class="inline-flex items-center justify-center px-6 py-4 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                           class="inline-flex items-center justify-center px-6 py-4 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
                            rel="nofollow">
                             <?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'rom' ). ' ' . ' (' . $file_size . ')'; ?>
                         </a>
@@ -391,7 +391,7 @@ elseif ( $file_number ) :
                                         $other_file_index = $key + 1;
                                         ?>
                                         <tr>
-                                            <td class="text-romfun-pink font-semibold py-2">
+                                            <td class="text-rom-pink font-semibold py-2">
                                                 <a href="<?php echo esc_url( $download_base . $other_file_index . '/' ); ?>"
                                                    class="hover:underline">
                                                     <?php echo esc_html( $value['name'] ); ?>
@@ -435,7 +435,7 @@ elseif ( $file_number ) :
                                         $other_file_index = $aff_index + 1;
                                         ?>
                                         <tr>
-                                            <td class="text-romfun-pink font-semibold py-2">
+                                            <td class="text-rom-pink font-semibold py-2">
                                                 <a href="<?php echo esc_url( $download_base . $other_file_index . '/' ); ?>"
                                                    class="hover:underline">
                                                     <?php echo esc_html( $value['name'] ); ?>

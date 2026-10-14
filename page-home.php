@@ -50,7 +50,7 @@ while ( have_posts() ) :
                                 </h2>
                                 
                                 <a href="<?php echo $link['url'] ?>"
-                                   class="flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
+                                   class="flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
                                     <?php echo $link['title'] . get_svg_icon('more'); ?>
                                 </a>
                             </div>
@@ -120,7 +120,7 @@ while ( have_posts() ) :
                                 <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Choice for you', 'rom') ?></p>
                                 <?php echo $title; ?>
                             </h2>
-                            <a href="<?php echo $link['url'] ?>" class="inline-flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
+                            <a href="<?php echo $link['url'] ?>" class="inline-flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
                                 <?php echo $link['title'] . get_svg_icon('more'); ?>
                             </a>
                         </div>
@@ -140,7 +140,7 @@ while ( have_posts() ) :
                                         ?>" alt="<?php echo $term->name ?>" class="w-full h-full object-cover">
                                     </div>
                                     <div class="console-info p-4 bg-white">
-                                        <div class="font-semibold text-base mb-4 hover:text-romfun-pink"><?php echo $term->name ?></div>
+                                        <div class="font-semibold text-base mb-4 hover:text-rom-pink"><?php echo $term->name ?></div>
                                         <div class="text-sm text-muted flex justify-between">
                                             <span class="inline-flex items-center">
                                                 <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>
@@ -196,7 +196,7 @@ while ( have_posts() ) :
                                     <?php echo $title; ?>
                                 </h2>
                                 <a href="<?php echo $base_link ?>"
-                                   class="flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
+                                   class="flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
                                     <?php echo __( 'More', 'rom' ) . get_svg_icon('more'); ?>
                                 </a>
                             </div>

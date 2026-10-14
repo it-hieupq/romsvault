@@ -24,7 +24,7 @@
             <!-- Guest: prompt to sign in (member-only comments, plan §4.7) -->
             <div class="rf-guest-only p-4 bg-gray-50 border border-gray-200 rounded-2xl text-center mb-6">
                 <p class="text-gray-600 mb-3"><?php _e( 'You need to sign in to comment, report, and more.', 'rom' ); ?></p>
-                <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold">
+                <button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold">
                     <?php _e( 'Sign in', 'rom' ); ?>
                 </button>
             </div>
@@ -37,13 +37,13 @@
                 <div id="commentFormMsg" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700"></div>
 
                 <!-- Reply Indicator (shown when replying) -->
-                <div id="replyIndicator" class="hidden p-3 bg-romfun-pink/10 border border-romfun-pink/20 rounded-lg mb-4">
+                <div id="replyIndicator" class="hidden p-3 bg-rom-pink/10 border border-rom-pink/20 rounded-lg mb-4">
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-700">
-                            <span class="font-semibold text-romfun-pink"><?php _e( 'Replying to:', 'rom' ); ?></span>
+                            <span class="font-semibold text-rom-pink"><?php _e( 'Replying to:', 'rom' ); ?></span>
                             <span id="replyAuthorName" class="ml-1"></span>
                         </span>
-                        <button type="button" id="cancelReply" class="text-sm text-romfun-pink hover:underline"><?php _e( 'Cancel', 'rom' ); ?></button>
+                        <button type="button" id="cancelReply" class="text-sm text-rom-pink hover:underline"><?php _e( 'Cancel', 'rom' ); ?></button>
                     </div>
                 </div>
 
@@ -55,10 +55,10 @@
                             rows="5"
                             maxlength="240"
                             required
-                            class="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-romfun-pink focus:bg-white text-gray-900"></textarea>
+                            class="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-rom-pink focus:bg-white text-gray-900"></textarea>
                 </div>
 
-                <button type="submit" class="px-6 py-3 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold">
+                <button type="submit" class="px-6 py-3 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold">
 				    <?php _e( 'Send comment', 'rom' ); ?>
                 </button>
             </form>
@@ -137,7 +137,7 @@
                                     <div class="flex items-center gap-2 mb-1">
                                         <h4 class="font-bold text-gray-900"><?php echo esc_html(get_comment_author( $comment )); ?></h4>
                                         <?php if ( rf_comment_is_member( $comment ) ) : ?>
-                                            <span class="verified-badge inline-flex items-center justify-center rounded-full bg-romfun-pink text-white" title="<?php esc_attr_e( 'Verified User', 'rom' ); ?>">
+                                            <span class="verified-badge inline-flex items-center justify-center rounded-full bg-rom-pink text-white" title="<?php esc_attr_e( 'Verified User', 'rom' ); ?>">
                                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                                 </svg>
@@ -146,7 +146,7 @@
                                     </div>
                                     <p class="text-gray-700 mb-2" style="white-space:pre-wrap"><?php echo rf_render_comment_content( $comment ); ?></p>
                                     <div class="flex items-center gap-2">
-                                        <button type="button" class="comment-reply text-sm text-romfun-pink hover:underline font-medium" data-parent="<?php echo esc_attr( $comment->comment_ID ); ?>" data-author="<?php echo esc_attr( get_comment_author( $comment ) ); ?>">
+                                        <button type="button" class="comment-reply text-sm text-rom-pink hover:underline font-medium" data-parent="<?php echo esc_attr( $comment->comment_ID ); ?>" data-author="<?php echo esc_attr( get_comment_author( $comment ) ); ?>">
                                             <?php _e( 'Reply', 'rom' ); ?>
                                         </button>
                                         <span class="text-xs text-gray-500">
@@ -178,7 +178,7 @@
                                                     <div class="flex items-center gap-1">
                                                         <h4 class="font-bold text-gray-900"><?php echo esc_html($level1_comment->comment_author); ?></h4>
                                                         <?php if ( rf_comment_is_member( $level1_comment ) ) : ?>
-                                                            <span class="verified-badge inline-flex items-center justify-center rounded-full bg-romfun-pink text-white" title="<?php esc_attr_e( 'Verified User', 'rom' ); ?>">
+                                                            <span class="verified-badge inline-flex items-center justify-center rounded-full bg-rom-pink text-white" title="<?php esc_attr_e( 'Verified User', 'rom' ); ?>">
                                                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                                                 </svg>
@@ -191,7 +191,7 @@
                                                 </div>
                                                 <p class="text-gray-700 mb-2" style="white-space:pre-wrap"><?php echo rf_render_comment_content( $level1_comment ); ?></p>
                                                 <div class="flex items-center gap-2">
-                                                    <button type="button" class="comment-reply text-sm text-romfun-pink hover:underline font-medium" data-parent="<?php echo esc_attr( $level1_comment->comment_ID ); ?>" data-author="<?php echo esc_attr( get_comment_author( $level1_comment ) ); ?>">
+                                                    <button type="button" class="comment-reply text-sm text-rom-pink hover:underline font-medium" data-parent="<?php echo esc_attr( $level1_comment->comment_ID ); ?>" data-author="<?php echo esc_attr( get_comment_author( $level1_comment ) ); ?>">
                                                         <?php _e( 'Reply', 'rom' ); ?>
                                                     </button>
                                                     <span class="text-xs text-gray-500">

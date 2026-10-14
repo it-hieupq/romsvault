@@ -29,7 +29,7 @@ $post_id = get_the_ID();
                 <div class="flex items-center gap-2 mb-1">
                     <span class="w-3 text-right text-xs text-gray-500"><?php echo $s; ?></span>
                     <span class="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-                        <span class="block h-full rounded-full bg-romfun-pink" data-rf-bar="<?php echo $s; ?>" style="width:0%"></span>
+                        <span class="block h-full rounded-full bg-rom-pink" data-rf-bar="<?php echo $s; ?>" style="width:0%"></span>
                     </span>
                     <span class="w-8 text-right text-xs text-gray-500" data-rf-barcount="<?php echo $s; ?>">0</span>
                 </div>
@@ -49,8 +49,8 @@ $post_id = get_the_ID();
                     <button type="button" class="rf-star-btn" data-score="<?php echo $i; ?>" aria-label="<?php echo esc_attr( sprintf( _n( '%d star', '%d stars', $i, 'rom' ), $i ) ); ?>">&#9733;</button>
                 <?php endfor; ?>
             </div>
-            <textarea class="rf-rating-content w-full mt-3 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-romfun-pink/40 focus:border-romfun-pink resize-none" rows="3" maxlength="164" placeholder="<?php esc_attr_e( 'Share a short review (optional)', 'rom' ); ?>"></textarea>
-            <button type="submit" class="rf-rating-submit mt-3 px-6 py-2 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition text-sm"><?php esc_html_e( 'Submit rating', 'rom' ); ?></button>
+            <textarea class="rf-rating-content w-full mt-3 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-rom-pink/40 focus:border-rom-pink resize-none" rows="3" maxlength="164" placeholder="<?php esc_attr_e( 'Share a short review (optional)', 'rom' ); ?>"></textarea>
+            <button type="submit" class="rf-rating-submit mt-3 px-6 py-2 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition text-sm"><?php esc_html_e( 'Submit rating', 'rom' ); ?></button>
         </form>
         <!-- Already rated (filled by JS from `mine`) -->
         <div class="rf-rating-mine hidden border border-gray-200 rounded-xl p-4 mb-4"></div>
@@ -62,7 +62,7 @@ $post_id = get_the_ID();
         <ul class="rf-reviews-list hidden divide-y divide-gray-100"></ul>
         <div class="rf-reviews-empty hidden text-sm text-gray-500 py-4"><?php esc_html_e( 'No reviews yet. Be the first to review!', 'rom' ); ?></div>
         <div class="rf-reviews-more hidden text-center mt-4">
-            <button type="button" class="rf-reviews-loadmore px-6 py-2 border border-romfun-pink text-romfun-pink rounded-full font-semibold hover:bg-romfun-pink hover:text-white transition text-sm"><?php esc_html_e( 'Load more', 'rom' ); ?></button>
+            <button type="button" class="rf-reviews-loadmore px-6 py-2 border border-rom-pink text-rom-pink rounded-full font-semibold hover:bg-rom-pink hover:text-white transition text-sm"><?php esc_html_e( 'Load more', 'rom' ); ?></button>
         </div>
     </div>
 </section>

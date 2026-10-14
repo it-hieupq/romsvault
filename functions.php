@@ -204,6 +204,14 @@ function rom_enqueue_scripts() {
 			'2.8.3'
 		);
 
+		// Plays the youtube_url preview inside the lightbox instead of leaving the site.
+		wp_enqueue_style(
+			'lg-video',
+			get_template_directory_uri() . '/assets/css/lg-video.min.css',
+			['lightgallery'],
+			'2.8.3'
+		);
+
 		// lightGallery JS - Must be enqueued with proper dependencies
 		wp_enqueue_script(
 			'lightgallery',
@@ -221,11 +229,19 @@ function rom_enqueue_scripts() {
 			true
 		);
 
+		wp_enqueue_script(
+			'lg-video',
+			get_template_directory_uri() . '/assets/js/lg-video.min.js',
+			['lightgallery'],
+			'2.8.3',
+			true
+		);
+
 		// File JS khởi tạo (tự viết)
         wp_enqueue_script(
             'lightgallery-init',
             get_template_directory_uri() . '/assets/js/lightgallery-init.js',
-            ['jquery', 'lightgallery', 'lg-thumbnail'],
+            ['jquery', 'lightgallery', 'lg-thumbnail', 'lg-video'],
             filemtime( get_template_directory() . '/assets/js/lightgallery-init.js' ),
             true
         );

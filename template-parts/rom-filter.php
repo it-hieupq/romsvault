@@ -52,7 +52,7 @@ endif;
                              <?php _e('Play Retro ROMs', 'rom') ?>
                          </p>
                          <h1 class="text-2xl sm:text-4xl font-bold text-gray-900">
-                             <?php echo __('Play') . '<span class="text-romfun-pink">' . ' ' . __('Video Game Roms', 'rom') . '</span>' . ' ' . __('on your Computer or Phone', 'rom') ?>
+                             <?php echo __('Play') . '<span class="text-rom-pink">' . ' ' . __('Video Game Roms', 'rom') . '</span>' . ' ' . __('on your Computer or Phone', 'rom') ?>
                          </h1>
                          <p class="text-base text-muted max-w-2xl mx-auto">
                              <?php _e('Search, filter, and download your favorite retro games from 100,000+ ROMs curated for nostalgia lovers.', 'rom') ?>
@@ -72,7 +72,7 @@ endif;
 					endif;
 					?>
 
-					<h2 id="filter-title" class="text-2xl font-bold text-romfun-pink text-center"><?php echo $title; ?></h2>
+					<h2 id="filter-title" class="text-2xl font-bold text-rom-pink text-center"><?php echo $title; ?></h2>
 				<?php endif; ?>
 			
 				<?php if (!is_front_page() && !is_home()) : ?>
@@ -103,7 +103,7 @@ endif;
                                    value="<?php echo $current_search; ?>"
                                    class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
                             <span class="absolute inset-y-0 right-1 flex items-center pr-1">
-                                <button id="searchButton" class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-romfun-pink hover:bg-romfun-pink-dark transition text-xs">
+                                <button id="searchButton" class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-rom-pink hover:bg-rom-pink-dark transition text-xs">
                                   <?php _e('Search', 'rom') ?>
                                 </button>
                           </span>
@@ -122,7 +122,7 @@ endif;
                                 </div>
                                 <div class="custom-select-dropdown" id="console-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search consoles…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search consoles', 'rom'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search consoles…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search consoles', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('console', $post_ids, $current_term->term_id) : get_cached_all_terms('console');
@@ -159,7 +159,7 @@ endif;
                             </div>
                             <div class="custom-select-dropdown" id="genre-dropdown">
                                 <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                    <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search genres…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search genres', 'rom'); ?>">
+                                    <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search genres…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search genres', 'rom'); ?>">
                                 </div>
                                 <?php
                                 $terms = ($is_tax && isset($current_term)) ? get_cached_terms('genre', $post_ids, $current_term->term_id) : get_cached_all_terms('genre');
@@ -195,7 +195,7 @@ endif;
                                 </div>
                                 <div class="custom-select-dropdown" id="collection-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search collections…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search collections', 'rom'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search collections…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search collections', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('collection', $post_ids, $current_term->term_id) : get_cached_all_terms('collection');
@@ -232,7 +232,7 @@ endif;
                                 </div>
                                 <div class="custom-select-dropdown" id="type-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-romfun-pink/40" placeholder="<?php esc_attr_e('Search types…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search types', 'rom'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search types…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search types', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('type', $post_ids, $current_term->term_id) : get_cached_all_terms('type');
@@ -333,7 +333,7 @@ endif;
 						?>
 							<button 
 								type="button"
-								class="suggested-filter-badge inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors <?php echo $is_selected ? 'bg-romfun-pink text-white' : 'bg-gray-200 text-gray-800 hover:bg-romfun-pink hover:text-white'; ?>"
+								class="suggested-filter-badge inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors <?php echo $is_selected ? 'bg-rom-pink text-white' : 'bg-gray-200 text-gray-800 hover:bg-rom-pink hover:text-white'; ?>"
 								data-term-id="<?php echo esc_attr($term->term_id); ?>"
 								data-taxonomy="type"
 								data-selected="<?php echo $is_selected ? 'true' : 'false'; ?>">

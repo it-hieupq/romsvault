@@ -110,7 +110,7 @@ function k_get_download() {
 	<div id="download-button">
 		<a href="<?php echo esc_url( $download_url ); ?>"
 		   id="download-link"
-		   class="inline-flex items-center justify-center px-6 py-4 bg-romfun-pink text-white rounded-full hover:bg-romfun-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+		   class="inline-flex items-center justify-center px-6 py-4 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
 		   rel="nofollow">
 			<?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'rom' ) . ' ' . ' (' . $file_size . ')'; ?>
 		</a>

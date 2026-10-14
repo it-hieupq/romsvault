@@ -21,7 +21,7 @@ function k_pagination($pages = '', $range = 1) {
         for ($i=1; $i <= $pages; $i++) {
             if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems )){
                 if($paged == $i) {
-                    echo "<li><span class='flex items-center justify-center w-8 h-8 rounded-full bg-romfun-pink text-white font-semibold cursor-not-allowed' aria-current='page'>" . $i . "</span></li>";
+                    echo "<li><span class='flex items-center justify-center w-8 h-8 rounded-full bg-rom-pink text-white font-semibold cursor-not-allowed' aria-current='page'>" . $i . "</span></li>";
                 } else {
                     echo "<li><a class='flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200' href='".get_pagenum_link($i)."'>".$i."</a></li>";
                 }

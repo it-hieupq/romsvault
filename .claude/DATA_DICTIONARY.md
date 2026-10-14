@@ -78,6 +78,7 @@ tiền tố `field_` kiểu ACF UI — key thường trùng luôn với name.
 | `downloads` | number | `0` | — | ghi bởi `tracking/flush.php` |
 | `rating_count` | number | `0` | — | cộng dồn bởi `POST rf/v1/rating` |
 | `rating_avg` | number | `0` | — | cộng dồn bởi `POST rf/v1/rating` |
+| `youtube_url` | url | — | — | nhận watch / `youtu.be` / shorts / embed / live; `single-rom.php` tách video id và render tile preview ở đầu section Screenshots |
 | `released` | textarea | — | — | |
 | `internal_note` | textarea | — | — | |
 | `image` | gallery | — | — | screenshots |

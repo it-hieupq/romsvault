@@ -517,7 +517,7 @@
         if ( ! withStepper ) {
           var hType = '<span class="rf-tk-type">' + svg(TK_ICON.tag) + escapeHtml(t.type_label) + '</span>';
           var hRef = t.reference_url
-            ? '<div class="rf-tk-sec"><div class="rf-tk-sec-h">' + svg(TK_ICON.link) + escapeHtml('Reference') + '</div><a href="' + encodeURI(t.reference_url) + '" target="_blank" rel="nofollow noopener" class="text-romfun-pink underline break-all" style="font-size:14px">' + escapeHtml(t.reference_url) + '</a></div>'
+            ? '<div class="rf-tk-sec"><div class="rf-tk-sec-h">' + svg(TK_ICON.link) + escapeHtml('Reference') + '</div><a href="' + encodeURI(t.reference_url) + '" target="_blank" rel="nofollow noopener" class="text-rom-pink underline break-all" style="font-size:14px">' + escapeHtml(t.reference_url) + '</a></div>'
             : '';
           return '<div class="p-5">'
             + '<div class="flex items-start justify-between gap-3 mb-2">'
@@ -535,7 +535,7 @@
           ? '<div class="rf-tk-sec"><div class="rf-tk-sec-h">' + svg(TK_ICON.doc) + escapeHtml('Details') + '</div><div class="rf-tk-sec-b">' + escapeHtml(t.description) + '</div></div>'
           : '';
         var refBlk = t.reference_url
-          ? '<div class="rf-tk-sec"><div class="rf-tk-sec-h">' + svg(TK_ICON.link) + escapeHtml('Reference') + '</div><a href="' + encodeURI(t.reference_url) + '" target="_blank" rel="nofollow noopener" class="text-romfun-pink underline break-all" style="font-size:14px">' + escapeHtml(t.reference_url) + '</a></div>'
+          ? '<div class="rf-tk-sec"><div class="rf-tk-sec-h">' + svg(TK_ICON.link) + escapeHtml('Reference') + '</div><a href="' + encodeURI(t.reference_url) + '" target="_blank" rel="nofollow noopener" class="text-rom-pink underline break-all" style="font-size:14px">' + escapeHtml(t.reference_url) + '</a></div>'
           : '';
         var respBlk = t.response
           ? '<div class="rf-tk-reply"><div class="rf-tk-sec-h">' + svg(TK_ICON.reply) + escapeHtml('Admin response') + '</div><div class="rf-tk-sec-b">' + escapeHtml(t.response) + '</div></div>'
@@ -905,8 +905,8 @@
       return '<li class="py-3">'
         + '<div class="flex items-start justify-between gap-3">'
         + '<div class="min-w-0">'
-        + '<a href="' + link + '" class="block font-semibold text-gray-800 hover:text-romfun-pink truncate">' + title + '</a>'
-        + '<span class="inline-block mt-1 text-[11px] font-semibold text-romfun-pink bg-romfun-pink/10 px-2 py-0.5 rounded-full">' + escapeHtml(it.type || '') + '</span>'
+        + '<a href="' + link + '" class="block font-semibold text-gray-800 hover:text-rom-pink truncate">' + title + '</a>'
+        + '<span class="inline-block mt-1 text-[11px] font-semibold text-rom-pink bg-rom-pink/10 px-2 py-0.5 rounded-full">' + escapeHtml(it.type || '') + '</span>'
         + content
         + '</div>'
         + '<time class="shrink-0 text-xs text-gray-400">' + escapeHtml(fmtDate(it.date)) + '</time>'
@@ -922,7 +922,7 @@
       return '<li class="py-3">'
         + '<div class="flex items-start justify-between gap-3">'
         + '<div class="min-w-0">'
-        + '<a href="' + url + '" class="block font-semibold text-gray-800 hover:text-romfun-pink truncate">' + title + '</a>'
+        + '<a href="' + url + '" class="block font-semibold text-gray-800 hover:text-rom-pink truncate">' + title + '</a>'
         + '<p class="text-sm text-gray-600 mt-1">' + escapeHtml(it.content || '') + '</p>'
         + '</div>'
         + '<div class="shrink-0 flex flex-col items-end gap-1">' + badge + '<time class="text-xs text-gray-400">' + escapeHtml(fmtDate(it.date)) + '</time></div>'

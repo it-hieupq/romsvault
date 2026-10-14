@@ -16,7 +16,7 @@ function k_breadcrumb() {
 
     <ul id="<?php echo $breadcrums_id; ?>" class="pb-3 flex flex-wrap items-center text-sm [&_a:hover]:underline font-bold">
         <li class="flex items-center">
-            <a href="<?php echo get_home_url(); ?>" title="<?php echo $home_title; ?>" class="text-romfun-pink hover:underline inline-flex items-center">
+            <a href="<?php echo get_home_url(); ?>" title="<?php echo $home_title; ?>" class="text-rom-pink hover:underline inline-flex items-center">
                 <?php echo get_svg_icon('home').$home_title; ?>
             </a>
             <span class="mx-2 text-gray-400">/</span></li>

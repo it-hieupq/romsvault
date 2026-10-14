@@ -46,7 +46,7 @@ get_header();
                         <?php _e('Best ROM collections', 'rom'); ?>
                     </h2>
                     <a href="<?php echo $collection_link ?>"
-                       class="inline-flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full font-medium text-sm">
+                       class="inline-flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full font-medium text-sm">
                         <?php echo __('View all', 'rom') . get_svg_icon('more'); ?>
                     </a>
                 </div>
@@ -66,7 +66,7 @@ get_header();
                                 ?>" alt="<?php echo $term->name ?>" class="w-full h-full object-cover">
                             </div>
                             <div class="console-info p-4 bg-white">
-                                <div class="font-semibold text-base mb-4 hover:text-romfun-pink"><?php echo $term->name ?></div>
+                                <div class="font-semibold text-base mb-4 hover:text-rom-pink"><?php echo $term->name ?></div>
                                 <div class="text-sm text-muted flex justify-between">
                                 <span class="inline-flex items-center">
                                     <?php echo get_svg_icon('joystick') . number_format($term->count ?: 0, 0, '') . ' ' . __('ROM', 'rom') ?>
@@ -121,7 +121,7 @@ get_header();
                     </h2>
 
                     <a href="<?php echo home_url('/blog') ?>"
-                       class="flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full font-medium text-sm">
+                       class="flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full font-medium text-sm">
                         <?php echo __('View all', 'rom') . get_svg_icon('more'); ?>
                     </a>
                 </div>
@@ -165,7 +165,7 @@ get_header();
                         <?php echo _e('Popular ROM', 'rom'); ?>
                     </h2>
                     <a href="<?php echo $base_link . '?sort=downloads' ?>"
-                       class="flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
+                       class="flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
                         <?php echo __('More', 'rom') . get_svg_icon('more'); ?>
                     </a>
                 </div>
@@ -207,7 +207,7 @@ get_header();
                         <?php _e('Latest ROM', 'rom'); ?>
                     </h2>
                     <a href="<?php echo $base_link . '?sort=latest' ?>"
-                       class="flex button button-primary bg-romfun-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
+                       class="flex button button-primary bg-rom-pink px-4 py-1 text-white rounded-full hover:underline font-medium text-sm">
                         <?php echo __('More', 'rom') . get_svg_icon('more'); ?>
                     </a>
                 </div>

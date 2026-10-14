@@ -61,7 +61,7 @@ function rf_render_member_menu( $variant = 'mobile' ): void {
  */
 function rf_render_restricted_notice(): void {
 	echo '<div class="rf-inactive-only flex items-center gap-3 p-4 my-4 bg-gray-50 border border-gray-200 rounded-xl">'
-		. '<span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-romfun-pink/10 text-romfun-pink">'
+		. '<span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-rom-pink/10 text-rom-pink">'
 		. '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>'
 		. '</span>'
 		. '<p class="text-sm text-gray-600 m-0"><span class="font-semibold text-gray-800">' . esc_html__( 'Members only.', 'rom' ) . '</span> '

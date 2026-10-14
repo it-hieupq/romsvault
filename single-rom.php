@@ -214,13 +214,35 @@ while ( have_posts() ) : the_post();
         </div>
     </section>
 
-	<?php if ( $screenshots = get_field( 'image' ) ) :
-		$shot_total = count( $screenshots );
+	<?php
+	$screenshots = get_field( 'image' );
+	$shot_total  = is_array( $screenshots ) ? count( $screenshots ) : 0;
+
+	/**
+	 * Youtube preview leads the row when the field holds a watch/short/embed URL.
+	 * The tile follows lightGallery's video contract — data-src is the youtube URL,
+	 * data-poster the still — so lgVideo plays it inside the lightbox; href is only
+	 * the no-JS fallback.
+	 */
+	$yt_id  = '';
+	$yt_url = get_field( 'youtube_url', $post->ID );
+	if ( $yt_url && preg_match( '~(?:youtu\.be/|youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/))([A-Za-z0-9_-]{11})~', $yt_url, $yt_match ) ) {
+		$yt_id = $yt_match[1];
+	}
+
+	$gallery_meta = array();
+	if ( $yt_id ) {
+		$gallery_meta[] = __( '1 video', 'rom' );
+	}
+	if ( $shot_total ) {
+		$gallery_meta[] = sprintf( _n( '%s image', '%s images', $shot_total, 'rom' ), number_format_i18n( $shot_total ) );
+	}
+
+	if ( $shot_total || $yt_id ) :
 		?>
-        <!-- Screenshots. Fixed 200px height, width left to each shot's own ratio, so the
-             row flows left to right and wraps when it runs out of width. Shot ratios vary
-             per console (a DS capture is portrait 256x384, a PS2 one landscape), which is
-             why no column grid is used here. -->
+        <!-- Screenshots. One scrolling row: fixed 200px height, width left to each
+             shot's own ratio, since ratios vary per console (a DS capture is portrait
+             256x384, a PS2 one landscape) and a column grid would crop them. -->
         <section id="screenshots" class="py-6 sm:py-8 scroll-mt-24">
             <div class="max-w-content mx-auto px-4 sm:px-6">
                 <div class="flex items-end justify-between gap-3 mb-3">
@@ -229,24 +251,44 @@ while ( have_posts() ) : the_post();
                         <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Screenshots', 'rom' ); ?></h2>
                     </div>
                     <span class="text-caption text-slate-500 flex-shrink-0">
-                        <?php echo esc_html( sprintf( _n( '%s image', '%s images', $shot_total, 'rom' ), number_format_i18n( $shot_total ) ) ); ?>
+                        <?php echo esc_html( implode( ' · ', $gallery_meta ) ); ?>
                     </span>
                 </div>
 
-                <div id="romGallery" class="flex flex-wrap items-start gap-2.5">
-                    <?php foreach ( $screenshots as $img ) :
+                <div class="horizontal-scroll-container">
+                    <div id="romGallery" class="flex items-start gap-2.5 pb-2.5">
+                    <?php if ( $yt_id ) : ?>
+                        <a href="<?php echo esc_url( $yt_url ); ?>"
+                           class="group relative shrink-0 block rounded-lg overflow-hidden border border-slate-200/80 bg-slate-900 shadow-subtle hover:border-primary/50 transition-all cursor-pointer"
+                           data-src="<?php echo esc_url( $yt_url ); ?>"
+                           data-poster="<?php echo esc_url( 'https://img.youtube.com/vi/' . $yt_id . '/hqdefault.jpg' ); ?>"
+                           data-sub-html="<?php echo esc_attr( sprintf( __( '%s gameplay video', 'rom' ), get_the_title() ) ); ?>">
+                            <img src="https://img.youtube.com/vi/<?php echo esc_attr( $yt_id ); ?>/hqdefault.jpg"
+                                 alt="<?php echo esc_attr( sprintf( __( '%s gameplay video', 'rom' ), get_the_title() ) ); ?>"
+                                 class="block h-[200px] w-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                                 loading="lazy">
+                            <span class="absolute inset-0 flex items-center justify-center bg-slate-950/25 group-hover:bg-slate-950/5 transition-colors">
+                                <span class="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                                </span>
+                            </span>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm"><?php esc_html_e( 'Video', 'rom' ); ?></span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( $shot_total ) : foreach ( $screenshots as $img ) :
                         $caption  = $img['caption'] ?: ( $img['alt'] ?: get_the_title() );
                         $alt_text = $img['alt'] ?: get_the_title() . ' - Screenshot';
                         ?>
                         <a href="<?php echo esc_url( $img['url'] ); ?>"
-                           class="group relative inline-block shrink-0 max-w-full rounded-lg overflow-hidden border border-slate-200/80 bg-slate-900 shadow-subtle hover:border-primary/50 transition-all"
+                           class="group relative inline-block shrink-0 rounded-lg overflow-hidden border border-slate-200/80 bg-slate-900 shadow-subtle hover:border-primary/50 transition-all"
                            data-src="<?php echo esc_url( $img['url'] ); ?>"
                            data-sub-html="<?php echo esc_attr( $caption ); ?>">
                             <img src="<?php echo esc_url( $img['url'] ); ?>" alt="<?php echo esc_attr( $alt_text ); ?>"
-                                 class="block h-[200px] w-auto max-w-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                                 class="block h-[200px] w-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
                                  loading="lazy">
                         </a>
-                    <?php endforeach; ?>
+                    <?php endforeach; endif; ?>
+                    </div>
                 </div>
             </div>
         </section>

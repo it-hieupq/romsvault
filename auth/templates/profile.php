@@ -15,11 +15,11 @@ get_header();
 ?>
 <section class="py-8 text-gray-900">
     <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-        <h1 class="text-2xl font-bold mb-6 text-romfun-pink"><?php esc_html_e( 'My Profile', 'rom' ); ?></h1>
+        <h1 class="text-2xl font-bold mb-6 text-rom-pink"><?php esc_html_e( 'My Profile', 'rom' ); ?></h1>
 
         <div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
             <p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to view your profile.', 'rom' ); ?></p>
-            <button type="button" data-rf-login class="px-6 py-3 bg-romfun-pink text-white rounded-full font-semibold hover:bg-romfun-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
+            <button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
         </div>
 
         <div class="rf-authed-only">
@@ -58,7 +58,7 @@ get_header();
             <a href="<?php echo esc_url( home_url( '/wishlist/' ) ); ?>"
                class="rf-stat-card flex items-center justify-between gap-4 bg-white rounded-2xl shadow-md p-5 mt-4 hover:shadow-lg transition">
                 <span class="flex items-center gap-3 min-w-0">
-                    <span class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-romfun-pink/10 text-romfun-pink shrink-0">
+                    <span class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-rom-pink/10 text-rom-pink shrink-0">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9C4.045 12.733 2 10.352 2 7.5 2 5.015 4.015 3 6.5 3c1.398 0 2.65.638 3.5 1.638A4.494 4.494 0 0113.5 3C15.985 3 18 5.015 18 7.5c0 2.852-2.045 5.233-3.885 6.82a22.049 22.049 0 01-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 01-.69.001z"/></svg>
                     </span>
                     <span class="min-w-0">
@@ -67,7 +67,7 @@ get_header();
                     </span>
                 </span>
                 <span class="flex items-center gap-3 shrink-0">
-                    <span class="text-2xl font-bold text-romfun-pink" data-rf-count="wishlist">&mdash;</span>
+                    <span class="text-2xl font-bold text-rom-pink" data-rf-count="wishlist">&mdash;</span>
                     <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </span>
             </a>
@@ -76,7 +76,7 @@ get_header();
             <a href="<?php echo esc_url( home_url( '/request/' ) ); ?>"
                class="rf-stat-card flex items-center justify-between gap-4 bg-white rounded-2xl shadow-md p-5 mt-4 hover:shadow-lg transition">
                 <span class="flex items-center gap-3 min-w-0">
-                    <span class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-romfun-pink/10 text-romfun-pink shrink-0">
+                    <span class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-rom-pink/10 text-rom-pink shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     </span>
                     <span class="min-w-0">
@@ -100,7 +100,7 @@ get_header();
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
                     <span class="flex items-baseline gap-2">
-                        <span class="text-3xl font-bold text-romfun-pink" data-rf-count="comments">&mdash;</span>
+                        <span class="text-3xl font-bold text-rom-pink" data-rf-count="comments">&mdash;</span>
                         <span class="hidden text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full" data-rf-count-pending></span>
                     </span>
                 </button>
@@ -112,7 +112,7 @@ get_header();
                         <?php esc_html_e( 'Reports', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
-                    <span class="text-3xl font-bold text-romfun-pink" data-rf-count="reports">&mdash;</span>
+                    <span class="text-3xl font-bold text-rom-pink" data-rf-count="reports">&mdash;</span>
                 </button>
 
                 <button type="button"
@@ -122,7 +122,7 @@ get_header();
                         <?php esc_html_e( 'Ratings', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
-                    <span class="text-3xl font-bold text-romfun-pink" data-rf-count="ratings">&mdash;</span>
+                    <span class="text-3xl font-bold text-rom-pink" data-rf-count="ratings">&mdash;</span>
                 </button>
 
                 <button type="button"
@@ -132,7 +132,7 @@ get_header();
                         <?php esc_html_e( 'Contact', 'rom' ); ?>
                         <svg class="w-4 h-4 text-gray-400 transition-transform rf-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </span>
-                    <span class="text-3xl font-bold text-romfun-pink" data-rf-count="contacts">&mdash;</span>
+                    <span class="text-3xl font-bold text-rom-pink" data-rf-count="contacts">&mdash;</span>
                 </button>
 
             </div>
@@ -181,7 +181,7 @@ get_header();
                         <!-- Load more -->
                         <div class="rf-loadmore hidden text-center mt-4 pt-4 border-t border-gray-100" data-rf-loadmore-wrap>
                             <button type="button" data-rf-loadmore
-                                    class="px-6 py-2 border border-romfun-pink text-romfun-pink rounded-full font-semibold hover:bg-romfun-pink hover:text-white transition text-sm">
+                                    class="px-6 py-2 border border-rom-pink text-rom-pink rounded-full font-semibold hover:bg-rom-pink hover:text-white transition text-sm">
                                 <?php esc_html_e( 'Load more', 'rom' ); ?>
                             </button>
                         </div>
