@@ -21,7 +21,7 @@ Theme có đúng **2 CPT**.
 | `supports` | `title`, `editor`, `thumbnail` |
 | `show_in_rest` | `true` |
 
-**Taxonomies:** `console`, `collection`, `region`, `genre`, `dev`, `pub`, `type`
+**Taxonomies:** `console`, `collection`, `region`, `language`, `genre`, `dev`, `pub`, `type`
 
 ### `emulator` — `setting/setting-emulator.php:k_init_emulator()`
 | Property | Value |
@@ -44,6 +44,7 @@ Theme có đúng **2 CPT**.
 | `console` | `true` | `roms` (`with_front: false`) | ✅ |
 | `collection` | `true` | `collection` | — |
 | `region` | `true` | default | — |
+| `language` | `true` | default | — |
 | `genre` | `true` | default | — |
 | `dev` | `false` | default | — |
 | `pub` | `false` | default | — |
@@ -77,9 +78,7 @@ tiền tố `field_` kiểu ACF UI — key thường trùng luôn với name.
 | `downloads` | number | `0` | — | ghi bởi `tracking/flush.php` |
 | `rating_count` | number | `0` | — | cộng dồn bởi `POST rf/v1/rating` |
 | `rating_avg` | number | `0` | — | cộng dồn bởi `POST rf/v1/rating` |
-| `hide_ads` | true_false | — | — | |
 | `released` | textarea | — | — | |
-| `related_posts` | post_object | — | — | `multiple: 1`, `return_format: id` |
 | `internal_note` | textarea | — | — | |
 | `image` | gallery | — | — | screenshots |
 | `grabber_gallery` | group | — | — | sub: `grabber_input` (text), `grabber_button` (text, default `Grab Images`) |

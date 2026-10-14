@@ -1,62 +1,99 @@
+<?php
+/**
+ * Footer link columns come from the 'footer-nav' menu: every top-level item that
+ * has children becomes a column (the item is the heading, its children the
+ * links). Top-level items without children have no heading to sit under, so they
+ * fall back to a single inline row the way the footer rendered before.
+ */
+$footer_items = array();
+if ( has_nav_menu( 'footer-nav' ) ) {
+	$locations = get_nav_menu_locations();
+	$menu      = ! empty( $locations['footer-nav'] ) ? wp_get_nav_menu_object( $locations['footer-nav'] ) : false;
+	if ( $menu ) {
+		$items = wp_get_nav_menu_items( $menu->term_id );
+		if ( $items && ! is_wp_error( $items ) ) {
+			$footer_items = $items;
+		}
+	}
+}
 
-<footer class="bg-romfun-pink text-white py-12 lg:py-16">
-    <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-        <div class="mb-8">
-            <h3 class="text-center text-xl lg:text-2xl font-bold mb-6"><?php bloginfo('name'); ?></h3>
-            <?php if ( has_nav_menu( 'footer-nav' ) ) : ?>
-            <div class="flex flex-wrap gap-4 lg:gap-6 text-sm justify-center">
-                <?php
-                    $locations = get_nav_menu_locations();
-                    if ( isset( $locations['footer-nav'] ) ) :
-                        $menu = wp_get_nav_menu_object( $locations['footer-nav'] );
-                        if ( $menu ) :
-                            $menu_items = wp_get_nav_menu_items( $menu->term_id );
-                            
-                            if ( !empty( $menu_items ) && !is_wp_error( $menu_items ) ) :
-                                foreach ( $menu_items as $item ) :
-                                    if ( $item->menu_item_parent == 0 ) :
-                                        $classes = !empty( $item->classes ) ? implode( ' ', array_filter( $item->classes ) ) : '';
-                                        $classes = $classes ? ' class="' . esc_attr( $classes ) . ' hover:underline font-semibold"' : ' class="hover:underline font-semibold"';
-                                        echo '<a href="' . esc_url( $item->url ) . '"' . $classes . '>' . esc_html( $item->title ) . '</a>';
-                                    endif;
-                                endforeach;
-                            endif;
-                        endif;
-                    endif;
-                ?>
-            </div>
-            <?php endif; ?>
-        </div>
+$footer_children = array();
+foreach ( $footer_items as $item ) {
+	if ( (int) $item->menu_item_parent ) {
+		$footer_children[ (int) $item->menu_item_parent ][] = $item;
+	}
+}
 
-        <div class="border-t border-romfun-pink-dark pt-8">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
-                <div class="text-center sm:text-left">
-                    <?php the_field('copyright', 'option'); ?>
-                </div>
-                <?php 
-                $social_networks = get_field('social_networks', 'option');
-                $social_icons = k_get_social_icons();
-                if ( !empty( $social_networks ) ) : 
-                ?>
-                <div class="flex gap-4 items-center">
-                    <?php 
-                    foreach ( $social_networks as $social ) :
-                        if ( !empty( $social['social_network_icon'] ) && !empty( $social['social_network_url'] ) ) :
-                            $icon_key = $social['social_network_icon'];
-                            $icon_svg = $social_icons[ $icon_key ] ?? '';
-                            if ( !empty( $icon_svg ) ) :
-                    ?>
-                    <a href="<?php echo esc_url( $social['social_network_url'] ); ?>" target="_blank" rel="noopener noreferrer" class="text-white hover:opacity-80 transition-opacity flex items-center justify-center" aria-label="<?php echo esc_attr( ucfirst( $icon_key ) ); ?>">
-                        <?php echo $icon_svg; ?>
-                    </a>
-                    <?php 
-                            endif;
-                        endif;
-                    endforeach; 
-                    ?>
-                </div>
-                <?php endif; ?>
+$footer_columns = array();
+$footer_loose   = array();
+foreach ( $footer_items as $item ) {
+	if ( (int) $item->menu_item_parent ) {
+		continue;
+	}
+	if ( ! empty( $footer_children[ $item->ID ] ) ) {
+		$footer_columns[] = array(
+			'heading' => $item,
+			'links'   => $footer_children[ $item->ID ],
+		);
+	} else {
+		$footer_loose[] = $item;
+	}
+}
+?>
+<footer class="bg-white border-t border-slate-200 mt-auto text-slate-500 text-caption">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+		<?php if ( $footer_columns ) : ?>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+				<?php foreach ( $footer_columns as $column ) : ?>
+                    <div>
+                        <span class="font-bold text-body text-slate-900 block mb-2.5 font-display tracking-wide"><?php echo esc_html( $column['heading']->title ); ?></span>
+                        <ul class="space-y-1.5">
+							<?php foreach ( $column['links'] as $link ) : ?>
+                                <li><a href="<?php echo esc_url( $link->url ); ?>" class="hover:text-primary transition-colors"><?php echo esc_html( $link->title ); ?></a></li>
+							<?php endforeach; ?>
+                        </ul>
+                    </div>
+				<?php endforeach; ?>
             </div>
+		<?php endif; ?>
+
+		<?php if ( $footer_loose ) : ?>
+            <div class="flex flex-wrap gap-4 lg:gap-6 justify-center mb-8">
+				<?php foreach ( $footer_loose as $item ) : ?>
+                    <a href="<?php echo esc_url( $item->url ); ?>" class="font-semibold text-slate-600 hover:text-primary transition-colors"><?php echo esc_html( $item->title ); ?></a>
+				<?php endforeach; ?>
+            </div>
+		<?php endif; ?>
+
+        <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div class="text-slate-400">
+				<?php the_field('copyright', 'option'); ?>
+            </div>
+
+			<?php
+			$social_networks = get_field('social_networks', 'option');
+			$social_icons = k_get_social_icons();
+			if ( !empty( $social_networks ) ) :
+				?>
+                <div class="flex gap-3 items-center">
+					<?php
+					foreach ( $social_networks as $social ) :
+						if ( !empty( $social['social_network_icon'] ) && !empty( $social['social_network_url'] ) ) :
+							$icon_key = $social['social_network_icon'];
+							$icon_svg = $social_icons[ $icon_key ] ?? '';
+							if ( !empty( $icon_svg ) ) :
+								?>
+                                <a href="<?php echo esc_url( $social['social_network_url'] ); ?>" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-primary transition-colors flex items-center justify-center" aria-label="<?php echo esc_attr( ucfirst( $icon_key ) ); ?>">
+									<?php echo $icon_svg; ?>
+                                </a>
+							<?php
+							endif;
+						endif;
+					endforeach;
+					?>
+                </div>
+			<?php endif; ?>
         </div>
     </div>
 </footer>
@@ -74,23 +111,23 @@
 </button>
 
 <div class="float-search float-search__hide">
-    
+
     <div class="flex flex-col lg:flex-row gap-3">
-        
+
         <div class="relative flex-1">
-            
+
             <div class="float-search-result"></div>
-            
+
             <input style="padding-left: 60px; height: 50px;" type="text" id="float-search-input" placeholder="Search for ROMs, consoles, emulators…" name="q" value="" class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
-            
+
         </div>
-        
+
     </div>
-    
+
 </div>
 
 <div class="float-search-bg float-search-bg__hide"></div>
-                    
+
 <?php echo get_field('footer_js', 'option'); ?>
 <!-- Login modal (P2.0 scaffold; Google button wired in P2.1). Shared by header + single "login to download". -->
 <div id="rf-modal" class="rf-modal" aria-hidden="true">

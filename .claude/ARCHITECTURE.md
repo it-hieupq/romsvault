@@ -102,7 +102,7 @@ Theme có đúng **2 CPT**.
 | `capability_type` | `post` |
 | `menu_position` / `menu_icon` | `5` / `dashicons-media-interactive` |
 
-Taxonomy: `console`, `collection`, `region`, `genre`, `dev`, `pub`, `type`
+Taxonomy: `console`, `collection`, `region`, `language`, `genre`, `dev`, `pub`, `type`
 
 ### 3.2 `emulator` — `setting/setting-emulator.php:k_init_emulator()`
 
@@ -128,6 +128,7 @@ Taxonomy: `emulator_console`, `os`
 | `console` | `true` | `slug: roms`, `with_front: false`, `hierarchical: false` | ✅ | `taxonomy-console.php` |
 | `collection` | `true` | `slug: collection`, `hierarchical: false` | — | `taxonomy-collection.php` |
 | `region` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
+| `language` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `genre` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `dev` | `false` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `pub` | `false` | default, `hierarchical: false` | — | `taxonomy.php` |
@@ -168,6 +169,7 @@ console thì không có URL dùng được — permalink rơi về dạng query,
 | ROM single | `/roms/{console_slug}/{post_name}/` |
 | Console archive | `/roms/{console_slug}/` |
 | Collection | `/collection/{slug}/` |
+| Language archive | `/language/{slug}/` |
 | Type archive | `/{type_slug}/` — **không prefix** |
 | Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
 | Emulator console archive | `/emulators/{slug}/` (+ `/page/{n}/`) |
@@ -275,7 +277,7 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 | `collection` | `taxonomy-collection.php` |
 | `type` | `taxonomy-type.php` |
 | `emulator_console` | `taxonomy-emulator_console.php` |
-| `region` · `genre` · `dev` · `pub` · `os` | `taxonomy.php` (dispatcher) |
+| `region` · `language` · `genre` · `dev` · `pub` · `os` | `taxonomy.php` (dispatcher) |
 
 `taxonomy.php` chọn partial và heading qua `get_taxonomy_template_slug_by_post_type()` /
 `get_taxonomy_title_suffix_by_post_type()` (`inc/utility-post-type.php`).

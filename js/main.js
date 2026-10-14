@@ -1029,16 +1029,38 @@ if (search_button_2 && search_container_2) {
 
 // Copy to Clipboard Function
 function copyToClipboard(text, buttonElement) {
-    if (!navigator.clipboard || !navigator.clipboard.writeText) {
-        console.error('Clipboard API is not supported in this browser');
+    // navigator.clipboard only exists in a secure context, so it is missing over
+    // plain http (local dev) and the button would silently do nothing. Fall back
+    // to a throwaway textarea + execCommand there.
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+            showCopyMessage(buttonElement);
+        }).catch(function(err) {
+            console.error('Failed to copy to clipboard:', err);
+        });
         return;
     }
 
-    navigator.clipboard.writeText(text).then(function() {
-        showCopyMessage(buttonElement);
-    }).catch(function(err) {
+    var helper = document.createElement('textarea');
+    helper.value = text;
+    helper.setAttribute('readonly', '');
+    helper.style.position = 'fixed';
+    helper.style.top = '-9999px';
+    document.body.appendChild(helper);
+    helper.select();
+    helper.setSelectionRange(0, helper.value.length);
+
+    try {
+        if (document.execCommand('copy')) {
+            showCopyMessage(buttonElement);
+        } else {
+            console.error('Failed to copy to clipboard: execCommand returned false');
+        }
+    } catch (err) {
         console.error('Failed to copy to clipboard:', err);
-    });
+    }
+
+    document.body.removeChild(helper);
 }
 
 function showCopyMessage(buttonElement) {

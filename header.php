@@ -61,75 +61,108 @@
 	<?php echo get_field('header_js', 'option'); ?>
 </head>
 
-<body <?php body_class('bg-gray-50'); ?>>
+<body <?php body_class('bg-slate-50'); ?>>
 
-<header class="bg-romfun-pink text-white sticky top-0 z-50 shadow-lg">
-    <div class="content-container px-4 sm:px-6 lg:px-8 py-1">
-        <div class="flex items-center justify-between h-16 lg:h-20">
+<?php
+$logo_url  = get_field( 'logo', 'option' );
+$site_name = get_bloginfo( 'name' );
+$is_home   = is_front_page() || is_home();
+
+/**
+ * Header search. The Browse ROMs page template reads ?q= and layers its facet
+ * filters on top of it (browse-roms.php:10). When no page uses that template
+ * get_brows_page_url() returns '' and an empty action would post back to the
+ * current URL, so fall back to WP's own ?s= search.
+ */
+$browse_url    = get_brows_page_url();
+$search_action = $browse_url ? $browse_url : home_url( '/' );
+$search_param  = $browse_url ? 'q' : 's';
+?>
+
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06)]">
+    <div class="h-0.5 w-full bg-gradient-to-r from-primary via-primary-accent to-primary"></div>
+
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-[72px] sm:h-[88px] gap-6">
+
             <!-- Logo -->
-            <div class="flex items-center">
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-brand flex items-center gap-2.5 group flex-shrink-0">
+                <?php if ( $logo_url ) : ?>
+                    <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $site_name ); ?>" class="h-8 sm:h-9 w-auto">
+                <?php else : ?>
+                    <span class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2" y="6" width="20" height="12" rx="4"></rect>
+                            <path d="M6 12h4m-2-2v4"></path>
+                            <line x1="15" y1="11" x2="15" y2="11.01"></line>
+                            <line x1="18" y1="13" x2="18" y2="13.01"></line>
+                        </svg>
+                    </span>
+                <?php endif; ?>
+
                 <?php
-                $logo_url  = get_field( 'logo', 'option' );
-                $site_name = get_bloginfo('name');
-                $is_home   = is_front_page() || is_home();
+                $tag = $is_home ? 'h1' : 'h2';
+
+                // has logo -> hide heading
+                $class = $logo_url
+                        ? 'hidden'
+                        : 'flex flex-col';
                 ?>
 
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="site-brand flex items-center gap-2">
-
-                    <?php if ($logo_url) : ?>
-                        <img style="height: 30px;" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>">
-                    <?php endif; ?>
-
-                    <?php
-                    $tag = $is_home ? 'h1' : 'h2';
-
-                    // has logo -> hide heading
-                    $class = $logo_url
-                            ? 'hidden'
-                            : 'text-xl lg:text-3xl font-bold';
-                    ?>
-
-                    <<?php echo $tag; ?> class="<?php echo esc_attr($class); ?>">
-                    <?php echo esc_html($site_name); ?>
+                <<?php echo $tag; ?> class="<?php echo esc_attr( $class ); ?>">
+                    <span class="text-lg font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( $site_name ); ?></span>
+                    <span class="text-[9px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
                 </<?php echo $tag; ?>>
+            </a>
 
-                </a>
-
-            </div>
-
-            <nav class="hidden md:flex items-center space-x-2 bg-white rounded-full px-4 py-2 shadow-lg">
+            <nav class="hidden md:flex items-center gap-1 font-semibold text-meta text-slate-600">
                 <?php
                 if ( has_nav_menu( 'primary' ) ) {
                     rom_display_header_menu();
                 } else {
-                    echo '<a href="' . esc_url( home_url( '/' ) ) . '" class="header-nav-link font-bold text-romfun-pink active rounded-full">'.__('Home', 'rom').'</a>';
+                    echo '<a href="' . esc_url( home_url( '/' ) ) . '" class="px-3.5 py-1.5 rounded-xl bg-primary text-white font-bold shadow-sm shadow-primary/25">'.__('Home', 'rom').'</a>';
                 }
                 ?>
             </nav>
 
-            <!-- Account (P2.0): renders guest by default; auth.js swaps to avatar from localStorage. Desktop only. -->
-            <div id="rf-account" class="rf-account">
-                <button type="button" class="rf-guest-only rf-icon-btn" data-rf-login aria-label="<?php esc_attr_e( 'Sign in', 'rom' ); ?>" title="<?php esc_attr_e( 'Sign in', 'rom' ); ?>">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-                </button>
-                <div class="rf-authed-only rf-menu">
-                    <button type="button" class="rf-user-trigger" data-rf-menu-toggle aria-haspopup="true">
-                        <img class="rf-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='12' fill='%23e5e7eb'/%3E%3Ccircle cx='12' cy='9.5' r='3.5' fill='%23cbd5e1'/%3E%3Cpath d='M5 20c0-3.6 3.2-5.5 7-5.5s7 1.9 7 5.5z' fill='%23cbd5e1'/%3E%3C/svg%3E" alt="" data-rf-avatar>
-                        <span class="rf-name" data-rf-firstname><?php esc_html_e( 'Account', 'rom' ); ?></span>
-                        <span class="rf-caret">&#9662;</span>
-                    </button>
-                    <div class="rf-dropdown">
-                        <?php rf_render_member_menu( 'desktop' ); ?>
-                    </div>
-                </div>
+            <!-- Desktop search: plain GET so it still works on a cached page with JS off. -->
+            <div class="hidden lg:flex flex-1 max-w-xs">
+                <form action="<?php echo esc_url( $search_action ); ?>" method="get" role="search" class="w-full relative">
+                    <label class="sr-only" for="header-search"><?php esc_html_e( 'Search ROMs', 'rom' ); ?></label>
+                    <input type="search" id="header-search" name="<?php echo esc_attr( $search_param ); ?>"
+                           placeholder="<?php esc_attr_e( 'Search ROMs & ISOs...', 'rom' ); ?>"
+                           class="w-full pl-9 pr-4 py-2 rounded-full bg-slate-50 border border-slate-200/90 text-meta text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-inner">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </form>
             </div>
 
-            <button class="md:hidden p-2 hover:bg-romfun-pink-dark rounded transition" id="mobile-menu-btn">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+            <div class="flex items-center gap-3">
+                <!-- Account (P2.0): renders guest by default; auth.js swaps to avatar from localStorage. Desktop only. -->
+                <div id="rf-account" class="rf-account">
+                    <button type="button" class="rf-guest-only rf-icon-btn" data-rf-login aria-label="<?php esc_attr_e( 'Sign in', 'rom' ); ?>" title="<?php esc_attr_e( 'Sign in', 'rom' ); ?>">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                    </button>
+                    <div class="rf-authed-only rf-menu">
+                        <button type="button" class="rf-user-trigger" data-rf-menu-toggle aria-haspopup="true">
+                            <img class="rf-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='12' fill='%23e5e7eb'/%3E%3Ccircle cx='12' cy='9.5' r='3.5' fill='%23cbd5e1'/%3E%3Cpath d='M5 20c0-3.6 3.2-5.5 7-5.5s7 1.9 7 5.5z' fill='%23cbd5e1'/%3E%3C/svg%3E" alt="" data-rf-avatar>
+                            <span class="rf-name" data-rf-firstname><?php esc_html_e( 'Account', 'rom' ); ?></span>
+                            <span class="rf-caret">&#9662;</span>
+                        </button>
+                        <div class="rf-dropdown">
+                            <?php rf_render_member_menu( 'desktop' ); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="md:hidden p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-primary hover:bg-rose-50/50 transition-colors" id="mobile-menu-btn" aria-label="<?php esc_attr_e( 'Toggle menu', 'rom' ); ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 </header>
@@ -141,9 +174,9 @@
         <?php if ($logo_url) : ?>
             <img style="height: 30px" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>">
         <?php else: ?>
-            <h2 class="text-xl font-bold text-white"><?php bloginfo('name'); ?></h2>
+            <span class="text-lg font-bold text-slate-900 font-display"><?php bloginfo('name'); ?></span>
         <?php endif; ?>
-        <button class="mobile-menu-close" id="mobile-menu-close">
+        <button class="mobile-menu-close" id="mobile-menu-close" aria-label="<?php esc_attr_e( 'Close menu', 'rom' ); ?>">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>

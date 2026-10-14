@@ -1,10 +1,90 @@
+/* Plus Jakarta Sans — body font. Latin subset, self-hosted.
+   All eight shipped weights are declared so the browser never synthesises
+   bold or italic. */
 @font-face {
   font-family: 'Plus Jakarta Sans';
   font-style: normal;
-  font-weight: 300;
+  font-weight: 400;
+  font-display: swap;
   src: local(''),
        url('../fonts/plus-jakarta-sans-v12-latin-regular.woff2') format('woff2');
 }
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-500italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-600italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/plus-jakarta-sans-v12-latin-700italic.woff2') format('woff2');
+}
+
+/* Rajdhani — display font, exposed as the font-display utility. Latin subset,
+   self-hosted. Only the two weights the design uses. */
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/rajdhani-v17-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local(''),
+       url('../fonts/rajdhani-v17-latin-700.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

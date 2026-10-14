@@ -322,10 +322,10 @@ function k_init_rom() {
 			),
 
 			array (
-				'label'		    => __( 'Hide ADS', 'rom' ),
-				'key' 		    => 'hide_ads',
-				'name' 		    => 'hide_ads',
-				'type' 		    => 'true_false',
+				'label'		    => __( 'Youtube URL', 'rom' ),
+				'key' 		    => 'youtube_url',
+				'name' 		    => 'youtube_url',
+				'type' 		    => 'url',
 				'wrapper'    	=> array(
 					'width'  	=> '25',
 				),
@@ -340,19 +340,6 @@ function k_init_rom() {
 				'wrapper' 	=> array(
 					'width' => '25',
 				),
-			),
-			array (
-				'label' 		=> __( 'Related Posts', 'rom' ),
-				'key'   		=> 'related_posts',
-				'name'  		=> 'related_posts',
-				'type' 		    => 'post_object',
-				'post_type'		=> 'post',
-				'multiple'		=> 1,
-				'return_format' => 'id',
-				'wrapper'    	=> array(
-					'width'  	=> '25',
-				),
-				
 			),
 
             array(

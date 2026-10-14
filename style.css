@@ -170,26 +170,6 @@ body {
 }
 
 /* Header Menu Styles */
-.header-nav-link {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: white;
-    color: #333;
-    text-decoration: none;
-    font-size: 14px;
-    border-radius: 4px;
-    transition: all 0.3s;
-}
-
-.header-nav-link:hover {
-    background-color: #f3f4f6;
-}
-
-.header-nav-link.active {
-    background-color: #e91e63;
-    color: white;
-}
-
 /* Mobile Menu Styles */
 .mobile-menu-overlay {
     position: fixed;
@@ -212,7 +192,7 @@ body {
     left: -100%;
     width: 100%;
     height: 100vh;
-    background-color: #e91e63;
+    background-color: #fff;
     z-index: 1000;
     transition: left 0.3s ease-in-out;
     overflow-y: auto;
@@ -226,19 +206,19 @@ body {
 }
 
 .mobile-menu-header {
-    background-color: #e91e63;
+    background-color: #fff;
     padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid #e2e8f0;
     flex-shrink: 0;
 }
 
 .mobile-menu-close {
     background: none;
     border: none;
-    color: white;
+    color: #475569;
     font-size: 24px;
     cursor: pointer;
     padding: 0;
@@ -264,20 +244,22 @@ body {
 .mobile-menu-item {
     display: block;
     padding: 16px 20px;
-    color: white;
+    color: #334155;
     text-decoration: none;
     font-size: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background-color 0.2s;
+    font-weight: 600;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .mobile-menu-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #fdf2f8;
+    color: #d81b60;
 }
 
 .mobile-menu-item.active {
-    background-color: white;
-    color: #e91e63;
+    background-color: #d81b60;
+    color: #fff;
 }
 
 /* Container max-width for desktop */
@@ -439,6 +421,21 @@ body {
 .revert * {
     all: revert;
     max-width: 100%;
+}
+
+/* `all: revert` above drops the author colour from every descendant, so links in
+   post/rom/emulator content need a rule that outranks `.revert *` (0,1,1) rather
+   than one that merely loads later. */
+.revert.page-content a,
+.page-content a {
+    color: #d81b60;
+    text-decoration: none;
+}
+
+.revert.page-content a:hover,
+.page-content a:hover {
+    color: #ad1457;
+    text-decoration: underline;
 }
 
 /* Toast Notification Styles */
@@ -705,25 +702,24 @@ html.rf-authed .rf-authed-only { display: revert; }
 .rf-icon-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 2.25rem; height: 2.25rem; padding: 0;
-  border: 0; border-radius: 9999px; cursor: pointer;
-  color: #fff; background: rgba(255,255,255,.15);
-  transition: background .15s ease;
+  border: 1px solid #e2e8f0; border-radius: 9999px; cursor: pointer;
+  color: #334155; background: #f8fafc;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
 }
-.rf-icon-btn:hover { background: rgba(255,255,255,.28); }
+.rf-icon-btn:hover { background: #fdf2f8; color: #d81b60; border-color: rgba(216,27,96,.4); }
 .rf-icon-btn svg { width: 1.25rem; height: 1.25rem; }
 
 /* desktop authed pill: bigger avatar, first name only, tighter text */
 .rf-menu { position: relative; }
 .rf-user-trigger {
   display: flex; align-items: center; gap: .4rem;
-  background: #fff; color: #111827;
-  border: 0; border-radius: 9999px;
+  background: #f8fafc; color: #1e293b;
+  border: 1px solid #e2e8f0; border-radius: 9999px;
   padding: .2rem .6rem .2rem .2rem;
   font-size: .85rem; font-weight: 600; cursor: pointer;
-  box-shadow: 0 2px 6px -1px rgba(0,0,0,.2);
-  transition: box-shadow .15s ease, transform .15s ease;
+  transition: background .15s ease, border-color .15s ease;
 }
-.rf-user-trigger:hover { box-shadow: 0 4px 10px -2px rgba(0,0,0,.28); }
+.rf-user-trigger:hover { background: #fdf2f8; border-color: rgba(216,27,96,.4); }
 .rf-user-trigger .rf-name { max-width: 6.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rf-avatar { width: 1.75rem; height: 1.75rem; border-radius: 9999px; object-fit: cover; display: block; background: #e5e7eb; }
 .rf-user-trigger .rf-avatar { width: 2.15rem; height: 2.15rem; }
@@ -733,9 +729,9 @@ html.rf-authed .rf-authed-only { display: revert; }
 /* dropdown — smaller/tighter */
 .rf-dropdown {
   position: absolute; right: 0; top: calc(100% + .45rem);
-  min-width: 10rem; background: #fff; color: #111827;
-  border: 1px solid #f0f0f0; border-radius: .625rem; padding: .25rem; z-index: 60;
-  box-shadow: 0 8px 20px -6px rgba(0,0,0,.25);
+  min-width: 13rem; background: #fff; color: #111827;
+  border: 1px solid #e2e8f0; border-radius: 1rem; padding: .5rem; z-index: 60;
+  box-shadow: 0 20px 25px -5px rgba(15,23,42,.12), 0 8px 10px -6px rgba(15,23,42,.08);
   display: none;
 }
 .rf-menu.open .rf-dropdown { display: block; }
@@ -745,34 +741,34 @@ html.rf-authed .rf-authed-only { display: revert; }
   border-radius: .4rem; color: #374151; font-size: .82rem; line-height: 1.4;
   text-decoration: none; cursor: pointer;
 }
-.rf-di:hover { background: #f5f5f5; color: #111827; }
+.rf-di:hover { background: #f8fafc; color: #d81b60; }
 .rf-di svg { width: 1rem; height: 1rem; flex-shrink: 0; opacity: .7; }
 
 /* mobile member card + collapsible submenu (Profile/Wishlist/Logout) */
-.rf-m-account { border-bottom: 1px solid rgba(255,255,255,.12); }
+.rf-m-account { border-bottom: 1px solid #e2e8f0; }
 .rf-m-user {
   display: flex; align-items: center; gap: .75rem;
   width: 100%; padding: 16px 20px;
-  background: transparent; border: 0; color: #fff; cursor: pointer; text-align: left;
+  background: transparent; border: 0; color: #1e293b; cursor: pointer; text-align: left;
 }
-.rf-m-user .rf-avatar { width: 2.75rem; height: 2.75rem; box-shadow: 0 0 0 2px rgba(255,255,255,.35); flex-shrink: 0; }
+.rf-m-user .rf-avatar { width: 2.75rem; height: 2.75rem; box-shadow: 0 0 0 2px #e2e8f0; flex-shrink: 0; }
 .rf-m-meta { min-width: 0; flex: 1; }
-.rf-m-name { font-weight: 700; line-height: 1.2; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rf-m-email { font-size: .75rem; opacity: .75; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rf-m-name { font-weight: 700; line-height: 1.2; color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rf-m-email { font-size: .75rem; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rf-m-caret { width: 1.15rem; height: 1.15rem; flex-shrink: 0; margin-left: .35rem; opacity: .85; transition: transform .2s ease; }
 .rf-m-account.open .rf-m-caret { transform: rotate(180deg); }
 
-.rf-m-submenu { display: none; background: rgba(0,0,0,.12); }
+.rf-m-submenu { display: none; background: #f8fafc; }
 .rf-m-account.open .rf-m-submenu { display: block; }
 .rf-m-sub-item {
   display: flex; align-items: center; gap: .8rem;
   width: 100%; padding: 13px 20px 13px 24px;
-  background: transparent; border: 0; border-top: 1px solid rgba(255,255,255,.08);
+  background: transparent; border: 0; border-top: 1px solid #e2e8f0;
   cursor: pointer; text-align: left;
-  color: #fff; font-size: .95rem; text-decoration: none;
-  transition: background .15s ease;
+  color: #334155; font-size: .95rem; text-decoration: none;
+  transition: background .15s ease, color .15s ease;
 }
-.rf-m-sub-item:hover, .rf-m-sub-item:active { background: rgba(255,255,255,.12); }
+.rf-m-sub-item:hover, .rf-m-sub-item:active { background: #fdf2f8; color: #d81b60; }
 .rf-m-sub-item svg { width: 1.2rem; height: 1.2rem; flex-shrink: 0; opacity: .9; }
 
 /* wishlist heart button (game pages) */
@@ -846,17 +842,17 @@ html.rf-blocked .rf-inactive-only { display: revert; }
 .rf-restricted-signin:hover { background: #c2185b; }
 
 /* mobile "Sign in with Google" button — pinned to bottom, auto width, centered */
-.rf-mobile-login { margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,.15); }
+.rf-mobile-login { margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0; }
 .rf-login-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
   width: auto; padding: .7rem 1.4rem;
-  border: 0; border-radius: 9999px; cursor: pointer;
+  border: 1px solid #e2e8f0; border-radius: 9999px; cursor: pointer;
   background: #fff; color: #3c4043;
   font-size: .9rem; font-weight: 600; line-height: 1;
-  box-shadow: 0 2px 8px rgba(0,0,0,.18);
-  transition: box-shadow .15s ease, transform .1s ease;
+  box-shadow: 0 1px 3px rgba(15,23,42,.08);
+  transition: box-shadow .15s ease, transform .1s ease, border-color .15s ease;
 }
-.rf-login-btn:hover { box-shadow: 0 4px 12px rgba(0,0,0,.24); }
+.rf-login-btn:hover { box-shadow: 0 4px 12px rgba(15,23,42,.14); border-color: #cbd5e1; }
 .rf-login-btn:active { transform: scale(.97); }
 .rf-login-btn .rf-g { width: 1.15rem; height: 1.15rem; flex-shrink: 0; }
 
