@@ -1,191 +1,409 @@
 <?php
-get_header(); 
+get_header();
+
 while ( have_posts() ) : the_post();
-    global $post;
-	$terms = wp_get_post_terms($post->ID, 'emulator_console', array('fields' => 'all'));
-	if ( ! is_wp_error($terms) && ! empty($terms) ) {
-		$console = $terms[0];
+	global $post;
+	$terms = wp_get_post_terms( $post->ID, 'emulator_console', array( 'fields' => 'all' ) );
+	if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+		$console      = $terms[0];
+		$console_link = get_term_link( $console->term_id );
 	} else {
-        rf_force_404();
+		rf_force_404();
 	}
 
-	$views = (int) get_field('views', $post->ID);
-?>
-    <section class="py-8 text-gray-900">
-        <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+	$views = (int) get_field( 'views', $post->ID );
 
-            <div class="overflow-hidden pb-8">
-                <div class="flex flex-col lg:flex-row gap-4">
+	$rating = false;
+	if ( isset( $_COOKIE['ratings'] ) ) {
+		$ratings = json_decode( stripslashes( $_COOKIE['ratings'] ), true );
+		if ( is_array( $ratings ) && in_array( $post->ID, $ratings ) ) {
+			$rating = true;
+		}
+	}
+	$count = max( 0, (int) get_post_meta( $post->ID, 'rating_count', true ) );
+	$score = round( (float) get_post_meta( $post->ID, 'rating_avg', true ), 1, PHP_ROUND_HALF_DOWN );
 
-                    <div class="lg:w-1/3 flex items-center justify-center p-6 bg-white rounded-xl shadow-md">
-                        <img src="<?php the_post_thumbnail_url(); ?>" alt="<?php the_title() ?>" class="w-full h-auto max-w-full object-contain">
-                    </div>
+	$downloads = (int) get_field( 'downloads', $post->ID );
+	$file_size = get_field( 'file_size', $post->ID );
 
-					<?php
-					$rating = false;
-					if ( isset( $_COOKIE['ratings'] ) ) {
-						$ratings = json_decode( stripslashes( $_COOKIE['ratings'] ), true );
-						if ( in_array( $post->ID, $ratings ) ) {
-							$rating = true;
-						}
-					}
-					$count = (int)get_post_meta( get_the_ID(), 'rating_count', true );
-					$count = max(0, $count);
-					$score = (float)get_post_meta( get_the_ID(), 'rating_avg', true );
-					$score = round($score, 1, PHP_ROUND_HALF_DOWN);
-					?>
+	$download_url  = trailingslashit( get_permalink( $post ) ) . 'download/';
+	$rf_restricted = rf_is_restricted( $post->ID );
 
-                    <div class="lg:w-2/3 p-6 lg:p-8 bg-white rounded-xl shadow-md">
-						<?php k_breadcrumb(); ?>
-                        <h1 class="text-xl lg:text-2xl font-bold mb-4 text-rom-pink"><?php the_title() ?></h1>
-                        <div class="flex flex-wrap items-center gap-4 mb-4">
-                            <div class="flex items-center">
-                                <div class="d-flex align-items-center min-w-[5rem]">
-                                    <div class="rating" data-post_id="<?php echo $post->ID; ?>" data-rateyo-rating="<?php echo $score; ?>"
-									     <?php if ( $rating ) : ?>data-rateyo-read-only="true"<?php endif; ?>></div>
-                                </div>
+	/**
+	 * Same contract as the rom page: the download endpoint indexes both repeaters
+	 * as one merged list, 1-based (inc/ajax.php, inc/download-token.php), so they
+	 * have to be merged in that order here too.
+	 */
+	$all_downloads = array_merge(
+		(array) ( get_field( 'download_list', $post->ID ) ?: array() ),
+		(array) ( get_field( 'download_list_aff', $post->ID ) ?: array() )
+	);
 
-                                <span class="ml-2 text-sm text-gray-600"><?php echo $score; ?></span>
-                                <span class="ml-2 text-sm text-gray-500">(<?php echo $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ); ?>)</span>
-                            </div>
+	// Spec cells. The console is already the lead tag and sits in the h1, so it is
+	// not repeated here; 'region' is not registered for this post type at all.
+	$specs    = array();
+	$os_terms = wp_get_post_terms( $post->ID, 'os', array( 'fields' => 'all' ) );
+	if ( ! is_wp_error( $os_terms ) && ! empty( $os_terms ) ) {
+		$os_links = array();
+		foreach ( $os_terms as $os_term ) {
+			$os_links[] = sprintf(
+				'<a class="hover:text-primary transition-colors" href="%s">%s</a>',
+				esc_url( get_term_link( $os_term->term_id ) ),
+				esc_html( $os_term->name )
+			);
+		}
+		$specs[] = array(
+			'icon'  => 'emulator',
+			'label' => __( 'Platform', 'rom' ),
+			'value' => implode( ', ', $os_links ),
+		);
+	}
+	if ( ! empty( $file_size ) ) {
+		$specs[] = array(
+			'icon'  => 'size',
+			'label' => __( 'File Size', 'rom' ),
+			'value' => esc_html( $file_size ),
+		);
+	}
+	if ( $released = get_field( 'released', $post->ID ) ) {
+		$specs[] = array(
+			'icon'  => 'released',
+			'label' => __( 'Release Date', 'rom' ),
+			'value' => esc_html( wp_strip_all_tags( $released ) ),
+		);
+	}
+	?>
 
-							<?php if ( $key = get_field('downloads', $post->ID) ) : ?>
-                                <span class="text-gray-400">•</span>
-                                <span class="text-sm text-gray-600"><?php echo number_format( $key ?: 0, 0, '', ',' ). ' ' . __( 'downloads', 'rom' ); ?></span>
-							<?php endif; ?>
+    <!-- Breadcrumbs bar -->
+    <div class="w-full bg-white/50 border-b border-slate-200/60 py-2.5">
+        <div class="max-w-content mx-auto px-4 sm:px-6">
+			<?php k_breadcrumb(); ?>
+        </div>
+    </div>
 
-							<?php if ( $key = get_field('file_size', $post->ID) ) : ?>
-                                <span class="text-gray-400">•</span>
-                                <span class="text-sm text-gray-600"><?php echo $key; ?></span>
-							<?php endif; ?>
-                        </div>
+    <!-- Hero overview -->
+    <section class="py-6 sm:py-8">
+        <div class="max-w-content mx-auto px-4 sm:px-6">
+            <div class="bg-white rounded-xl border border-slate-200/80 p-5 sm:p-7 lg:p-8 shadow-card">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-                        <div class="flex flex-wrap gap-2 mb-6">
-							<a class="px-4 py-1 rounded-full text-rom-pink border border-brand/50 text-xs font-semibold" href="<?php echo get_term_link( $console->term_id ); ?>"> <?php echo $console->name; ?> </a>
-							
-							<?php
-							$terms    = wp_get_post_terms( $post->ID, 'os', array( 'fields' => 'id=>name' ) );
-							if ( !is_wp_error($terms) && !empty($terms) ) :
-								foreach ( $terms as $term_id => $term_name ) : ?>
-                                    <a class="px-4 py-1 rounded-full bg-green-50 text-green-500 border border-green-300 text-xs font-semibold" href="<?php echo get_term_link($term_id); ?>"> <?php echo $term_name; ?> </a>
-								<?php endforeach; ?>
-							<?php endif; ?>
-                        </div>
-
-                        <div class="space-y-3 mb-6">
-
-							<?php if( $key = get_field('released', $post->ID) ) : ?>
-                                <div class="flex justify-between py-1">
-                                    <span class="text-gray-600"><?php _e('Release Date', 'rom') ?></span>
-                                    <span class="font-semibold text-gray-700"><?php echo wpautop($key); ?></span>
-                                </div>
-							<?php endif; ?>
-
-							<?php
-							$terms = wp_get_post_terms( get_the_ID(), 'region', array( 'fields' => 'id=>name' ) );
-							if ( !is_wp_error($terms) && !empty($terms) ) :
-								?>
-                                <div class="flex justify-between py-1">
-                                    <span class="text-gray-600"><?php _e('Region', 'rom') ?></span>
-                                    <span class="text-rom-pink">
-                                        <?php
-                                        foreach ( $terms as $term_id => $term_name ) : ?>
-                                            <a href="<?php echo get_term_link($term_id); ?>"><?php echo $term_name; ?></a>
-                                        <?php endforeach; ?>
-										<?php echo implode(', ', $links); ?>
+                    <!-- Logo -->
+                    <div class="md:col-span-5 lg:col-span-4 flex flex-col items-center">
+						<?php if ( $thumb_url = get_the_post_thumbnail_url( $post->ID, 'full' ) ) : ?>
+                            <div class="relative w-full rounded-2xl overflow-hidden shadow-md border border-slate-200/80 bg-slate-100 group">
+                                <img src="<?php echo esc_url( $thumb_url ); ?>" alt="<?php the_title_attribute(); ?>"
+                                     class="w-full h-auto block group-hover:scale-105 transition-transform duration-500" loading="eager">
+                                <div class="absolute top-3 right-3">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-950/85 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+										<?php echo esc_html( $console->name ); ?>
                                     </span>
                                 </div>
-							<?php endif; ?>
+                            </div>
+						<?php endif; ?>
+                        <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-2">
+                            <div class="rating [&_.rf-stars]:text-[1.6rem]" data-post_id="<?php echo esc_attr( $post->ID ); ?>"
+                                 data-rateyo-rating="<?php echo esc_attr( $score ); ?>"
+								<?php if ( $rating ) : ?>data-rateyo-read-only="true"<?php endif; ?>></div>
+                            <span class="text-slate-900 font-extrabold text-lg"><?php echo esc_html( $score ); ?></span>
+                            <span class="text-slate-400 font-normal text-caption">(<?php echo esc_html( $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ) ); ?>)</span>
+                        </div>
+                    </div>
+
+                    <!-- Title, meta, specs, actions -->
+                    <div class="md:col-span-7 lg:col-span-8 flex flex-col justify-between space-y-5 sm:space-y-6">
+
+                        <!-- Console + OS tags -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a href="<?php echo esc_url( $console_link ); ?>"
+                               class="px-3 py-1 rounded-lg bg-rose-50 text-primary text-caption font-bold border border-rose-200/60 hover:bg-rose-100 transition-colors"><?php echo esc_html( $console->name ); ?></a>
+							<?php
+							if ( ! is_wp_error( $os_terms ) && ! empty( $os_terms ) ) :
+								foreach ( $os_terms as $os_term ) :
+									?>
+                                    <a href="<?php echo esc_url( get_term_link( $os_term->term_id ) ); ?>"
+                                       class="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-caption font-semibold hover:bg-slate-200 transition-colors"><?php echo esc_html( $os_term->name ); ?></a>
+								<?php
+								endforeach;
+							endif;
+							?>
                         </div>
 
-	                    <?php if ( get_field('download_list', $post->ID) || get_field('download_list_aff', $post->ID) ) :
-			                    $download_url = trailingslashit( get_permalink( $post ) ) . 'download/';
-			                    $rf_restricted = rf_is_restricted( $post->ID );
-			                    if ( $rf_restricted ) rf_render_restricted_notice(); ?>
-                                <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
-                                    <a href="<?php echo esc_url( $download_url ); ?>"
-                                       class="inline-block px-8 py-2 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold">
-				                        <?php echo get_svg_icon('save') . __( 'Download Emulator', 'rom' ) ?>
-                                    </a>
+                        <!-- Title + meta -->
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-snug">
+								<?php
+								/* translators: 1: emulator name, 2: console name. */
+								echo esc_html( sprintf( __( '%1$s %2$s Emulator', 'rom' ), get_the_title(), $console->name ) );
+								?>
+                            </h1>
+                            <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-meta text-slate-500 mt-2">
+                                <span class="flex items-center gap-1 text-slate-600">
+									<?php echo esc_html( number_format( $downloads, 0, '', ',' ) . ' ' . __( 'downloads', 'rom' ) ); ?>
                                 </span>
-	                    <?php endif; ?>
+								<?php if ( ! empty( $file_size ) ) : ?>
+                                    <span class="text-slate-300">&bull;</span>
+                                    <span class="text-slate-600"><?php echo esc_html( $file_size ); ?></span>
+								<?php endif; ?>
+                                <span class="text-slate-300">&bull;</span>
+                                <span class="text-slate-500"><?php echo esc_html( sprintf( __( 'Updated: %s', 'rom' ), get_the_modified_date( 'M Y' ) ) ); ?></span>
+                            </div>
+                        </div>
 
-	                    <?php rf_render_wishlist_button( $post->ID ); ?>
+                        <!-- Specs grid -->
+						<?php if ( $specs ) : ?>
+                            <?php // Two per row at every width: an emulator rarely has more than a few specs. ?>
+                            <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5 my-1">
+								<?php foreach ( $specs as $spec ) : ?>
+                                    <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-start gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100/80 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0">
+											<?php echo get_svg_icon( $spec['icon'] ); ?>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400"><?php echo esc_html( $spec['label'] ); ?></span>
+                                            <span class="font-bold text-[13px] text-slate-800 mt-0.5 block truncate"><?php echo $spec['value']; ?></span>
+                                        </div>
+                                    </div>
+								<?php endforeach; ?>
+                            </div>
+						<?php endif; ?>
+
+                        <!-- Actions -->
+                        <div class="pt-3 border-t border-slate-100">
+							<?php if ( $rf_restricted ) {
+								rf_render_restricted_notice();
+							} ?>
+                            <div class="flex flex-wrap items-center gap-3">
+								<?php if ( ! empty( $all_downloads ) ) : ?>
+                                    <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?> flex flex-wrap items-center gap-3">
+                                        <a href="<?php echo esc_url( $download_url ); ?>"
+                                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-meta hover:bg-primary-hover active:scale-95 transition-all shadow-sm shadow-primary/25 [&_svg]:w-4 [&_svg]:h-4">
+											<?php echo get_svg_icon( 'save' ) . esc_html__( 'Download Emulator', 'rom' ); ?>
+                                        </a>
+                                        <a href="<?php echo esc_url( $console_link ); ?>"
+                                           class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-meta hover:bg-slate-200 hover:text-slate-900 transition-colors [&_svg]:w-3.5 [&_svg]:h-3.5">
+											<?php echo get_svg_icon( 'emulator' ) . esc_html( sprintf( __( 'All %s Emulators', 'rom' ), $console->name ) ); ?>
+                                        </a>
+                                    </span>
+								<?php endif; ?>
+								<?php rf_render_wishlist_button( $post->ID ); ?>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-			<?php if ( $screenshots = get_field('image') ): ?>
-                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Screenshots', 'rom' ); ?></h2>
+	<?php
+	$screenshots = get_field( 'image' );
+	$shot_total  = is_array( $screenshots ) ? count( $screenshots ) : 0;
 
-                    <div id="romGallery" class="flex flex-nowrap gap-3 overflow-x-auto py-2 px-1">
-						<?php
-						foreach ( $screenshots as $img ) :
-							$caption = $img['caption'] ?? $img['alt'] ?? get_the_title();
+	/**
+	 * Same gallery contract as the rom page: data-src/data-poster put the youtube
+	 * tile on lgVideo, and the row is one fixed-height scrolling strip because the
+	 * shots keep their native ratio.
+	 */
+	$yt_id  = '';
+	$yt_url = get_field( 'youtube_url', $post->ID );
+	if ( $yt_url && preg_match( '~(?:youtu\.be/|youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/))([A-Za-z0-9_-]{11})~', $yt_url, $yt_match ) ) {
+		$yt_id = $yt_match[1];
+	}
+
+	$gallery_meta = array();
+	if ( $yt_id ) {
+		$gallery_meta[] = __( '1 video', 'rom' );
+	}
+	if ( $shot_total ) {
+		$gallery_meta[] = sprintf( _n( '%s image', '%s images', $shot_total, 'rom' ), number_format_i18n( $shot_total ) );
+	}
+
+	if ( $shot_total || $yt_id ) :
+		?>
+        <section id="screenshots" class="py-6 sm:py-8 scroll-mt-24">
+            <div class="max-w-content mx-auto px-4 sm:px-6">
+                <div class="flex items-end justify-between gap-3 mb-3">
+                    <div>
+                        <span class="text-caption font-bold uppercase tracking-widest text-primary"><?php esc_html_e( 'Gallery', 'rom' ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Screenshots', 'rom' ); ?></h2>
+                    </div>
+                    <span class="text-caption text-slate-500 flex-shrink-0">
+                        <?php echo esc_html( implode( ' · ', $gallery_meta ) ); ?>
+                    </span>
+                </div>
+
+                <div class="horizontal-scroll-container">
+                    <div id="romGallery" class="flex items-start gap-2.5 pb-2.5">
+						<?php if ( $yt_id ) : ?>
+                            <a href="<?php echo esc_url( $yt_url ); ?>"
+                               class="group relative shrink-0 block rounded-lg overflow-hidden border border-slate-200/80 bg-slate-900 shadow-subtle hover:border-primary/50 transition-all cursor-pointer"
+                               data-src="<?php echo esc_url( $yt_url ); ?>"
+                               data-poster="<?php echo esc_url( 'https://img.youtube.com/vi/' . $yt_id . '/hqdefault.jpg' ); ?>"
+                               data-sub-html="<?php echo esc_attr( sprintf( __( '%s video', 'rom' ), get_the_title() ) ); ?>">
+                                <img src="https://img.youtube.com/vi/<?php echo esc_attr( $yt_id ); ?>/hqdefault.jpg"
+                                     alt="<?php echo esc_attr( sprintf( __( '%s video', 'rom' ), get_the_title() ) ); ?>"
+                                     class="block h-[200px] w-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                                     loading="lazy">
+                                <span class="absolute inset-0 flex items-center justify-center bg-slate-950/25 group-hover:bg-slate-950/5 transition-colors">
+                                    <span class="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </span>
+                                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm"><?php esc_html_e( 'Video', 'rom' ); ?></span>
+                            </a>
+						<?php endif; ?>
+						<?php if ( $shot_total ) : foreach ( $screenshots as $img ) :
+							$caption  = $img['caption'] ?: ( $img['alt'] ?: get_the_title() );
 							$alt_text = $img['alt'] ?: get_the_title() . ' - Screenshot';
 							?>
                             <a href="<?php echo esc_url( $img['url'] ); ?>"
-                               class="flex-shrink-0 group cursor-pointer block"
+                               class="group relative inline-block shrink-0 rounded-lg overflow-hidden border border-slate-200/80 bg-slate-900 shadow-subtle hover:border-primary/50 transition-all"
                                data-src="<?php echo esc_url( $img['url'] ); ?>"
                                data-sub-html="<?php echo esc_attr( $caption ); ?>">
-                                <img src="<?php echo esc_url( $img['url'] ); ?>"
-                                     alt="<?php echo esc_attr( $alt_text ); ?>"
-                                     class="w-auto h-36 object-cover rounded-lg border-2 border-gray-200 transition-all duration-200 group-hover:shadow-lg group-hover:scale-105"
-                                     loading="lazy"/>
+                                <img src="<?php echo esc_url( $img['url'] ); ?>" alt="<?php echo esc_attr( $alt_text ); ?>"
+                                     class="block h-[200px] w-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                                     loading="lazy">
                             </a>
-						<?php endforeach; ?>
+						<?php endforeach; endif; ?>
                     </div>
                 </div>
-			<?php endif; ?>
+            </div>
+        </section>
+	<?php endif; ?>
 
-			<?php if ( $post->post_content !== '' ) : ?>
-                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Description', 'rom' ); ?></h2>
-                    <div class="prose max-w-none text-gray-700 revert">
+	<?php if ( $post->post_content !== '' ) : ?>
+        <!-- About -->
+        <section id="about" class="py-6 sm:py-8 scroll-mt-24">
+            <div class="max-w-content mx-auto px-4 sm:px-6">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 lg:p-9 shadow-card space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Emulator Information', 'rom' ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
+							<?php echo esc_html( sprintf( __( 'About %1$s for %2$s', 'rom' ), get_the_title(), $console->name ) ); ?>
+                        </h2>
+                    </div>
+                    <div class="prose max-w-none text-slate-700 text-body">
 						<?php the_content(); ?>
                     </div>
                 </div>
-			<?php endif; ?>
+            </div>
+        </section>
+	<?php endif; ?>
 
-			<?php get_template_part( 'template-parts/rating-section' ); ?>
-
-			<?php
-				$query = new WP_Query(array(
-					'post_type' => 'emulator',
-					'posts_per_page' => 6,
-					'post__not_in' => array($post->ID),
-					'post_status' => 'publish',
-					'no_found_rows' => true,
-					'tax_query' => array(
-						array(
-							'taxonomy' => 'emulator_console',
-							'field' => 'term_id',
-							'terms' => $console->term_id,
-						),
-					),
-				));
-				if ( $query->have_posts() ) :?>
-
-                    <div class="mb-8">
-                        <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e('Related Emulators', 'rom') ?></h2>
-                        <div class="space-y-4">
-							<?php
-							while ( $query->have_posts() ) : $query->the_post();
-								get_template_part( 'template-parts/emu-item' );
-							endwhile;
-							wp_reset_postdata(); ?>
-                        </div>
+	<?php if ( ! empty( $all_downloads ) ) : ?>
+        <!-- Download matrix -->
+        <section id="download" class="py-6 sm:py-8 scroll-mt-24">
+            <div class="max-w-content mx-auto px-4 sm:px-6">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
+                    <div>
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Download', 'rom' ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Available Builds', 'rom' ); ?></h2>
                     </div>
-				<?php
-				endif;
-			?>
+                </div>
 
-	        <?php get_template_part( 'template-parts/report-form' ); ?>
+				<?php if ( $rf_restricted ) {
+					rf_render_restricted_notice();
+				} ?>
 
+                <div class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-card divide-y divide-slate-100 overflow-hidden">
+						<?php foreach ( $all_downloads as $index => $file ) :
+							// 1-based, matching the /download/{n}/ endpoint.
+							$file_url  = $download_url . ( $index + 1 ) . '/';
+							$file_type = ! empty( $file['file_type'] ) ? $file['file_type'] : '';
+							?>
+                            <div class="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-rose-50/20 transition-colors">
+                                <div class="flex items-start gap-3.5 flex-1 min-w-0">
+                                    <div class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption flex-shrink-0 mt-0.5 uppercase">
+										<?php echo esc_html( $file_type ? ltrim( $file_type, '.' ) : '#' . ( $index + 1 ) ); ?>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <span class="font-bold text-slate-900 text-meta sm:text-body block"><?php echo esc_html( $file['name'] ); ?></span>
+                                        <div class="flex flex-wrap items-center gap-2.5 text-caption text-slate-500 mt-1">
+											<?php if ( $file_type ) : ?>
+                                                <span><?php esc_html_e( 'Format:', 'rom' ); ?> <strong class="text-slate-700"><?php echo esc_html( $file_type ); ?></strong></span>
+											<?php endif; ?>
+											<?php if ( ! empty( $file['file_size'] ) ) : ?>
+												<?php if ( $file_type ) : ?><span>&bull;</span><?php endif; ?>
+                                                <span><?php esc_html_e( 'File Size:', 'rom' ); ?> <strong class="text-slate-800 font-bold"><?php echo esc_html( $file['file_size'] ); ?></strong></span>
+											<?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 self-start md:self-center flex-shrink-0">
+                                    <a href="<?php echo esc_url( $file_url ); ?>"
+                                       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white font-bold text-caption uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all [&_svg]:w-3.5 [&_svg]:h-3.5">
+											<?php echo get_svg_icon( 'download' ) . esc_html__( 'Download', 'rom' ); ?>
+                                    </a>
+                                </div>
+                            </div>
+						<?php endforeach; ?>
+                    </div>
+
+					<?php if ( $download_note = get_field( 'download_note', $post->ID ) ) : ?>
+                        <div class="mt-3.5 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3 text-caption text-amber-950">
+                            <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <div>
+                                <span class="font-bold"><?php esc_html_e( 'Download Notice:', 'rom' ); ?></span>
+                                <div class="text-amber-900/90 mt-0.5 leading-relaxed"><?php echo wpautop( esc_html( $download_note ) ); ?></div>
+                            </div>
+                        </div>
+					<?php endif; ?>
+                </div>
+            </div>
+        </section>
+	<?php endif; ?>
+
+    <!-- Ratings, report and comments. These partials bring their own card wrapper. -->
+    <section class="py-2">
+        <div class="max-w-content mx-auto px-4 sm:px-6">
+			<?php get_template_part( 'template-parts/rating-section' ); ?>
+			<?php get_template_part( 'template-parts/report-form' ); ?>
 			<?php comments_template(); ?>
         </div>
     </section>
 
-<?php endwhile;
+	<?php
+	$related_query = new WP_Query( array(
+		'post_type'      => 'emulator',
+		'posts_per_page' => 6,
+		'post__not_in'   => array( $post->ID ),
+		'post_status'    => 'publish',
+		'no_found_rows'  => true,
+		'tax_query'      => array(
+			array(
+				'taxonomy' => 'emulator_console',
+				'field'    => 'term_id',
+				'terms'    => $console->term_id,
+			),
+		),
+	) );
+
+	if ( $related_query->have_posts() ) : ?>
+        <section class="py-8 sm:py-12 border-t border-slate-200/80">
+            <div class="max-w-content mx-auto px-4 sm:px-6">
+                <div class="flex items-center justify-between mb-6 gap-3">
+                    <div>
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600">
+							<?php echo esc_html( sprintf( __( 'More %s', 'rom' ), $console->name ) ); ?>
+                        </span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Related Emulators', 'rom' ); ?></h2>
+                    </div>
+                    <a href="<?php echo esc_url( $console_link ); ?>"
+                       class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                </div>
+                <div class="space-y-4">
+					<?php while ( $related_query->have_posts() ) : $related_query->the_post();
+						get_template_part( 'template-parts/emu-item' );
+					endwhile; wp_reset_postdata(); ?>
+                </div>
+            </div>
+        </section>
+	<?php endif; ?>
+
+<?php
+endwhile;
 get_footer();
