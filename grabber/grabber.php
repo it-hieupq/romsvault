@@ -291,7 +291,7 @@ wp_set_post_terms($post_id, $pubs, 'pub');
                                 $attach_id[] = Generate_Featured_Image($img_src, $image_title, $post_id);
                                 $count++;
                             }
-                            update_field('pack_image', $attach_id, $post_id);
+                            update_field('image', $attach_id, $post_id);
                             $html->clear();
                             unset($html);
                         }

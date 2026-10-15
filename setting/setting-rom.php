@@ -281,9 +281,6 @@ function k_init_rom() {
 				'wrapper' 		=> array(
 					'width' 	=> '25',
 				),
-				'show_column'   	   => 1,
-				'show_column_weight'   => 700,
-				'show_column_sortable' => 1,
 			),
 
 			array (

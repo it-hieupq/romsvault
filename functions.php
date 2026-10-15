@@ -319,6 +319,16 @@ if ( is_admin() ) {
 }
 
 /**
+ * Permanent delete of a post plus the media only it uses: row action, bulk
+ * action and the Actions box on the edit screen.
+ *
+ * Loaded everywhere, not just in admin: the before_delete_post hook in there has
+ * to catch a delete that arrives over REST, WP-CLI or cron too, where is_admin()
+ * is false. The admin-only pieces gate themselves on their own hooks.
+ */
+require get_template_directory() . '/inc/admin-delete.php';
+
+/**
  * Ajax functions
  */
 require get_template_directory() . '/inc/ajax.php';

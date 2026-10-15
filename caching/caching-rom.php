@@ -255,6 +255,11 @@ function get_cached_all_terms($taxonomy, $force_load = false): array
  * Cache terms by their IDs using transient for optimized performance.
  * This function sanitizes and normalizes term IDs to create consistent cache keys.
  *
+ * Only the term IDs are cached. The objects are resolved through get_term(),
+ * which reads WP's own term cache and is invalidated on every term change, so a
+ * term deleted after the transient was written drops out here instead of reaching
+ * the caller as a stale object whose get_term_link() answers WP_Error.
+ *
  * @param string $taxonomy Taxonomy name
  * @param array $term_ids Array of term IDs
  * @return array|WP_Error Array of term objects or WP_Error on failure
@@ -273,24 +278,43 @@ function get_cached_terms_by_ids(string $taxonomy, array $term_ids, $force_load 
 		return array();
 	}
 	
-	// Create cache key based on taxonomy and term IDs
-	$cache_key = 'terms_' . $taxonomy . '_' . md5( implode( ',', $term_ids ) );
+	// Create cache key based on taxonomy and term IDs. The v2 segment retires the
+	// transients that still hold whole term objects under the old key.
+	$cache_key = 'terms_v2_' . $taxonomy . '_' . md5( implode( ',', $term_ids ) );
 	
-	$terms = get_transient( $cache_key );
+	$found_ids = get_transient( $cache_key );
 	
-	if ( $terms === false || $force_load ) {
-		$terms = get_terms( array(
+	if ( $found_ids === false || $force_load ) {
+		$found_ids = get_terms( array(
 			'taxonomy'   => $taxonomy,
 			'include'    => $term_ids,
 			'hide_empty' => false,
+			'fields'     => 'ids',
 		) );
 		
 		// Handle WP_Error
-		if ( is_wp_error( $terms ) ) {
-			return $terms;
+		if ( is_wp_error( $found_ids ) ) {
+			return $found_ids;
 		}
 		
-		set_transient( $cache_key, $terms, DAY_IN_SECONDS );
+		set_transient( $cache_key, $found_ids, DAY_IN_SECONDS );
+	}
+	
+	$found_ids = array_map( 'intval', (array) $found_ids );
+	if ( empty( $found_ids ) ) {
+		return array();
+	}
+	
+	// One query for whatever the object cache is missing, instead of one per term.
+	// Term meta is primed with it because the callers read cat_image off these terms.
+	_prime_term_caches( $found_ids );
+	
+	$terms = array();
+	foreach ( $found_ids as $found_id ) {
+		$term = get_term( $found_id, $taxonomy );
+		if ( $term instanceof WP_Term ) {
+			$terms[] = $term;
+		}
 	}
 	
 	return $terms;

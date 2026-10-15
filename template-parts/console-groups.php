@@ -24,9 +24,16 @@ if ( $rows ) :
                         if ($term->count <= 0) {
                             continue;
                         }
+                        // A term that went away between two cache writes still
+                        // reaches here; get_term_link() answers WP_Error for it and
+                        // echoing that is a fatal.
+                        $term_link = get_term_link( $term->term_id );
+                        if ( is_wp_error( $term_link ) ) {
+                            continue;
+                        }
 			            $image = get_field('cat_image', 'term_' . $term->term_id);
 			            ?>
-                        <a href="<?php echo get_term_link( $term->term_id ) ?>"
+                        <a href="<?php echo esc_url( $term_link ) ?>"
                            class="border border-gray-200 rounded-xl block shadow-sm hover:shadow-lg transition overflow-hidden">
 
                             <div class="flex items-center justify-center h-[160px] overflow-hidden bg-gray-100 p-4">

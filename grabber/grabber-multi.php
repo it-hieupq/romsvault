@@ -590,7 +590,7 @@ wp_set_post_terms($post_id, $pubs, 'pub');
         }
 
         if (!empty($attach_id)) {
-            update_field('pack_image', $attach_id, $post_id);
+            update_field('image', $attach_id, $post_id);
         }
 
 
@@ -942,7 +942,7 @@ wp_set_post_terms($post_id, $pubs, 'pub');
                 }
 
                 if (!empty($attach_id)) {
-                    update_field('pack_image', $attach_id, $post_id);
+                    update_field('image', $attach_id, $post_id);
                 }
 
                 $html->clear();
@@ -1650,7 +1650,7 @@ function k_grabber_gallery_multi()
                         $attach_id[] = Generate_Featured_Image($image->src, $title, $postId);
                         $count++;
                     }
-                    update_field('pack_image', $attach_id, $postId);
+                    update_field('image', $attach_id, $postId);
 
                     $html->clear();
                     unset($html);
@@ -1693,7 +1693,7 @@ function k_grabber_gallery_multi()
                         $count++;
                     }
 
-                    update_field('pack_image', $attach_id, $postId);
+                    update_field('image', $attach_id, $postId);
                 }
 
                 exit;
@@ -1727,7 +1727,7 @@ function k_grabber_gallery_multi()
                         }
                     }
 
-                    update_field('pack_image', $attach_id, $postId);
+                    update_field('image', $attach_id, $postId);
 
 
                     $html->clear();
@@ -1794,7 +1794,7 @@ case strpos($url, 'gamesdb.launchbox-app.com') !== false:
             }
 
             if (!empty($attach_id)) {
-                update_field('pack_image', $attach_id, $postId);
+                update_field('image', $attach_id, $postId);
             }
         }
 
@@ -1844,7 +1844,7 @@ case strpos($url, 'gamesdb.launchbox-app.com') !== false:
                         $attach_id[] = Generate_Featured_Image($image, $title, $postId);
                         $count++;
                     }
-                    update_field('pack_image', $attach_id, $postId);
+                    update_field('image', $attach_id, $postId);
                 }
 
                 exit;
@@ -2073,7 +2073,7 @@ function grabber_nintendolife_ac($url, $console, $type, $stt)
                     $count++;
                 }
 
-                update_field('pack_image', $attach_id, $post_id);
+                update_field('image', $attach_id, $post_id);
 
 
                 // wp_set_post_terms($post_id, array($platform), 'game_platforms');
@@ -2273,7 +2273,7 @@ function grabber_pushsquare_ac($url, $console, $type, $stt)
                     $count++;
                 }
 
-                update_field('pack_image', $attach_id, $post_id);
+                update_field('image', $attach_id, $post_id);
 
 
                 // wp_set_post_terms($post_id, array($platform), 'game_platforms');
