@@ -395,6 +395,13 @@ require get_template_directory() . '/inc/insert-external-link-aff.php';
 require get_template_directory() . '/inc/get-file.php';
 
 /**
+ * In-memory WebP compression. Declares functions only — no hooks, no queries —
+ * so loading it everywhere costs nothing and keeps one encoder for the backfill
+ * in bin/optimize-images.php and for the grabber.
+ */
+require get_template_directory() . '/inc/img-compressor.php';
+
+/**
  * Caching
  */
 require get_template_directory() . '/setting/setting-console-group.php';
