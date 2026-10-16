@@ -9,8 +9,8 @@
  * post_name was generated in the first place.
  *
  * Nothing here reads or writes the database or the filesystem. A caller hands in
- * a buffer and gets a buffer back, which is what lets the one-off backfill and,
- * later, the grabber writing a freshly downloaded image share one encoder.
+ * a buffer and gets a buffer back, so the grabber can encode a freshly
+ * downloaded image before anything lands on disk.
  *
  * Measured on this library: WebP at q80 alone saves ~15%, because the JPEGs are
  * already compressed. Capping the width is where the saving is — ~42% at 1280.
@@ -29,9 +29,9 @@ const K_WEBP_QUALITY = 80;
  *
  * The templates never need more: the rom and emulator hero render inside a
  * four-of-twelve column and the screenshot strip at 200px tall, with the
- * lightbox opening the same file full screen. 1280 covers both on a 2x display.
+ * lightbox opening the same file full screen. Nothing wider than 1400 is kept.
  */
-const K_WEBP_MAX_WIDTH = 1280;
+const K_WEBP_MAX_WIDTH = 1400;
 
 /** libwebp effort level. 4 is the tool's setting: near-6 ratio at half the time. */
 const K_WEBP_METHOD = '4';
@@ -42,9 +42,11 @@ const K_WEBP_MAX_BYTES = 33554432; // 32 MB
 /**
  * Formats the encoder accepts.
  *
- * GIF is deliberately absent. Imagick reads every frame but getImageBlob()
- * writes only the first, so an animated GIF would silently lose its animation;
- * callers skip GIFs rather than flatten them.
+ * GIF is accepted only with a single frame. Imagick reads every frame but
+ * getImageBlob() writes only the first, so an animated GIF would silently lose
+ * its animation; k_compress_image_to_webp() refuses those, and callers move them
+ * as they are. BMP is here because grabbed box art sometimes arrives as a BMP
+ * saved under a .jpg name.
  */
 const K_WEBP_INPUT_MIMES = array(
 	'image/jpeg',
@@ -54,6 +56,9 @@ const K_WEBP_INPUT_MIMES = array(
 	'image/x-png',
 	'image/webp',
 	'image/avif',
+	'image/gif',
+	'image/bmp',
+	'image/x-ms-bmp',
 );
 
 /**
@@ -92,6 +97,9 @@ function k_detect_image_mime( string $data ): string {
 	if ( str_starts_with( $data, 'GIF8' ) ) {
 		return 'image/gif';
 	}
+	if ( str_starts_with( $data, 'BM' ) && strlen( $data ) > 26 ) {
+		return 'image/bmp';
+	}
 	if ( strlen( $data ) >= 12 && str_starts_with( $data, 'RIFF' ) && 'WEBP' === substr( $data, 8, 4 ) ) {
 		return 'image/webp';
 	}
@@ -118,6 +126,9 @@ function k_detect_image_mime( string $data ): string {
 				return 'image/webp';
 			case 'avif':
 				return 'image/avif';
+			case 'bmp':
+			case 'bmp3':
+				return 'image/bmp';
 		}
 	} catch ( Throwable $e ) {
 		// Corrupt or unreadable; fall through to the unknown type.
@@ -176,6 +187,10 @@ function k_compress_image_to_webp(
 
 	try {
 		$imagick->readImageBlob( $data );
+
+		if ( 'image/gif' === $mime && $imagick->getNumberImages() > 1 ) {
+			throw new RuntimeException( 'Animated GIF; move it as-is instead of flattening it.' );
+		}
 
 		// EXIF orientation has to be resolved before stripImage() drops the tag,
 		// or a rotated photo would come out sideways with nothing left to say so.

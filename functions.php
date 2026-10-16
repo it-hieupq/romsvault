@@ -396,8 +396,7 @@ require get_template_directory() . '/inc/get-file.php';
 
 /**
  * In-memory WebP compression. Declares functions only — no hooks, no queries —
- * so loading it everywhere costs nothing and keeps one encoder for the backfill
- * in bin/optimize-images.php and for the grabber.
+ * so loading it everywhere costs nothing; the grabber is meant to call it.
  */
 require get_template_directory() . '/inc/img-compressor.php';
 
