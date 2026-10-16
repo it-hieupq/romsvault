@@ -507,9 +507,11 @@ function grabber_igdb_ac($url, $console, $type, $stt)
 
         // Break down image
         // https://api-docs.igdb.com/#images // Fully document
-        $hash = $gameData->cover->image_id;
+        // A game with no cover has no image_id. Building the URL anyway asked
+        // IGDB for ".../t_1080p/.jpg", whose error page was stored as the cover.
+        $hash = $gameData->cover->image_id ?? '';
         $size = '1080p';
-        $image = "https://images.igdb.com/igdb/image/upload/t_$size/$hash.jpg";
+        $image = '' !== $hash ? "https://images.igdb.com/igdb/image/upload/t_$size/$hash.jpg" : '';
 
         // Options
         $release_date = date("F j, Y", $gameData->first_release_date) ?? '';
@@ -1590,31 +1592,17 @@ function save_file_from_url($url)
     return $file_info;
 }
 
+/**
+ * @return int|WP_Error Attachment id; k_grabber_store_image() refuses anything that is not an image.
+ */
 function Generate_Image_Using_File_Get_Content($image_url, $image_title = '', $post_id = 0)
 {
-    $upload_dir = wp_upload_dir();
     $image_data = @file_get_contents($image_url);
     if ($image_data === false) {
         return new WP_Error('image_download_error', 'Could not download image.');
     }
-    $filename = sanitize_file_name($image_title . '.jpg');
-    $upload = wp_upload_bits($filename, null, $image_data);
-    if (!$upload['error']) {
-        $attachment = array(
-            'post_mime_type' => $upload['type'],
-            'post_title' => $image_title,
-            'post_content' => '',
-            'post_status' => 'inherit',
-        );
-        $attach_id = wp_insert_attachment($attachment, $upload['file'], $post_id);
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
-        $attach_data = wp_generate_attachment_metadata($attach_id, $upload['file']);
-        wp_update_attachment_metadata($attach_id, $attach_data);
-        update_post_meta($attach_id, '_wp_attachment_image_alt', get_the_title($attach_id));
-        return $attach_id;
-    } else {
-        return new WP_Error('upload_error', 'Could not save image.');
-    }
+
+    return k_grabber_store_image($image_data, (string) $image_title, (int) $post_id);
 }
 
 function k_grabber_gallery_multi()

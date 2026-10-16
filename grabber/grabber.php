@@ -317,39 +317,99 @@ wp_set_post_terms($post_id, $pubs, 'pub');
 add_action('wp_ajax_k_grabber', 'k_grabber');
 
 /**
+ * Store a downloaded image as an attachment, compressed to WebP.
+ *
+ * Shared by every grabber download path. The bytes are checked before anything
+ * is written: a source that answers with an error page used to be saved as a
+ * .jpg holding HTML — three such files were found in the library, each the
+ * "Cannot GET /igdb/image/upload/t_1080p/.jpg" page IGDB serves for an empty
+ * image id. Anything that is not an image is now refused.
+ *
+ * Images are fitted into the compressor's 1280x1000 box at q80. An animated GIF
+ * is kept as it is, since encoding it would keep only its first frame.
+ *
+ * @param string $data    Downloaded bytes.
+ * @param string $title   Becomes the file name slug and the attachment title.
+ * @param int    $post_id Post the attachment belongs to.
+ * @param string $content Attachment post_content.
+ * @return int|WP_Error Attachment id.
+ */
+function k_grabber_store_image(string $data, string $title, int $post_id, string $content = '')
+{
+    if ('' === $data) {
+        return new WP_Error('image_empty', 'Downloaded image is empty.');
+    }
+
+    $mime = k_detect_image_mime($data);
+    if (!in_array($mime, K_WEBP_INPUT_MIMES, true)) {
+        return new WP_Error('image_not_an_image', sprintf('Download is %s, not an image.', $mime));
+    }
+
+    try {
+        $out  = k_compress_image_to_webp($data);
+        $blob = $out['blob'];
+        $ext  = 'webp';
+        $type = 'image/webp';
+    } catch (RuntimeException $e) {
+        if ('image/gif' !== $mime) {
+            return new WP_Error('image_encode_error', $e->getMessage());
+        }
+        $blob = $data;
+        $ext  = 'gif';
+        $type = 'image/gif';
+    }
+
+    $upload = wp_upload_bits(k_webp_basename($title) . '.' . $ext, null, $blob);
+    if (!empty($upload['error'])) {
+        return new WP_Error('upload_error', $upload['error']);
+    }
+
+    $attach_id = wp_insert_attachment(array(
+        'post_mime_type' => $type,
+        'post_title'     => $title,
+        'post_content'   => $content,
+        'post_status'    => 'inherit',
+    ), $upload['file'], $post_id);
+
+    if (is_wp_error($attach_id) || !$attach_id) {
+        return is_wp_error($attach_id) ? $attach_id : new WP_Error('attachment_error', 'Could not create the attachment.');
+    }
+
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+    wp_update_attachment_metadata($attach_id, wp_generate_attachment_metadata($attach_id, $upload['file']));
+    update_post_meta($attach_id, '_wp_attachment_image_alt', get_the_title($attach_id));
+
+    return (int) $attach_id;
+}
+
+/**
  * Insert image
+ *
+ * @return int|false Attachment id, false when the download or the image fails.
  */
 function Generate_Featured_Image($image_url, $image_title = '', $post_id = 0)
 {
-    $upload_dir = wp_upload_dir();
+    if (empty($image_url)) {
+        return false;
+    }
+
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $image_url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
     $image_data = curl_exec($curl);
+    $status     = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
 
-    $filename = sanitize_file_name($image_title . '.jpg');
-    $upload = wp_upload_bits($filename, null, $image_data);
-
-    if (!$upload['error']) {
-        $attachment = array(
-            'post_mime_type' => $upload['type'],
-            'post_title' => $image_title,
-            'post_content' => $image_title,
-            'post_status' => 'inherit',
-        );
-        $attach_id = wp_insert_attachment($attachment, $upload['file'], $post_id);
-
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
-        $attach_data = wp_generate_attachment_metadata($attach_id, $upload['file']);
-        wp_update_attachment_metadata($attach_id, $attach_data);
-        update_post_meta($attach_id, '_wp_attachment_image_alt', get_the_title($attach_id));
-
-        return $attach_id;
-    } else {
+    // An error status comes with a body too; storing it is how HTML ended up
+    // saved as .jpg, so anything but 200 counts as a failed download.
+    if (200 !== $status || !is_string($image_data)) {
         return false;
     }
+
+    $attach_id = k_grabber_store_image($image_data, (string) $image_title, (int) $post_id, (string) $image_title);
+
+    return is_wp_error($attach_id) ? false : $attach_id;
 }
 
 function Curl($url, $ifpost = 0, $datafields = '', $cookiefile = '', $v = false)

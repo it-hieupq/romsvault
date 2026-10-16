@@ -25,13 +25,16 @@ defined( 'ABSPATH' ) || exit;
 const K_WEBP_QUALITY = 80;
 
 /**
- * Width cap in pixels, null to keep the original size.
+ * Bounding box in pixels; an image is scaled down, ratio kept, until it fits.
  *
- * The templates never need more: the rom and emulator hero render inside a
- * four-of-twelve column and the screenshot strip at 200px tall, with the
- * lightbox opening the same file full screen. Nothing wider than 1400 is kept.
+ * The same box the library was brought into. The templates never need more:
+ * the rom and emulator hero render inside a four-of-twelve column and the
+ * screenshot strip at 200px tall, with the lightbox opening the same file.
+ * Capping width alone let tall box art keep a 2,600px height and weigh over a
+ * megabyte, which is why there is a height limit at all.
  */
-const K_WEBP_MAX_WIDTH = 1400;
+const K_WEBP_MAX_WIDTH  = 1280;
+const K_WEBP_MAX_HEIGHT = 1000;
 
 /** libwebp effort level. 4 is the tool's setting: near-6 ratio at half the time. */
 const K_WEBP_METHOD = '4';
@@ -147,8 +150,9 @@ function k_detect_image_mime( string $data ): string {
  *
  * @param string   $data             Raw image bytes.
  * @param int      $quality          WebP quality, 1-100.
- * @param int|null $max_width        Downscale anything wider; null keeps the size.
- * @param bool     $passthrough_webp Return an in-cap WebP untouched.
+ * @param int|null $max_width        Box width; null leaves width unbounded.
+ * @param int|null $max_height       Box height; null leaves height unbounded.
+ * @param bool     $passthrough_webp Return a WebP already inside the box untouched.
  * @return array{blob:string,mime:string,width:int,height:int,bytes:int,original_bytes:int,original_mime:string,resized:bool,passthrough:bool}
  * @throws RuntimeException When the buffer is empty, oversized, not a supported
  *                          image, or Imagick cannot decode it.
@@ -157,6 +161,7 @@ function k_compress_image_to_webp(
 	string $data,
 	int $quality = K_WEBP_QUALITY,
 	?int $max_width = K_WEBP_MAX_WIDTH,
+	?int $max_height = K_WEBP_MAX_HEIGHT,
 	bool $passthrough_webp = true
 ): array {
 	$original_bytes = strlen( $data );
@@ -180,8 +185,9 @@ function k_compress_image_to_webp(
 		throw new RuntimeException( sprintf( 'Unsupported input type %s.', $mime ) );
 	}
 
-	$quality   = max( 1, min( 100, $quality ) );
-	$max_width = ( null !== $max_width && $max_width > 0 ) ? $max_width : null;
+	$quality    = max( 1, min( 100, $quality ) );
+	$max_width  = ( null !== $max_width && $max_width > 0 ) ? $max_width : null;
+	$max_height = ( null !== $max_height && $max_height > 0 ) ? $max_height : null;
 
 	$imagick = new Imagick();
 
@@ -197,14 +203,23 @@ function k_compress_image_to_webp(
 		$imagick->autoOrient();
 
 		$width   = $imagick->getImageWidth();
+		$height  = $imagick->getImageHeight();
 		$resized = false;
 
-		if ( 'image/webp' === $mime && $passthrough_webp && ( null === $max_width || $width <= $max_width ) ) {
+		// The tighter of the two limits wins, so the result is inside the box on
+		// both axes and the aspect ratio is untouched.
+		$scale = min(
+			null !== $max_width ? $max_width / $width : 1,
+			null !== $max_height ? $max_height / $height : 1,
+			1
+		);
+
+		if ( 'image/webp' === $mime && $passthrough_webp && $scale >= 1 ) {
 			return array(
 				'blob'           => $data,
 				'mime'           => 'image/webp',
 				'width'          => $width,
-				'height'         => $imagick->getImageHeight(),
+				'height'         => $height,
 				'bytes'          => $original_bytes,
 				'original_bytes' => $original_bytes,
 				'original_mime'  => $mime,
@@ -213,10 +228,15 @@ function k_compress_image_to_webp(
 			);
 		}
 
-		if ( null !== $max_width && $width > $max_width ) {
+		if ( $scale < 1 ) {
 			// Lanczos: the sharpest of the practical filters for downscaling
 			// box art and screenshots, which is all this library holds.
-			$imagick->resizeImage( $max_width, 0, Imagick::FILTER_LANCZOS, 1 );
+			$imagick->resizeImage(
+				max( 1, (int) round( $width * $scale ) ),
+				max( 1, (int) round( $height * $scale ) ),
+				Imagick::FILTER_LANCZOS,
+				1
+			);
 			$resized = true;
 		}
 

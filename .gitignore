@@ -2,3 +2,7 @@
 tailwindcss/node_modules/
 .DS_Store
 .remember
+
+# Database dumps never belong here: the theme is web-served and the repo is public.
+*.sql.gz
+.claude/*.sql
