@@ -111,7 +111,7 @@ function k_init_page_home() {
 								 	'key'   	 	=> 'home_roms_title',
 									'type' 		 	=> 'text',
 									'wrapper'		=> array(
-										'width'		=> '50',
+										'width'		=> '66.666',
 									),
 								    'required'      => 1,
 								),
@@ -136,20 +136,6 @@ function k_init_page_home() {
 										'latest'	=> 'Latest',
 										'popular'	=> 'Popular',
 									),
-									'wrapper'		=> array(
-										'width'		=> '16.666',
-									),
-								),
-								array (
-									'label'		 	=> __( 'Layout', 'rom' ),
-									'name' 		 	=> 'home_roms_layout',
-									'key'   	 	=> 'home_roms_layout',
-									'type' 		 	=> 'select',
-									'choices'		=> array(
-										'carousel'	=> 'Carousel',
-										'list'	    => 'List',
-									),
-									'required'      => 1,
 									'wrapper'		=> array(
 										'width'		=> '16.666',
 									),

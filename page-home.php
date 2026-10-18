@@ -58,9 +58,11 @@ while ( have_posts() ) :
                             <div class="horizontal-scroll-container">
                                 <div class="horizontal-scroll-wrapper">
                                     <?php
-                                    while ( $query->have_posts() ) : $query->the_post();
-                                        get_template_part( 'template-parts/blog-item' );
-                                    endwhile;
+                                    while ( $query->have_posts() ) : $query->the_post(); ?>
+                                        <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-2 box-border grid">
+                                            <?php get_template_part( 'template-parts/post-card' ); ?>
+                                        </div>
+                                    <?php endwhile;
                                     wp_reset_postdata(); ?>
                                 </div>
                             </div>
@@ -161,7 +163,6 @@ while ( have_posts() ) :
                 $title      = get_sub_field('home_roms_title');
                 $number     = get_sub_field('home_roms_number');
                 $sort       = get_sub_field('home_roms_sort');
-                $rom_layout = get_sub_field('home_roms_layout');
                 $base_link  = get_filter_base_url();
 
                 $args = array(
@@ -201,28 +202,13 @@ while ( have_posts() ) :
                                 </a>
                             </div>
 
-                            <?php if ( $rom_layout == 'carousel' ) : 
-                                $carousel_id = 'romCarousel' . get_row_index();
-                                ?>
-                                <div class="horizontal-scroll-container">
-                                    <div class="horizontal-scroll-wrapper">
-                                        <?php
-                                        while ( $query->have_posts() ) : $query->the_post();
-                                            get_template_part( 'template-parts/rom-item-grid' );
-                                        endwhile;
-                                        wp_reset_postdata(); ?>
-                                    </div>
-                                </div>
-                            <?php else : ?>
-                                <div class="space-y-4">
-                                    <?php
-                                    while ( $query->have_posts() ) : $query->the_post();
-                                        get_template_part( 'template-parts/rom-item-list' );
-                                    endwhile;
-                                    wp_reset_postdata(); ?>
-                                </div>
-
-                            <?php endif; ?>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                                <?php
+                                while ( $query->have_posts() ) : $query->the_post();
+                                    get_template_part( 'template-parts/rom-card' );
+                                endwhile;
+                                wp_reset_postdata(); ?>
+                            </div>
                         </div>
                     </section>
                     <?php

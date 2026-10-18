@@ -46,9 +46,11 @@ while ( have_posts() ) : the_post();
                         <div class="horizontal-scroll-container">
                             <div class="horizontal-scroll-wrapper">
 								<?php
-								while ( $query->have_posts() ) : $query->the_post();
-									get_template_part( 'template-parts/blog-item' );
-								endwhile;
+								while ( $query->have_posts() ) : $query->the_post(); ?>
+                                    <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-2 box-border grid">
+										<?php get_template_part( 'template-parts/post-card' ); ?>
+                                    </div>
+								<?php endwhile;
 								wp_reset_postdata();
 								?>
                             </div>

@@ -137,7 +137,7 @@ Field duy nhất: `home_content` (**flexible_content**)
 | `home_console_groups` | `home_console_groups_title` (text, required) |
 | `home_intro` | `home_intro_title` (text, required), `home_intro_desc` (wysiwyg, required) |
 | `home_roms_collection` | `home_roms_collection_title` (text), `home_roms_collection_items` (taxonomy `collection`, multi), `home_roms_collection_link` (link) |
-| `home_roms` | `home_roms_title` (text), `home_roms_number` (number, default `8`), `home_roms_sort` (select: `latest` \| `popular`), `home_roms_layout` (select: `carousel` \| `list`) |
+| `home_roms` | `home_roms_title` (text), `home_roms_number` (number, default `8`), `home_roms_sort` (select: `latest` \| `popular`) |
 | `home_new_posts` | `home_new_posts_title` (text), `home_new_posts_number` (number, default `10`), `home_new_posts_link` (link) |
 
 ### 3.8 Repeater `download_list` / `download_list_aff`

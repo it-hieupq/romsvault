@@ -129,9 +129,11 @@ get_header();
                 <div class="horizontal-scroll-container">
                     <div class="horizontal-scroll-wrapper">
                         <?php
-                        while ($query->have_posts()) : $query->the_post();
-                            get_template_part('template-parts/blog-item');
-                        endwhile;
+                        while ($query->have_posts()) : $query->the_post(); ?>
+                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-2 box-border grid">
+                                <?php get_template_part('template-parts/post-card'); ?>
+                            </div>
+                        <?php endwhile;
                         wp_reset_postdata(); ?>
                     </div>
                 </div>
@@ -170,10 +172,10 @@ get_header();
                     </a>
                 </div>
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
                     <?php
                     while ($query->have_posts()) : $query->the_post();
-                        get_template_part('template-parts/rom-item-list');
+                        get_template_part('template-parts/rom-card');
                     endwhile;
                     wp_reset_postdata(); ?>
                 </div>
@@ -215,9 +217,11 @@ get_header();
                 <div class="horizontal-scroll-container">
                     <div class="horizontal-scroll-wrapper">
                         <?php
-                        while ($query->have_posts()) : $query->the_post();
-                            get_template_part('template-parts/rom-item-grid');
-                        endwhile;
+                        while ($query->have_posts()) : $query->the_post(); ?>
+                            <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-2 box-border grid">
+                                <?php get_template_part('template-parts/rom-card'); ?>
+                            </div>
+                        <?php endwhile;
                         wp_reset_postdata(); ?>
                     </div>
                 </div>

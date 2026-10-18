@@ -1,10 +1,10 @@
 <?php
 /**
- * Rom card for a CSS grid.
+ * Rom card, the only rom listing item in the theme.
  *
- * rom-item-grid.php is the fixed-width item of a .horizontal-scroll-wrapper and
- * carries its own flex-shrink/width/padding; this one is a plain grid cell, so the
- * surrounding template owns the columns and the gap.
+ * A plain cell with no width of its own: the surrounding template owns the
+ * columns and the gap, and a .horizontal-scroll-wrapper caller wraps it in a
+ * fixed-width flex item.
  */
 $card_id       = get_the_ID();
 $card_consoles = get_the_terms( $card_id, 'console' );

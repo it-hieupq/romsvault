@@ -17,17 +17,17 @@ $keywords = get_search_query();
                 <?php echo __('Found ', 'rom') . '  ' . $wp_query->found_posts . ' ' . __('results', 'rom'); ?>
             </h2>
 
-            <div class="space-y-4">
-                <?php if ( have_posts() ) :
-                    while ( have_posts() ) : the_post();
-                        get_template_part( 'template-parts/rom-item-list' );
-                    endwhile;
-                    k_pagination();
-                else :
-                    get_template_part( 'template-parts/content', 'none' );
-                endif;
-                ?>
-            </div>
+            <?php if ( have_posts() ) : ?>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                    <?php while ( have_posts() ) : the_post();
+                        get_template_part( 'template-parts/rom-card' );
+                    endwhile; ?>
+                </div>
+                <?php k_pagination();
+            else :
+                get_template_part( 'template-parts/content', 'none' );
+            endif;
+            ?>
 
     </section>
 <?php

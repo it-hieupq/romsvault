@@ -301,9 +301,9 @@ landing" — dùng ở `template-parts/hero.php` để quyết định có rende
 `index.php` · `archive.php` · `search.php` · `404.php` · `comments.php` · `header.php` ·
 `footer.php` · `sidebar.php` · `download.php`
 
-### `template-parts/` (13)
-`hero` · `rom-filter` · `rom-item-grid` · `rom-item-list` · `emu-item` · `blog-item` ·
-`blog-item-2` · `console-groups` · `console-item-list` · `rating-section` ·
+### `template-parts/` (11)
+`hero` · `rom-filter` · `rom-card` · `emu-item` ·
+`post-card` · `console-groups` · `console-item-list` · `rating-section` ·
 `report-form` · `sharing` · `content-none`
 
 ---

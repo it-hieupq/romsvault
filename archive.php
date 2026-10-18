@@ -7,22 +7,31 @@
 get_header();
 get_template_part( 'template-parts/hero' );
 $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+global $wp_query;
 ?>
 
-    <section class="pb-6 text-gray-900">
+    <section class="pb-12 text-gray-900">
         <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-            <h1 class="text-lg font-semibold py-6 text-center uppercase tracking-widest">
-				<?php echo __('Get more information in') . ' ' . get_queried_object()->name; ?>
-            </h1>
+            <div class="flex items-end justify-between gap-4 py-8">
+                <h1 class="text-xl font-semibold">
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-brand"><?php esc_html_e( 'Latest articles', 'rom' ); ?></span>
+					<?php echo esc_html( get_queried_object()->name ?? get_the_archive_title() ); ?>
+                </h1>
+				<?php if ( $wp_query->found_posts ) : ?>
+                    <span class="text-meta font-semibold text-slate-500 flex-shrink-0">
+                        <?php echo esc_html( sprintf( _n( '%s article', '%s articles', $wp_query->found_posts, 'rom' ), number_format_i18n( $wp_query->found_posts ) ) ); ?>
+                    </span>
+				<?php endif; ?>
+            </div>
 
-			<?php if ( $paged == 1 && $desc = get_queried_object()->description ) : ?>
-                <div class="pb-8 entry-content"><?php echo $desc; ?></div>
+			<?php if ( $paged == 1 && $desc = get_queried_object()->description ?? '' ) : ?>
+                <div class="pb-8 entry-content"><?php echo wp_kses_post( $desc ); ?></div>
 			<?php endif; ?>
 
 			<?php if ( have_posts() ) : ?>
-                <div class="grid md:grid-cols-2 gap-4">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 					<?php while ( have_posts() ) : the_post();
-						get_template_part( 'template-parts/blog-item-2' );
+						get_template_part( 'template-parts/post-card' );
 					endwhile; ?>
                 </div>
 				<?php

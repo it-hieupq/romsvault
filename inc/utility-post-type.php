@@ -23,15 +23,15 @@ function get_custom_console_name( string $post_type ): string {
  * Dùng cho trang taxonomy để quyết định template item tương ứng.
  */
 function get_taxonomy_template_slug_by_post_type( string $post_type ): string {
-	if (!$post_type) return 'rom-item-list';
+	if (!$post_type) return 'rom-card';
 
 	$map = array(
-		'rom'      => 'rom-item-list',
+		'rom'      => 'rom-card',
 		'emulator' => 'emu-item',
 	);
 
-	// Fallback: giữ nguyên behavior hiện tại (rom-item-list)
-	return $map[ $post_type ] ?? 'rom-item-list';
+	// Fallback: rom-card
+	return $map[ $post_type ] ?? 'rom-card';
 }
 
 /**
