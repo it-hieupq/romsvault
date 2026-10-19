@@ -404,7 +404,7 @@ Chi tiết luồng: [MEMBER_SYSTEM.md § 8](./MEMBER_SYSTEM.md).
 
 | Nơi | Vai trò |
 |---|---|
-| `caching/caching-rom.php` | `get_filtered_counts()`, `get_cached_terms()`, `get_cached_all_terms()`, `get_cached_terms_by_ids()`, `get_top_type_terms_home()`, `get_filter_base_url()`, `get_brows_page_url()` |
+| `caching/caching-rom.php` | `get_cached_terms()`, `get_cached_all_terms()`, `get_cached_terms_by_ids()`, `get_filter_base_url()`, `get_brows_page_url()` |
 | `template-parts/rom-filter.php` | transient `post_ids_of_{term_id}`, TTL `DAY_IN_SECONDS` |
 | `auth/actions/*` | cache per-member — [MEMBER_SYSTEM.md § 9](./MEMBER_SYSTEM.md) |
 

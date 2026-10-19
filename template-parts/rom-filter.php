@@ -310,42 +310,6 @@ endif;
 					</button>
 				</div>
 			</div>
-
-			<?php 
-			if (!is_tax('type')) :
-				// Ensure console is included in filter_data when on taxonomy console page
-				$suggested_filter_data = $filter_data;
-				if ($is_tax && isset($current_term) && $current_term->taxonomy == 'console' ) {
-					$suggested_filter_data['consoles'] = array($current_term->term_id);
-				} elseif($is_tax && isset($current_term) && $current_term->taxonomy == 'collection' ) {
-                    $suggested_filter_data['collections'] = array($current_term->term_id);
-                } elseif($is_tax && isset($current_term) && $current_term->taxonomy == 'type' ) {
-                    $suggested_filter_data['types'] = array($current_term->term_id);
-                }
-                // suggested filters for type taxonomy
-				$suggested_types = get_filtered_counts( 'type', $suggested_filter_data);
-				if (!empty($suggested_types)) : ?>
-				<div class="suggest-filters pt-6">
-					<h3 class="text-base font-semibold text-gray-900 mb-4"><?php _e('Suggested Filters', 'rom'); ?></h3>
-					<div class="suggest-filters-list flex flex-wrap gap-2"> 
-						<?php foreach ($suggested_types as $term) :
-							$is_selected = in_array($term->term_id, $current_types);
-						?>
-							<button 
-								type="button"
-								class="suggested-filter-badge inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors <?php echo $is_selected ? 'bg-rom-pink text-white' : 'bg-gray-200 text-gray-800 hover:bg-rom-pink hover:text-white'; ?>"
-								data-term-id="<?php echo esc_attr($term->term_id); ?>"
-								data-taxonomy="type"
-								data-selected="<?php echo $is_selected ? 'true' : 'false'; ?>">
-								<span><?php echo esc_html($term->name); ?></span>
-								<span class="text-xs opacity-75">(<?php echo number_format($term->count); ?>)</span>
-							</button>
-						<?php endforeach; ?>
-					</div>
-				</div>
-				<?php endif;
-			endif;
-			?>
 		</div>
 	</div>
 </section>

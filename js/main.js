@@ -633,64 +633,6 @@ function updateSelectedFilters() {
     }
 }
 
-// Suggested Filter Badge Click Handler
-document.querySelectorAll('.suggested-filter-badge').forEach(badge => {
-    badge.addEventListener('click', function () {
-        const termId = this.getAttribute('data-term-id');
-        const taxonomy = this.getAttribute('data-taxonomy');
-        const isSelected = this.getAttribute('data-selected') === 'true';
-
-        // Find the corresponding checkbox in the dropdown
-        const checkbox = document.querySelector(`input[type="checkbox"][name="${taxonomy}s[]"][value="${termId}"]`);
-
-        if (checkbox) {
-            // Toggle checkbox
-            checkbox.checked = !isSelected;
-
-            // Trigger change event to update dropdown text
-            checkbox.dispatchEvent(new Event('change', {bubbles: true}));
-
-            // Update badge style
-            if (!isSelected) {
-                this.classList.remove('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
-                this.classList.add('bg-rom-pink', 'text-white');
-                this.setAttribute('data-selected', 'true');
-            } else {
-                this.classList.remove('bg-rom-pink', 'text-white');
-                this.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
-                this.setAttribute('data-selected', 'false');
-            }
-
-            // Update selected filters badges
-            setTimeout(() => {
-                updateSelectedFilters();
-            }, 10);
-        }
-    });
-});
-
-// Function to update suggested filter badge states when filters change
-function updateSuggestedFilterBadges() {
-    document.querySelectorAll('.suggested-filter-badge').forEach(badge => {
-        const termId = badge.getAttribute('data-term-id');
-        const taxonomy = badge.getAttribute('data-taxonomy');
-        const checkbox = document.querySelector(`input[type="checkbox"][name="${taxonomy}s[]"][value="${termId}"]`);
-
-        if (checkbox) {
-            const isSelected = checkbox.checked;
-            badge.setAttribute('data-selected', isSelected ? 'true' : 'false');
-
-            if (isSelected) {
-                badge.classList.remove('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
-                badge.classList.add('bg-rom-pink', 'text-white');
-            } else {
-                badge.classList.remove('bg-rom-pink', 'text-white');
-                badge.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200');
-            }
-        }
-    });
-}
-
 // Hook into all checkbox and radio changes to update badges using event delegation
 // This ensures we catch all changes even if elements are added dynamically
 document.addEventListener('change', (e) => {
@@ -700,7 +642,6 @@ document.addEventListener('change', (e) => {
         // Small delay to let existing handlers update the dropdown text first
         setTimeout(() => {
             updateSelectedFilters();
-            updateSuggestedFilterBadges();
         }, 10);
     }
 });
@@ -708,7 +649,6 @@ document.addEventListener('change', (e) => {
 // Initial update of selected filters (run after DOM is ready)
 function initSelectedFilters() {
     updateSelectedFilters();
-    updateSuggestedFilterBadges();
 
     // Update selected text for all dropdowns based on checked inputs
     document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
@@ -782,7 +722,6 @@ if (clearFiltersBtn) {
         }
 
         updateSelectedFilters();
-        updateSuggestedFilterBadges();
     });
 }
 
