@@ -942,3 +942,26 @@ function get_svg_icon($key = '') {
 	}
 	return '';
 }
+
+/**
+ * Inline style for a console badge: the term's `console_color` as background,
+ * with white or near-black text picked by the colour's brightness. Returns ''
+ * when the term has no valid colour, so the badge keeps its bg-primary.
+ */
+function rom_console_badge_style( $term ) {
+	$hex = $term ? sanitize_hex_color( get_term_meta( $term->term_id, 'console_color', true ) ) : '';
+	if ( ! $hex ) {
+		return '';
+	}
+
+	$hex = ltrim( $hex, '#' );
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+	list( $r, $g, $b ) = array_map( 'hexdec', str_split( $hex, 2 ) );
+
+	// YIQ brightness: light colours (Wii sky, Game Boy lime...) get dark text.
+	$text = ( $r * 299 + $g * 587 + $b * 114 ) / 1000 >= 150 ? '#0f172a' : '#ffffff';
+
+	return 'background-color:#' . $hex . ';color:' . $text . ';';
+}

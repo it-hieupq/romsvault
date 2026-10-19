@@ -77,7 +77,7 @@ $card_sizes = '(min-width: 1400px) 260px, (min-width: 1280px) 20vw, (min-width: 
     <div class="p-3.5 space-y-1.5">
         <div class="flex items-center justify-between gap-2">
 			<?php if ( $card_console ) : ?>
-                <span class="px-2 py-0.5 rounded-md bg-primary text-white text-[10px] font-bold uppercase tracking-wider shadow-sm shadow-primary/20"><?php echo esc_html( $card_console->name ); ?></span>
+                <span class="px-2 py-0.5 rounded-md bg-primary text-white text-[10px] font-bold uppercase tracking-wider shadow-sm" style="<?php echo esc_attr( rom_console_badge_style( $card_console ) ); ?>"><?php echo esc_html( $card_console->name ); ?></span>
 			<?php else : ?>
                 <span></span>
 			<?php endif; ?>

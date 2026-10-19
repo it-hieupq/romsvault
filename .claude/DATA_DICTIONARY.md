@@ -109,6 +109,7 @@ khác trong DB đều coi là public.
 |---|---|---|---|
 | `cat_image` | image | — | `return_format: url` |
 | `console_rom_downloads` | number | `1` | aggregate, cộng bởi `tracking/flush.php` |
+| `console_color` | color_picker | — | nền badge console trên `rom-card`; đọc qua `inc/utility.php:rom_console_badge_style()` (`sanitize_hex_color`, chữ trắng/tối tự chọn theo độ sáng). Trống → `bg-primary` |
 | `console_guide` | wysiwyg | — | |
 
 ### 3.3 `region_settings` — `setting/setting-rom.php`

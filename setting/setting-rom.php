@@ -584,6 +584,13 @@ function k_init_rom() {
 				'show_column_weight' => 520,
 			),
 			array (
+				'key' 	=> 'console_color',
+				'label' => __( 'Badge color', 'rom' ),
+				'name' 	=> 'console_color',
+				'type' 	=> 'color_picker',
+				'instructions' => __( 'Background of the console badge on rom cards. Text turns white or dark to match.', 'rom' ),
+			),
+			array (
 				'key' 	=> 'console_guide',
 				'label' => __( 'Guide', 'rom' ),
 				'name' 	=> 'console_guide',
