@@ -64,7 +64,7 @@ romsvault/
 │   ├── acf/                   # ACF PRO bundled (vendor, include bị comment)
 │   └── acf-quick-edit-fields/ # vendor
 │
-├── template-parts/            # 13 partial
+├── template-parts/            # 12 partial
 ├── js/                        # main, admin, rating, toast, tracking
 ├── assets/                    # css (tailwind in/out), js (lightGallery), fonts, images
 └── tailwindcss/               # build toolchain (node_modules — KHÔNG commit)
@@ -301,9 +301,9 @@ landing" — dùng ở `template-parts/hero.php` để quyết định có rende
 `index.php` · `archive.php` · `search.php` · `404.php` · `comments.php` · `header.php` ·
 `footer.php` · `sidebar.php` · `download.php`
 
-### `template-parts/` (11)
+### `template-parts/` (12)
 `hero` · `rom-filter` · `rom-card` · `emu-item` ·
-`post-card` · `console-groups` · `console-item-list` · `rating-section` ·
+`post-card` · `collection-card` · `console-groups` · `console-item-list` · `rating-section` ·
 `report-form` · `sharing` · `content-none`
 
 ---
