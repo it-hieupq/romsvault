@@ -39,7 +39,7 @@ get_header();
         $collection_link = isset($pages[0]) ? get_permalink($pages[0]->ID) : '#';
         ?>
         <section class="mb-16">
-            <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold">
                         <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Choice for you', 'rom') ?></p>
@@ -52,8 +52,8 @@ get_header();
                 </div>
             </div>
 
-            <div class="content-container p-4 sm:px-6 lg:px-8 w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <div class="max-w-site mx-auto p-4 sm:px-6 lg:px-8 w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <?php foreach ($terms as $term) :
                         get_template_part('template-parts/collection-card', null, array('term' => $term));
                     endforeach; ?>
@@ -65,7 +65,7 @@ get_header();
 
     <?php if (is_page()) : ?>
         <section class="mb-16">
-            <div class="content-container px-4 sm:px-6 lg:px-8">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white rounded-2xl p-6 shadow-lg">
                     <h2 class="text-xl font-semibold mb-6">
                         <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Announcement', 'rom') ?></p>
@@ -94,7 +94,7 @@ get_header();
     if ($query->have_posts()) :
         ?>
         <section class="mb-16">
-            <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <div class="flex items-center justify-between mb-6">
 
                     <h2 class="text-xl font-semibold">
@@ -139,7 +139,7 @@ get_header();
     $query = new WP_Query($args);
     if ($query->have_posts()) : ?>
         <section class="mb-16">
-            <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-semibold">
@@ -181,7 +181,7 @@ get_header();
     $query = new WP_Query($args);
     if ($query->have_posts()) : ?>
         <section class="mb-16">
-            <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-semibold">

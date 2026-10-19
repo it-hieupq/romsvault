@@ -24,7 +24,7 @@ $template_slug = get_taxonomy_template_slug_by_post_type( $taxonomy_post_type );
 ?>
 
     <section class="pb-6 text-gray-900">
-        <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+        <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
             <h1 class="text-lg font-semibold py-6">
                 <?php

@@ -66,7 +66,6 @@
 <?php
 $logo_url  = get_field( 'logo', 'option' );
 $site_name = get_bloginfo( 'name' );
-$is_home   = is_front_page() || is_home();
 
 /**
  * Header search. The Browse ROMs page template reads ?q= and layers its facet
@@ -101,18 +100,16 @@ $search_param  = $browse_url ? 'q' : 's';
                 <?php endif; ?>
 
                 <?php
-                $tag = $is_home ? 'h1' : 'h2';
-
-                // has logo -> hide heading
+                // has logo -> hide the name. Not a heading: the page's own title is its h1.
                 $class = $logo_url
                         ? 'hidden'
                         : 'flex flex-col';
                 ?>
 
-                <<?php echo $tag; ?> class="<?php echo esc_attr( $class ); ?>">
+                <div class="<?php echo esc_attr( $class ); ?>">
                     <span class="text-lg font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( $site_name ); ?></span>
                     <span class="text-[9px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
-                </<?php echo $tag; ?>>
+                </div>
             </a>
 
             <nav class="hidden md:flex items-center gap-1 font-semibold text-meta text-slate-600">

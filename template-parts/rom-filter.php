@@ -39,23 +39,26 @@ endif;
 
 <section class="hero-container relative mb-10">
 	<div class="absolute top-0 w-full h-[20rem]"><img src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" class="h-full w-full"></div>
-	<div class="relative w-full z-10 sm:pt-[18rem] pt-[10rem]">
+	<div class="relative w-full z-10 sm:pt-[14rem] pt-[8rem]">
 
 		<div class="content-container px-4 sm:px-6 lg:px-8 w-full rounded-2xl">
-			<div class="bg-white rounded-2xl shadow-md p-6 lg:p-8">
+			<div class="bg-white rounded-2xl shadow-md p-5 lg:p-6">
 
                 <?php if (is_front_page() || is_home()) : ?>
 
-                     <div class="text-center space-y-4 text-gray-900 mb-8">
+                     <div class="text-center space-y-2 text-gray-900 mb-5">
                          <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-brand">
                              <span class="w-2 h-2 rounded-full bg-brand"></span>
-                             <?php _e('Play Retro ROMs', 'rom') ?>
+                             <?php esc_html_e( 'Retro Game Archive', 'rom' ); ?>
                          </p>
-                         <h1 class="text-2xl sm:text-4xl font-bold text-gray-900">
-                             <?php echo __('Play') . '<span class="text-rom-pink">' . ' ' . __('Video Game Roms', 'rom') . '</span>' . ' ' . __('on your Computer or Phone', 'rom') ?>
+                         <h1 class="text-xl sm:text-3xl font-bold text-gray-900">
+                             <?php
+                             /* translators: %1$s and %2$s wrap the highlighted word in a span */
+                             printf( esc_html__( 'Download %1$sROMs%2$s & ISOs for Every Retro Console', 'rom' ), '<span class="text-rom-pink">', '</span>' );
+                             ?>
                          </h1>
-                         <p class="text-base text-muted max-w-2xl mx-auto">
-                             <?php _e('Search, filter, and download your favorite retro games from 100,000+ ROMs curated for nostalgia lovers.', 'rom') ?>
+                         <p class="text-sm text-muted max-w-2xl mx-auto">
+                             <?php esc_html_e( 'Find classic games for Nintendo, PlayStation, Sega and more. Filter by console, genre or collection, then play on PC or mobile with an emulator.', 'rom' ); ?>
                          </p>
                      </div>
 
@@ -67,12 +70,18 @@ endif;
 						$title = get_the_title();
 					elseif (is_tax() || is_category() || is_tag()) :
 						$title = single_term_title('', false);
+						$scope = $title;
+						// "Nintendo DS ROMs" is what people search for; skip the suffix if the name already says it.
+						if ( false === stripos( $title, 'rom' ) ) :
+							/* translators: %s: console, collection or type name */
+							$title = sprintf( __( '%s ROMs', 'rom' ), $title );
+						endif;
 					elseif(is_archive()) :
 						$title = post_type_archive_title('', false);
 					endif;
 					?>
 
-					<h2 id="filter-title" class="text-2xl font-bold text-rom-pink text-center"><?php echo $title; ?></h2>
+					<h1 id="filter-title" class="text-2xl font-bold text-rom-pink text-center" data-scope="<?php echo esc_attr( $scope ?? '' ); ?>"><?php echo esc_html( $title ); ?></h1>
 				<?php endif; ?>
 			
 				<?php if (!is_front_page() && !is_home()) : ?>
@@ -98,20 +107,20 @@ endif;
                     
                     <div class="flex flex-col lg:flex-row gap-3">
                         <label class="relative flex-1">
-                            <input type="text" id="searchInput" placeholder="Search for ROMs, consoles, emulators…"
+                            <input type="text" id="searchInput" placeholder="<?php esc_attr_e( 'Search games, ROMs or ISOs…', 'rom' ); ?>"
                                    name="q"
                                    value="<?php echo $current_search; ?>"
-                                   class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
+                                   class="w-full rounded-full border border-border px-4 sm:px-6 py-3 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
                             <span class="absolute inset-y-0 right-1 flex items-center pr-1">
-                                <button id="searchButton" class="px-5 sm:px-6 py-3 rounded-full text-white font-semibold shadow-soft bg-rom-pink hover:bg-rom-pink-dark transition text-xs">
+                                <button id="searchButton" class="px-5 sm:px-6 py-2.5 rounded-full text-white font-semibold shadow-soft bg-rom-pink hover:bg-rom-pink-dark transition text-xs">
                                   <?php _e('Search', 'rom') ?>
                                 </button>
                           </span>
                         </label>
                     </div>
 
-                    <div class="mb-8 pt-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-4">
+                    <div class="mb-4 pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-3">
 
                         <?php if (!is_tax('console')) : ?>
                             <div class="custom-select-wrapper" id="console-select-wrapper">
@@ -296,7 +305,7 @@ endif;
                         </div>
                     </div>
 
-                    <div id="selected-filters-container" class="border-t border-gray-200 py-6 hidden">
+                    <div id="selected-filters-container" class="border-t border-gray-200 py-4 hidden">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-sm font-semibold text-gray-900"> <?php _e('Selected Filters', 'rom') ?>:</span>
                         </div>

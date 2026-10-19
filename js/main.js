@@ -768,8 +768,9 @@ function createSearchBox({input, resultsContainer, filterTitle = null}) {
         const site_url = (typeof ajax !== 'undefined' && ajax.site_url) ? ajax.site_url : window.location.origin;
         let api_url = site_url + '/api/search?s=' + encodeURIComponent(query);
 
-        if (filterTitle && filterTitle.textContent != 'Browse all ROMS') {
-            api_url += '&c=' + encodeURIComponent(filterTitle.textContent);
+        // The heading reads "Nintendo DS ROMs"; the raw term name rides in data-scope.
+        if (filterTitle && filterTitle.dataset.scope) {
+            api_url += '&c=' + encodeURIComponent(filterTitle.dataset.scope);
         }
 
         try {

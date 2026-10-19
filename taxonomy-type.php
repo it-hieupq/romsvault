@@ -56,7 +56,7 @@ $filter_data = array(
     <?php get_template_part( 'template-parts/rom-filter', null, $filter_data ); ?>
 
     <section class="py-6 text-gray-900">
-        <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+        <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
             <?php
             // Display carousel with latest 10 ROMs if no filter selected && first page
@@ -160,7 +160,7 @@ $filter_data = array(
         </div>
 
         <?php if ($query->max_num_pages > 1) : ?>
-            <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <?php k_pagination($query->max_num_pages); ?>
             </div>
         <?php endif; ?>

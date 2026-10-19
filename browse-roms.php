@@ -65,7 +65,7 @@ get_header();
     <?php get_template_part( 'template-parts/rom-filter', null, $filter_data ); ?>
 
 <section class="pb-6 text-gray-900">
-        <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+        <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
             <?php
             $has_filters = !empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_types) || !empty($selected_consoles) || !empty($sort_by);
@@ -188,7 +188,7 @@ get_header();
                 </div>
 
         <?php if ($query->max_num_pages > 1) : ?>
-        <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+        <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <?php k_pagination($query->max_num_pages); ?>
         </div>
         <?php endif; ?>

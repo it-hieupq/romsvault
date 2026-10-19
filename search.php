@@ -11,7 +11,7 @@ $keywords = get_search_query();
 ?>
 <?php get_template_part( 'template-parts/hero' ); ?>
     <section class="py-6 text-gray-900">
-        <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
+        <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
             <h2 class="text-lg font-bold flex items-center mb-8">
                 <?php echo __('Found ', 'rom') . '  ' . $wp_query->found_posts . ' ' . __('results', 'rom'); ?>
