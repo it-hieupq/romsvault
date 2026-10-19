@@ -642,6 +642,7 @@ function k_init_rom() {
                 'label' => __( 'Banner', 'rom' ),
                 'name' 	=> 'collection_banner',
                 'type' 	=> 'image',
+                'instructions' => __( '16:9 ratio, 1280×720 recommended. Other ratios are center-cropped on the card.', 'rom' ),
                 'return_format' => 'array',
                 'show_column' 		 => 1,
                 'show_column_weight' => 10,

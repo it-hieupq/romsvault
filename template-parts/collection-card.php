@@ -23,13 +23,13 @@ $card_count  = (int) $card_term->count;
 				'class'   => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
 				'alt'     => $card_term->name,
 				'loading' => 'lazy',
-				'sizes'   => '(min-width: 1280px) 330px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
+				'sizes'   => '(min-width: 1400px) 440px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
 			) );
 		endif; ?>
 
 		<?php if ( $card_desc ) : ?>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/60 to-transparent px-3.5 pt-10 pb-3">
-                <p class="text-[12px] leading-snug text-slate-100 line-clamp-2"><?php echo esc_html( $card_desc ); ?></p>
+            <div class="absolute inset-x-0 bottom-0 h-3/5 flex items-end bg-gradient-to-t from-black/90 via-black/60 to-transparent px-3.5 pb-3">
+                <p class="text-[12px] leading-snug text-white line-clamp-2 [text-shadow:0_1px_2px_rgb(0_0_0/0.8)]"><?php echo esc_html( $card_desc ); ?></p>
             </div>
 		<?php endif; ?>
     </div>

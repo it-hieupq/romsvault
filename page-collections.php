@@ -25,7 +25,7 @@ while ( have_posts() ) : the_post();
             $terms = get_terms( array( 'taxonomy' => 'collection', 'fields' => 'all' ) );
             if ( !is_wp_error( $terms ) && !empty( $terms ) ) : ?>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <?php foreach ( $terms as $term ) :
                         get_template_part( 'template-parts/collection-card', null, array( 'term' => $term ) );
                     endforeach; ?>
