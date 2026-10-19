@@ -89,8 +89,8 @@ $search_param  = $browse_url ? 'q' : 's';
                 <?php if ( $logo_url ) : ?>
                     <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $site_name ); ?>" class="h-8 sm:h-9 w-auto">
                 <?php else : ?>
-                    <span class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <rect x="2" y="6" width="20" height="12" rx="4"></rect>
                             <path d="M6 12h4m-2-2v4"></path>
                             <line x1="15" y1="11" x2="15" y2="11.01"></line>
@@ -107,8 +107,8 @@ $search_param  = $browse_url ? 'q' : 's';
                 ?>
 
                 <div class="<?php echo esc_attr( $class ); ?>">
-                    <span class="text-lg font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( $site_name ); ?></span>
-                    <span class="text-[9px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( $site_name ); ?></span>
+                    <span class="text-[10px] sm:text-[11px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
                 </div>
             </a>
 
