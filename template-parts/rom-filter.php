@@ -49,16 +49,16 @@ endif;
                      <div class="text-center space-y-2 text-gray-900 mb-5">
                          <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-brand">
                              <span class="w-2 h-2 rounded-full bg-brand"></span>
-                             <?php esc_html_e( 'Retro Game Archive', 'rom' ); ?>
+                             <?php esc_html_e( 'Free ROMs & Emulators', 'rom' ); ?>
                          </p>
                          <h1 class="text-xl sm:text-3xl font-bold text-gray-900">
                              <?php
-                             /* translators: %1$s and %2$s wrap the highlighted word in a span */
-                             printf( esc_html__( 'Download %1$sROMs%2$s & ISOs for Every Retro Console', 'rom' ), '<span class="text-rom-pink">', '</span>' );
+                             /* translators: %1$s and %2$s wrap the highlighted words in a span */
+                             printf( esc_html__( 'Download %1$sFree ROMs%2$s & ISOs for Every Retro Console', 'rom' ), '<span class="text-rom-pink">', '</span>' );
                              ?>
                          </h1>
                          <p class="text-sm text-muted max-w-2xl mx-auto">
-                             <?php esc_html_e( 'Find classic games for Nintendo, PlayStation, Sega and more. Filter by console, genre or collection, then play on PC or mobile with an emulator.', 'rom' ); ?>
+                             <?php esc_html_e( 'Play classic Nintendo, PlayStation, Sega and Game Boy ROMs on PC, Android or iOS. Every game comes with the emulator it needs.', 'rom' ); ?>
                          </p>
                      </div>
 

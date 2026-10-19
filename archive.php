@@ -13,10 +13,10 @@ global $wp_query;
     <section class="pb-12 text-gray-900">
         <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
             <div class="flex items-end justify-between gap-4 py-8">
-                <h1 class="text-xl font-semibold">
+                <h2 class="text-xl font-semibold">
                     <span class="block text-xs font-semibold uppercase tracking-wider text-brand"><?php esc_html_e( 'Latest articles', 'rom' ); ?></span>
 					<?php echo esc_html( get_queried_object()->name ?? get_the_archive_title() ); ?>
-                </h1>
+                </h2>
 				<?php if ( $wp_query->found_posts ) : ?>
                     <span class="text-meta font-semibold text-slate-500 flex-shrink-0">
                         <?php echo esc_html( sprintf( _n( '%s article', '%s articles', $wp_query->found_posts, 'rom' ), number_format_i18n( $wp_query->found_posts ) ) ); ?>
