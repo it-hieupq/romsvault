@@ -72,7 +72,11 @@ endif;
 						$title = single_term_title('', false);
 						$scope = $title;
 						// "Nintendo DS ROMs" is what people search for; skip the suffix if the name already says it.
-						if ( false === stripos( $title, 'rom' ) ) :
+						// Windows games are PC games, not ROMs.
+						if ( is_tax( 'console', 'windows' ) ) :
+							/* translators: %s: console name (Windows) */
+							$title = sprintf( __( '%s PC Games', 'rom' ), $title );
+						elseif ( false === stripos( $title, 'rom' ) ) :
 							/* translators: %s: console, collection or type name */
 							$title = sprintf( __( '%s ROMs', 'rom' ), $title );
 						endif;

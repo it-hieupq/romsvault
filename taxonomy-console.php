@@ -10,6 +10,8 @@ $console = get_queried_object();
 if (!is_tax('console') || !isset($console->term_id)) :
     rf_force_404();
 endif;
+// Windows games are PC games, not ROMs: section headings say "Games" there.
+$is_pc = 'windows' === $console->slug;
 
 get_header();
 
@@ -87,7 +89,7 @@ $filter_data = array(
                 if ($latest_query->have_posts()) : ?>
                     <section class="mb-8">
                         <h2 class="text-xl font-bold flex items-center mb-4">
-                            <?php echo esc_html($console->name . ' ' . __('Latest ROMs', 'rom')); ?>
+                            <?php echo esc_html($console->name . ' ' . ($is_pc ? __('Latest Games', 'rom') : __('Latest ROMs', 'rom'))); ?>
                         </h2>
 
                         <div class="horizontal-scroll-container">
@@ -134,9 +136,9 @@ $filter_data = array(
 						<?php
                         $title = $console->name;
                         if (!empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_types)) {
-                            $title .= ' ' . __('Filtered ROMs', 'rom');
+                            $title .= ' ' . ($is_pc ? __('Filtered Games', 'rom') : __('Filtered ROMs', 'rom'));
                         } else {
-                            $title .= ' ' . __('Popular ROMs', 'rom');
+                            $title .= ' ' . ($is_pc ? __('Popular Games', 'rom') : __('Popular ROMs', 'rom'));
                         }
                         echo $title . ' (' .$query->found_posts.')';
                         ?>
