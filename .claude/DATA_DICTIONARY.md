@@ -211,6 +211,7 @@ options page `options`, không ở đây.
 | `rating_count`, `rating_avg` | `rom`, `emulator` | `POST rf/v1/rating` (cộng dồn) |
 | `hide` | `rom`, `emulator` | admin toggle / bulk action / `inc/utility.php` |
 | `_wp_page_template` | `page` | WP core — breadcrumb & nav-walker query theo meta này |
+| `_menu_item_icon` | `nav_menu_item` | Appearance → Menus (`inc/menu-icons.php:rom_menu_item_icon_save`). Giá trị là key trong `rom_menu_icons()` (vd `gamepad`); key lạ → xoá meta. Menu `primary` (desktop + mobile) render icon qua `rom_menu_icon_svg()` |
 
 ## 6. Term meta chính
 

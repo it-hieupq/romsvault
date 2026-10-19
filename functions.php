@@ -337,6 +337,7 @@ require get_template_directory() . '/inc/ajax.php';
  * Navigation Walker.
  */
 require get_template_directory() . '/inc/nav-walker.php';
+require get_template_directory() . '/inc/menu-icons.php';
 
 /**
  * Utility functions.

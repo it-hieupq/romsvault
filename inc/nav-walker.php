@@ -199,8 +199,9 @@ function rom_display_header_menu( $theme_location = 'primary' ) {
         $link_classes = $is_active
                 ? 'px-3.5 py-1.5 rounded-xl bg-primary text-white font-bold shadow-sm shadow-primary/25'
                 : 'px-3.5 py-1.5 rounded-xl hover:text-primary hover:bg-rose-50/50 transition-colors';
-        
-        echo '<a class="' . esc_attr( $link_classes ) . '" href="' . esc_url( $item->url ) . '">';
+
+        echo '<a class="inline-flex items-center gap-1.5 ' . esc_attr( $link_classes ) . '" href="' . esc_url( $item->url ) . '">';
+        echo rom_menu_icon_svg( get_post_meta( $item->ID, '_menu_item_icon', true ), 'w-4 h-4 flex-shrink-0' );
         echo esc_html( $item->title );
         echo '</a>';
     }
@@ -235,9 +236,11 @@ function rom_display_mobile_menu( $theme_location = 'primary' ) {
         if ( $is_active ) {
             $link_classes .= ' active';
         }
-        
+
         echo '<a class="' . esc_attr( $link_classes ) . '" href="' . esc_url( $item->url ) . '">';
+        echo '<span class="inline-flex items-center gap-2">';
+        echo rom_menu_icon_svg( get_post_meta( $item->ID, '_menu_item_icon', true ), 'w-5 h-5 flex-shrink-0' );
         echo esc_html( $item->title );
-        echo '</a>';
+        echo '</span></a>';
     }
 }

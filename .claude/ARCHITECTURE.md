@@ -60,7 +60,7 @@ romsvault/
 │
 ├── grabber/                   # scrape metadata/gallery/file cho ROM (admin-only)
 │
-├── inc/                       # utility, ajax, options, seo, insert-link*, breadcrumb, nav-walker
+├── inc/                       # utility, ajax, options, seo, insert-link*, breadcrumb, nav-walker, menu-icons
 │   ├── acf/                   # ACF PRO bundled (vendor, include bị comment)
 │   └── acf-quick-edit-fields/ # vendor
 │
