@@ -104,30 +104,6 @@ foreach ( $footer_items as $item ) {
     </svg>
 </button>
 
-<button class="scroll-to-top" id="float-search-button" style="left: 30px;">
-    <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
-        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
-    </svg>
-</button>
-
-<div class="float-search float-search__hide">
-
-    <div class="flex flex-col lg:flex-row gap-3">
-
-        <div class="relative flex-1">
-
-            <div class="float-search-result"></div>
-
-            <input style="padding-left: 60px; height: 50px;" type="text" id="float-search-input" placeholder="Search for ROMs, consoles, emulators…" name="q" value="" class="w-full rounded-full border border-border px-4 sm:px-6 py-4 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="float-search-bg float-search-bg__hide"></div>
-
 <?php echo get_field('footer_js', 'option'); ?>
 <!-- Login modal (P2.0 scaffold; Google button wired in P2.1). Shared by header + single "login to download". -->
 <div id="rf-modal" class="rf-modal" aria-hidden="true">

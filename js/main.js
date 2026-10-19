@@ -846,63 +846,6 @@ if (search_input_1) {
 }
 
 
-const search_input_2 = document.getElementById('float-search-input');
-const search_result_2 = document.querySelector('.float-search-result');
-
-if (search_input_2) {
-    
-    createSearchBox({
-        input: search_input_2,
-        resultsContainer: search_result_2,
-        filterTitle: null
-    });
-
-}
-
-const search_button_2 = document.getElementById('float-search-button');
-const search_container_2 = document.querySelector('.float-search');
-const search_bg = document.querySelector('.float-search-bg');
-
-if (search_button_2 && search_container_2) {
-    
-    const iconSearch = `
-    <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
-        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
-    </svg>
-    `;
-    
-    const iconClose = `
-    <svg height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
-        <path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/>
-    </svg>
-    `;
-
-    
-    search_button_2.addEventListener('click', () => {
-        
-        search_container_2.classList.toggle('float-search__hide');
-        search_bg.classList.toggle('float-search-bg__hide');
-        
-        if (search_container_2.classList.contains('float-search__hide')) {
-            
-            search_button_2.innerHTML = iconSearch;
-            
-            search_result_2.innerHTML = '';
-            
-            search_input_2.value = '';
-            
-        } else {
-            
-            search_button_2.innerHTML = iconClose;
-            
-            search_input_2.focus();
-            
-        }
-
-    });
-
-}
-
 // Report Form Modal Handler
 (function() {
     'use strict';
