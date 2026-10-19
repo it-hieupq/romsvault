@@ -53,10 +53,14 @@ get_header();
             </div>
 
             <div class="max-w-site mx-auto p-4 sm:px-6 lg:px-8 w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    <?php foreach ($terms as $term) :
-                        get_template_part('template-parts/collection-card', null, array('term' => $term));
-                    endforeach; ?>
+                <div class="horizontal-scroll-container">
+                    <div class="horizontal-scroll-wrapper">
+                        <?php foreach ($terms as $term) : ?>
+                            <div class="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 min-w-0 px-2 sm:px-3 box-border grid">
+                                <?php get_template_part('template-parts/collection-card', null, array('term' => $term)); ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
 
