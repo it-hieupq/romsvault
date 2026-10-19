@@ -29,14 +29,34 @@ if ( empty( $card_size ) ) {
 	$card_size = get_post_meta( $card_id, 'download_list_0_file_size', true );
 }
 
-$card_thumb = get_the_post_thumbnail_url( $card_id, 'thumbnail' );
+$card_thumb_id = get_post_thumbnail_id( $card_id );
+$card_thumb    = $card_thumb_id ? wp_get_attachment_image_src( $card_thumb_id, 'thumbnail' ) : false;
+// Box art comes in every shape. Close to the 2:3 frame it fills it; anything
+// else sits whole inside the frame over a blurred copy of itself.
+$card_ratio = ( $card_thumb && $card_thumb[2] ) ? $card_thumb[1] / $card_thumb[2] : 2 / 3;
+$card_fill  = $card_ratio >= 0.60 && $card_ratio <= 0.76;
+// Both copies share sizes so the browser picks one file for both.
+$card_sizes = '(min-width: 1400px) 260px, (min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw';
 ?>
 <a href="<?php the_permalink(); ?>" class="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-subtle hover:shadow-card-hover hover:border-primary/50 transition-all flex flex-col">
-    <div class="relative aspect-[3/4] overflow-hidden bg-slate-100">
-		<?php if ( $card_thumb ) : ?>
-            <img src="<?php echo esc_url( $card_thumb ); ?>" alt="<?php the_title_attribute(); ?>"
-                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
-		<?php endif; ?>
+    <div class="relative aspect-[2/3] overflow-hidden bg-slate-100">
+		<?php if ( $card_thumb ) :
+			if ( ! $card_fill ) :
+				echo wp_get_attachment_image( $card_thumb_id, 'thumbnail', false, array(
+					'alt'         => '',
+					'aria-hidden' => 'true',
+					'sizes'       => $card_sizes,
+					'loading'     => 'lazy',
+					'class'       => 'absolute inset-0 w-full h-full object-cover scale-110 blur-xl brightness-75',
+				) );
+			endif;
+			echo wp_get_attachment_image( $card_thumb_id, 'thumbnail', false, array(
+				'alt'     => the_title_attribute( array( 'echo' => false ) ),
+				'sizes'   => $card_sizes,
+				'loading' => 'lazy',
+				'class'   => 'relative w-full h-full ' . ( $card_fill ? 'object-cover object-top' : 'object-contain' ) . ' group-hover:scale-105 transition-transform duration-300',
+			) );
+		endif; ?>
 
 		<?php if ( $card_count > 0 ) : ?>
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-white text-[11px] font-bold backdrop-blur-sm shadow-sm">
@@ -50,7 +70,7 @@ $card_thumb = get_the_post_thumbnail_url( $card_id, 'thumbnail' );
 		<?php endif; ?>
 
 		<?php if ( $card_region ) : ?>
-            <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 text-slate-200 text-[10px] font-bold uppercase backdrop-blur-sm"><?php echo esc_html( $card_region->name ); ?></span>
+            <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 text-slate-200 text-[10px] font-bold uppercase backdrop-blur-sm"><?php echo esc_html( $card_region->name ); ?></span>
 		<?php endif; ?>
     </div>
 
