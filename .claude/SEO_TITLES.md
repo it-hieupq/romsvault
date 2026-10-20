@@ -4,10 +4,9 @@ Nguồn sự thật cho **title SEO** của site. Mọi giá trị ở đây đ�
 trong code theme. Sửa ở Yoast → cập nhật file này trong cùng lượt.
 
 - Ghi lần đầu: **2026-10-19** (templates, title riêng của term, title home, đổi tên/slug console).
-  Backup từng bước trong `sites/_cleanup/` đã xoá. Trạng thái **trước** mọi thay đổi này nằm trong
-  `wp-docker/romsvault_prod-20261019-1927.sql.gz` (dump `romsvault_prod` ngay trước lần sync 19:27,
-  tức dữ liệu sync ngày 2026-10-18). Rollback: lấy row `wpseo_titles`, `wpseo_taxonomy_meta`, postmeta
-  `_yoast_wpseo_title` của page #293074 và các term ở § 7 từ dump đó.
+  **Không còn backup trạng thái trước các thay đổi này**: backup từng bước trong `sites/_cleanup/` và
+  dump `romsvault_prod-20261019-1927.sql.gz` đều đã xoá (2026-10-20). Muốn quay lại thì sửa tay theo
+  giá trị cũ ở § 7 và git history của file này.
 - **Ghi option bằng code/SQL thì phải xoá indexable của object đó** (`wphh_yoast_indexable`, theo
   `object_type`/`object_sub_type`/`object_id`): Yoast cache title vào indexable lúc trang được xem lần
   đầu và không làm mới khi option đổi ngoài màn hình admin. Sửa trong admin Yoast thì không cần.
@@ -153,8 +152,8 @@ bên trong.
 
 ## 7. Tên & slug console (chuẩn hoá 2026-10-19)
 
-Trạng thái trước khi đổi: `wp-docker/romsvault_prod-20261019-1927.sql.gz` (13 term ở bảng dưới +
-`nintendo-satellaview` term_id 21585 và 6 termmeta của nó).
+Giá trị cũ chỉ còn ở bảng dưới (dump trước khi đổi đã xoá 2026-10-20). `nintendo-satellaview`
+(term_id 21585) và 6 termmeta của nó không còn bản sao nào.
 
 **Quy ước tên** (hiện ở chip card, breadcrumb, dropdown filter, h1 `{tên} ROMs`, `%%ct_console%%`, nút
 "Download {tên} Emulator"): tên ngắn đúng như người chơi gọi, không ngoặc, đúng hoa/thường thương hiệu.
