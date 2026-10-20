@@ -1,9 +1,7 @@
 <?php
 /**
- * Footer link columns come from the 'footer-nav' menu: every top-level item that
- * has children becomes a column (the item is the heading, its children the
- * links). Top-level items without children have no heading to sit under, so they
- * fall back to a single inline row the way the footer rendered before.
+ * Footer: brand + copyright on the left, the 'footer-nav' menu on the right as
+ * one wrapping row of quick links (every item, children included, in menu order).
  */
 $footer_items = array();
 if ( has_nav_menu( 'footer-nav' ) ) {
@@ -17,56 +15,26 @@ if ( has_nav_menu( 'footer-nav' ) ) {
 	}
 }
 
-$footer_children = array();
-foreach ( $footer_items as $item ) {
-	if ( (int) $item->menu_item_parent ) {
-		$footer_children[ (int) $item->menu_item_parent ][] = $item;
-	}
-}
-
-$footer_columns = array();
-$footer_loose   = array();
-foreach ( $footer_items as $item ) {
-	if ( (int) $item->menu_item_parent ) {
-		continue;
-	}
-	if ( ! empty( $footer_children[ $item->ID ] ) ) {
-		$footer_columns[] = array(
-			'heading' => $item,
-			'links'   => $footer_children[ $item->ID ],
-		);
-	} else {
-		$footer_loose[] = $item;
-	}
-}
+// Same brand block as the header: the uploaded logo when there is one, else the mark + name.
+$footer_logo = get_field( 'logo', 'option' );
+$footer_mark = get_template_directory_uri() . '/assets/images/logo-mark-192.png?v=' . filemtime( get_template_directory() . '/assets/images/logo-mark-192.png' );
 ?>
 <footer class="bg-white border-t border-slate-200 mt-auto text-slate-500 text-caption">
-    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col-reverse gap-10 lg:grid lg:grid-cols-3 lg:gap-16">
 
-		<?php if ( $footer_columns ) : ?>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-				<?php foreach ( $footer_columns as $column ) : ?>
-                    <div>
-                        <span class="font-bold text-body text-slate-900 block mb-2.5 font-display tracking-wide"><?php echo esc_html( $column['heading']->title ); ?></span>
-                        <ul class="space-y-1.5">
-							<?php foreach ( $column['links'] as $link ) : ?>
-                                <li><a href="<?php echo esc_url( $link->url ); ?>" class="hover:text-primary transition-colors"><?php echo esc_html( $link->title ); ?></a></li>
-							<?php endforeach; ?>
-                        </ul>
-                    </div>
-				<?php endforeach; ?>
-            </div>
-		<?php endif; ?>
+        <div class="space-y-4">
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="inline-flex items-center gap-2.5">
+				<?php if ( $footer_logo ) : ?>
+                    <img src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" class="h-9 w-auto" loading="lazy">
+				<?php else : ?>
+                    <img src="<?php echo esc_url( $footer_mark ); ?>" alt="" width="40" height="40" class="w-10 h-10 rounded-xl flex-shrink-0" loading="lazy">
+                    <span class="flex flex-col">
+                        <span class="text-lg font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
+                        <span class="text-[9px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
+                    </span>
+				<?php endif; ?>
+            </a>
 
-		<?php if ( $footer_loose ) : ?>
-            <div class="flex flex-wrap gap-4 lg:gap-6 justify-center mb-8">
-				<?php foreach ( $footer_loose as $item ) : ?>
-                    <a href="<?php echo esc_url( $item->url ); ?>" class="font-semibold text-slate-600 hover:text-primary transition-colors"><?php echo esc_html( $item->title ); ?></a>
-				<?php endforeach; ?>
-            </div>
-		<?php endif; ?>
-
-        <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
             <div class="text-slate-400">
 				<?php the_field('copyright', 'option'); ?>
             </div>
@@ -95,6 +63,27 @@ foreach ( $footer_items as $item ) {
                 </div>
 			<?php endif; ?>
         </div>
+
+		<?php if ( $footer_items ) : ?>
+            <nav class="lg:col-span-2" aria-label="<?php esc_attr_e( 'Quick links', 'rom' ); ?>">
+                <span class="flex items-center gap-1.5 mb-4 font-bold text-body text-slate-900 font-display tracking-wide">
+                    <svg class="w-4 h-4 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11.983 1.907a.75.75 0 0 0-1.292-.657l-8.5 9.5A.75.75 0 0 0 2.75 12h6.572l-1.305 6.093a.75.75 0 0 0 1.292.657l8.5-9.5A.75.75 0 0 0 17.25 8h-6.572l1.305-6.093z"/></svg>
+                    <?php esc_html_e( 'Quick links', 'rom' ); ?>
+                </span>
+                <?php // Every link carries its dot in front; -ml-6 + overflow-hidden tucks the
+                      // first dot of each wrapped line out of view, so none dangles. ?>
+                <div class="overflow-hidden">
+                    <div class="flex flex-wrap items-center gap-x-5 gap-y-3 -ml-6">
+						<?php foreach ( $footer_items as $item ) : ?>
+                            <span class="inline-flex items-center gap-5">
+                                <span class="w-1 h-1 rounded-full bg-red-500 flex-shrink-0" aria-hidden="true"></span>
+                                <a href="<?php echo esc_url( $item->url ); ?>" class="font-semibold text-slate-600 hover:text-primary transition-colors"><?php echo esc_html( $item->title ); ?></a>
+                            </span>
+						<?php endforeach; ?>
+                    </div>
+                </div>
+            </nav>
+		<?php endif; ?>
     </div>
 </footer>
 
