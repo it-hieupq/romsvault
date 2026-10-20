@@ -87,10 +87,12 @@ $footer_mark = get_template_directory_uri() . '/assets/images/logo-mark-192.png?
     </div>
 </footer>
 
-<button class="scroll-to-top hidden" id="scrollToTop">
-    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-    </svg>
+<button type="button" class="scroll-to-top hidden" id="scrollToTop" aria-label="<?php esc_attr_e( 'Back to top', 'rom' ); ?>">
+    <span class="scroll-to-top__inner">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m6 15 6-6 6 6"></path>
+        </svg>
+    </span>
 </button>
 
 <?php echo get_field('footer_js', 'option'); ?>

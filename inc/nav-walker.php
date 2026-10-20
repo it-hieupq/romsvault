@@ -232,15 +232,19 @@ function rom_display_mobile_menu( $theme_location = 'primary' ) {
         $is_active = rom_is_menu_item_active( $item );
         
         // Build classes
-        $link_classes = 'mobile-menu-item text-center';
+        $link_classes = 'mobile-menu-item';
         if ( $is_active ) {
             $link_classes .= ' active';
         }
 
-        echo '<a class="' . esc_attr( $link_classes ) . '" href="' . esc_url( $item->url ) . '">';
-        echo '<span class="inline-flex items-center gap-2">';
-        echo rom_menu_icon_svg( get_post_meta( $item->ID, '_menu_item_icon', true ), 'w-5 h-5 flex-shrink-0' );
-        echo esc_html( $item->title );
-        echo '</span></a>';
+        // Row: icon tile, title, chevron (styles in style.css .mobile-menu-*).
+        $icon = rom_menu_icon_svg( get_post_meta( $item->ID, '_menu_item_icon', true ), 'w-5 h-5' );
+        echo '<a class="' . esc_attr( $link_classes ) . '" href="' . esc_url( $item->url ) . '"' . ( $is_active ? ' aria-current="page"' : '' ) . '>';
+        if ( $icon ) {
+            echo '<span class="mobile-menu-icon">' . $icon . '</span>';
+        }
+        echo '<span class="flex-1 min-w-0 truncate">' . esc_html( $item->title ) . '</span>';
+        echo '<svg class="mobile-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+        echo '</a>';
     }
 }

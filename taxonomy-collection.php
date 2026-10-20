@@ -100,7 +100,7 @@ $filter_data = array(
                                 <?php
                                 while ($latest_roms_query->have_posts()) : $latest_roms_query->the_post();
                                     ?>
-                                    <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-2 box-border grid">
+                                    <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-1.5 md:px-2 box-border grid">
                                         <?php get_template_part('template-parts/rom-card'); ?>
                                     </div>
                                     <?php
@@ -148,7 +148,7 @@ $filter_data = array(
                     </h2>
                 </div>
 
-                <div class="<?php echo $query->have_posts() ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6' : ''; ?>">
+                <div class="<?php echo $query->have_posts() ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4' : ''; ?>">
 					<?php
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();

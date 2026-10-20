@@ -498,7 +498,7 @@ if ( $console && isset( $console->term_id ) ) :
                 <h2 class="font-bold text-black text-lg mb-4">
                     <?php esc_html_e( 'Recommended for you', 'rom' ); ?>
                 </h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                     <?php
                     while ( $related_query->have_posts() ) :
                         $related_query->the_post();

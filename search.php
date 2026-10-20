@@ -18,7 +18,7 @@ $keywords = get_search_query();
             </h2>
 
             <?php if ( have_posts() ) : ?>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                     <?php while ( have_posts() ) : the_post();
                         get_template_part( 'template-parts/rom-card' );
                     endwhile; ?>

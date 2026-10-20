@@ -153,7 +153,7 @@ while ( have_posts() ) : the_post();
                         <!-- Specs grid -->
 						<?php if ( $specs ) : ?>
                             <?php // Two per row at every width: an emulator rarely has more than a few specs. ?>
-                            <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5 my-1">
+                            <div class="grid grid-cols-2 gap-3 md:gap-4 my-1">
 								<?php foreach ( $specs as $spec ) : ?>
                                     <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-start gap-2.5">
                                         <div class="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100/80 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0">

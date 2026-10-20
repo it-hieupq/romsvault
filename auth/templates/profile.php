@@ -90,7 +90,7 @@ get_header();
             <!-- Activity: inline accordion cards. Click Comments/Reports to expand its
                  list below; Ratings is a reserved slot (feature not shipped yet). -->
             <h2 class="text-sm font-semibold text-gray-500 mt-6 mb-3"><?php esc_html_e( 'Activity', 'rom' ); ?></h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
 
                 <button type="button"
                         class="rf-stat-card text-left bg-white rounded-2xl shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition"

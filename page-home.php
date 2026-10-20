@@ -59,7 +59,7 @@ while ( have_posts() ) :
                                 <div class="horizontal-scroll-wrapper">
                                     <?php
                                     while ( $query->have_posts() ) : $query->the_post(); ?>
-                                        <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-2 box-border grid">
+                                        <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-1.5 md:px-2 box-border grid">
                                             <?php get_template_part( 'template-parts/post-card' ); ?>
                                         </div>
                                     <?php endwhile;
@@ -129,7 +129,7 @@ while ( have_posts() ) :
                     </div>
 
                     <div class="max-w-site mx-auto p-4 sm:px-6 lg:px-8 w-full">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                             <?php foreach ( $terms as $term ) :
                                 get_template_part( 'template-parts/collection-card', null, array( 'term' => $term ) );
                             endforeach; ?>
@@ -184,7 +184,7 @@ while ( have_posts() ) :
                                 </a>
                             </div>
 
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                                 <?php
                                 while ( $query->have_posts() ) : $query->the_post();
                                     get_template_part( 'template-parts/rom-card' );

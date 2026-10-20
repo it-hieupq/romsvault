@@ -22,7 +22,9 @@ if ( ! is_wp_error( $card_genres ) && ! empty( $card_genres ) ) {
 }
 
 $card_count = (int) get_post_meta( $card_id, 'rating_count', true );
-$card_score = (float) get_post_meta( $card_id, 'rating_avg', true );
+// No votes yet shows a full 5 instead of hiding the badge. Display only: the
+// stored rating_avg stays untouched.
+$card_score = $card_count > 0 ? (float) get_post_meta( $card_id, 'rating_avg', true ) : 5;
 
 $card_size = get_post_meta( $card_id, 'file_size', true );
 if ( empty( $card_size ) ) {
@@ -58,32 +60,33 @@ $card_sizes = '(min-width: 1400px) 260px, (min-width: 1280px) 20vw, (min-width: 
 			) );
 		endif; ?>
 
-		<?php if ( $card_count > 0 ) : ?>
-            <div class="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-white text-[11px] font-bold backdrop-blur-sm shadow-sm">
-                <?php // SVG, not a star glyph: the body webfont is a latin-only subset, so a
-                      // literal U+2605 falls through to whatever the OS happens to provide. ?>
-                <svg class="w-2.5 h-2.5 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path d="M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z"/>
-                </svg>
-                <span><?php echo esc_html( round( $card_score, 1 ) ); ?></span>
-            </div>
-		<?php endif; ?>
-
 		<?php if ( $card_region ) : ?>
             <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 text-slate-200 text-[10px] font-bold uppercase backdrop-blur-sm"><?php echo esc_html( $card_region->name ); ?></span>
 		<?php endif; ?>
     </div>
 
     <div class="p-3.5 space-y-1.5">
-        <div class="flex items-center justify-between gap-2">
+        <?php // Wraps on narrow cards so a long console name never pushes the rating off the edge. ?>
+        <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
 			<?php if ( $card_console ) : ?>
                 <span class="px-2 py-0.5 rounded-md bg-primary text-white text-[10px] font-bold uppercase tracking-wider shadow-sm" style="<?php echo esc_attr( rom_console_badge_style( $card_console ) ); ?>"><?php echo esc_html( $card_console->name ); ?></span>
 			<?php else : ?>
                 <span></span>
 			<?php endif; ?>
-			<?php if ( ! empty( $card_size ) ) : ?>
-                <span class="text-[11px] font-semibold text-slate-500 flex-shrink-0"><?php echo esc_html( $card_size ); ?></span>
-			<?php endif; ?>
+            <span class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 flex-shrink-0">
+                <span class="inline-flex items-center gap-0.5 text-slate-700">
+                    <?php // SVG, not a star glyph: the body webfont is a latin-only subset, so a
+                          // literal U+2605 falls through to whatever the OS happens to provide. ?>
+                    <svg class="w-3 h-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z"/>
+                    </svg>
+                    <?php echo esc_html( round( $card_score, 1 ) ); ?>
+                </span>
+				<?php if ( ! empty( $card_size ) ) : ?>
+                    <span class="text-slate-300" aria-hidden="true">&middot;</span>
+                    <span><?php echo esc_html( $card_size ); ?></span>
+				<?php endif; ?>
+            </span>
         </div>
 
         <h3 class="font-bold text-meta text-slate-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug"><?php the_title(); ?></h3>

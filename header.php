@@ -173,17 +173,34 @@ $search_param  = $browse_url ? 'q' : 's';
 
 <div class="mobile-menu-panel" id="mobile-menu-panel">
     <div class="mobile-menu-header">
-        <?php if ($logo_url) : ?>
-            <img style="height: 30px" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>">
-        <?php else: ?>
-            <span class="text-lg font-bold text-slate-900 font-display"><?php bloginfo('name'); ?></span>
-        <?php endif; ?>
-        <button class="mobile-menu-close" id="mobile-menu-close" aria-label="<?php esc_attr_e( 'Close menu', 'rom' ); ?>">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="inline-flex items-center gap-2.5 min-w-0">
+            <?php if ($logo_url) : ?>
+                <img class="h-8 w-auto" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>">
+            <?php else: ?>
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-mark-192.png?v=' . $mark_ver ); ?>" alt="" width="36" height="36" class="w-9 h-9 rounded-xl flex-shrink-0">
+                <span class="text-lg font-bold tracking-tight text-slate-900 font-display truncate"><?php echo esc_html( $site_name ); ?></span>
+            <?php endif; ?>
+        </a>
+        <button type="button" class="mobile-menu-close" id="mobile-menu-close" aria-label="<?php esc_attr_e( 'Close menu', 'rom' ); ?>">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
     </div>
+
+    <?php // The header search box only shows from lg up, so phones and tablets search from here. ?>
+    <form action="<?php echo esc_url( $search_action ); ?>" method="get" role="search" class="mobile-menu-search">
+        <label class="sr-only" for="mobile-search"><?php esc_html_e( 'Search ROMs', 'rom' ); ?></label>
+        <div class="relative">
+            <input type="search" id="mobile-search" name="<?php echo esc_attr( $search_param ); ?>"
+                   placeholder="<?php esc_attr_e( 'Search ROMs & ISOs...', 'rom' ); ?>"
+                   class="w-full pl-10 pr-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-base placeholder:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+    </form>
+
     <div class="mobile-menu-content">
         <!-- Logged-in member card (top): tap to toggle the member submenu. auth.js swaps from localStorage. -->
         <div class="rf-authed-only rf-m-account">
@@ -200,13 +217,16 @@ $search_param  = $browse_url ? 'q' : 's';
             </div>
         </div>
 
-        <?php
-        if ( has_nav_menu( 'primary' ) ) :
-            rom_display_mobile_menu();
-        else :
-            echo '<a href="' . esc_url( home_url( '/' ) ) . '" class="mobile-menu-item text-center active">'.__('Home', 'rom').'</a>';
-        endif;
-        ?>
+        <nav class="mobile-menu-nav" aria-label="<?php esc_attr_e( 'Menu', 'rom' ); ?>">
+            <span class="mobile-menu-label"><?php esc_html_e( 'Menu', 'rom' ); ?></span>
+            <?php
+            if ( has_nav_menu( 'primary' ) ) :
+                rom_display_mobile_menu();
+            else :
+                echo '<a href="' . esc_url( home_url( '/' ) ) . '" class="mobile-menu-item active">' . esc_html__( 'Home', 'rom' ) . '</a>';
+            endif;
+            ?>
+        </nav>
 
         <!-- Guest sign-in pinned to the bottom (auto width, centered). -->
         <div class="rf-guest-only rf-mobile-login">

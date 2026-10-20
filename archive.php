@@ -29,7 +29,7 @@ global $wp_query;
 			<?php endif; ?>
 
 			<?php if ( have_posts() ) : ?>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
 					<?php while ( have_posts() ) : the_post();
 						get_template_part( 'template-parts/post-card' );
 					endwhile; ?>

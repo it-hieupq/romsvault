@@ -56,7 +56,7 @@ get_header();
                 <div class="horizontal-scroll-container">
                     <div class="horizontal-scroll-wrapper">
                         <?php foreach ($terms as $term) : ?>
-                            <div class="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 min-w-0 px-2 sm:px-3 box-border grid">
+                            <div class="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 min-w-0 px-1.5 md:px-2 box-border grid">
                                 <?php get_template_part('template-parts/collection-card', null, array('term' => $term)); ?>
                             </div>
                         <?php endforeach; ?>
@@ -116,7 +116,7 @@ get_header();
                     <div class="horizontal-scroll-wrapper">
                         <?php
                         while ($query->have_posts()) : $query->the_post(); ?>
-                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-2 box-border grid">
+                            <div class="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 min-w-0 px-1.5 md:px-2 box-border grid">
                                 <?php get_template_part('template-parts/post-card'); ?>
                             </div>
                         <?php endwhile;
@@ -158,7 +158,7 @@ get_header();
                     </a>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                     <?php
                     while ($query->have_posts()) : $query->the_post();
                         get_template_part('template-parts/rom-card');
@@ -204,7 +204,7 @@ get_header();
                     <div class="horizontal-scroll-wrapper">
                         <?php
                         while ($query->have_posts()) : $query->the_post(); ?>
-                            <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-2 box-border grid">
+                            <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-1.5 md:px-2 box-border grid">
                                 <?php get_template_part('template-parts/rom-card'); ?>
                             </div>
                         <?php endwhile;

@@ -335,6 +335,10 @@ if (scrollToTopBtn) {
         } else {
             scrollToTopBtn.classList.add('hidden');
         }
+
+        // Fills the button's ring (style.css .scroll-to-top) with scroll progress.
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        scrollToTopBtn.style.setProperty('--p', scrollable > 0 ? Math.min(100, (window.pageYOffset / scrollable) * 100) : 0);
     });
     
     // Smooth scroll to top

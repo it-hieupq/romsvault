@@ -47,11 +47,14 @@ while ( have_posts() ) : the_post();
 		is_array( $download_list_aff ) ? $download_list_aff : array()
 	);
 
-	// Spec cells, built from whatever the rom actually has.
+	// Specs, built from whatever the rom actually has; empty ones never render.
 	// No Platform cell: the console already leads the tag row and the h1.
-	$specs = array();
+	// Single-value facts sit in a grid. Region and language often list several
+	// terms, so they get their own rows of chips instead of a cramped cell.
+	$facts     = array();
+	$chip_rows = array();
 	if ( ! empty( $file_size ) ) {
-		$specs[] = array(
+		$facts[] = array(
 			'icon'  => 'size',
 			'label' => __( 'File Size', 'rom' ),
 			'value' => esc_html( $file_size ),
@@ -69,6 +72,14 @@ while ( have_posts() ) : the_post();
 		if ( is_wp_error( $spec_terms ) || empty( $spec_terms ) ) {
 			continue;
 		}
+		if ( in_array( $spec_tax, array( 'region', 'language' ), true ) ) {
+			$chip_rows[] = array(
+				'icon'  => $spec_meta[0],
+				'label' => $spec_meta[1],
+				'terms' => $spec_terms,
+			);
+			continue;
+		}
 		$spec_links = array();
 		foreach ( $spec_terms as $spec_term ) {
 			$spec_links[] = sprintf(
@@ -77,14 +88,14 @@ while ( have_posts() ) : the_post();
 				esc_html( $spec_term->name )
 			);
 		}
-		$specs[] = array(
+		$facts[] = array(
 			'icon'  => $spec_meta[0],
 			'label' => $spec_meta[1],
 			'value' => implode( ', ', $spec_links ),
 		);
 	}
 	if ( $released = get_field( 'released', $post->ID ) ) {
-		$specs[] = array(
+		$facts[] = array(
 			'icon'  => 'released',
 			'label' => __( 'Release Date', 'rom' ),
 			'value' => esc_html( wp_strip_all_tags( $released ) ),
@@ -103,10 +114,11 @@ while ( have_posts() ) : the_post();
     <section class="py-6 sm:py-8">
         <div class="max-w-content mx-auto px-4 sm:px-6">
             <div class="bg-white rounded-xl border border-slate-200/80 p-5 sm:p-7 lg:p-8 shadow-card">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
+                <?php // Boxart column has a fixed width so tablets keep most of the row for the details. ?>
+                <div class="grid grid-cols-1 md:grid-cols-[200px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] gap-6 lg:gap-10 items-start">
 
                     <!-- Boxart -->
-                    <div class="md:col-span-5 lg:col-span-4 flex flex-col items-center">
+                    <div class="w-full max-w-[260px] md:max-w-none mx-auto flex flex-col items-center">
 						<?php if ( $thumb_url = get_the_post_thumbnail_url( $post->ID, 'full' ) ) : ?>
                         <div class="relative w-full rounded-2xl overflow-hidden shadow-md border border-slate-200/80 bg-slate-100 group">
                                 <img src="<?php echo esc_url( $thumb_url ); ?>" alt="<?php the_title_attribute(); ?>"
@@ -117,6 +129,12 @@ while ( have_posts() ) : the_post();
 									<?php echo esc_html( $console->name ); ?>
                                 </span>
                             </div>
+                        </div>
+						<?php else : ?>
+							<?php // No cover yet: a quiet placeholder keeps the column from collapsing to the stars. ?>
+                        <div class="w-full aspect-[3/4] rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center gap-2 text-slate-300">
+                            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4m-2-2v4"/><path d="M15 11h.01M18 13h.01"/></svg>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400"><?php echo esc_html( $console->name ); ?></span>
                         </div>
 						<?php endif; ?>
                         <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -129,7 +147,7 @@ while ( have_posts() ) : the_post();
                     </div>
 
                     <!-- Title, meta, specs, actions -->
-                    <div class="md:col-span-7 lg:col-span-8 flex flex-col justify-between space-y-5 sm:space-y-6">
+                    <div class="min-w-0 flex flex-col space-y-5 sm:space-y-6">
 
                         <!-- Console + genre tags -->
                         <div class="flex flex-wrap items-center gap-2">
@@ -165,21 +183,38 @@ while ( have_posts() ) : the_post();
                             </div>
                         </div>
 
-                        <!-- Specs grid -->
-						<?php if ( $specs ) : ?>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3.5 my-1">
-								<?php foreach ( $specs as $spec ) : ?>
-                                    <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-start gap-2.5">
-                                        <div class="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100/80 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0">
-											<?php echo get_svg_icon( $spec['icon'] ); ?>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400"><?php echo esc_html( $spec['label'] ); ?></span>
-                                            <span class="font-bold text-[13px] text-slate-800 mt-0.5 block truncate"><?php echo $spec['value']; ?></span>
-                                        </div>
+                        <!-- Facts: one value each, wrapping rather than truncating -->
+						<?php if ( $facts ) : ?>
+                            <?php // Two columns; an odd last fact takes the whole row instead of sitting alone. ?>
+                            <dl class="grid grid-cols-2 gap-3 md:gap-4 [&>:last-child:nth-child(odd)]:col-span-2">
+								<?php foreach ( $facts as $fact ) : ?>
+                                    <div class="rounded-xl bg-slate-50 border border-slate-200/60 px-3.5 py-3">
+                                        <dt class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0 [&_svg]:text-primary [&_svg]:flex-shrink-0">
+											<?php echo get_svg_icon( $fact['icon'] ) . esc_html( $fact['label'] ); ?>
+                                        </dt>
+                                        <dd class="mt-1 text-[13px] font-bold text-slate-800 leading-snug break-words"><?php echo $fact['value']; ?></dd>
                                     </div>
 								<?php endforeach; ?>
-                            </div>
+                            </dl>
+						<?php endif; ?>
+
+                        <!-- Region / language: every term as a chip, so long lists wrap instead of cutting off -->
+						<?php if ( $chip_rows ) : ?>
+                            <dl class="divide-y divide-slate-100">
+								<?php foreach ( $chip_rows as $row ) : ?>
+                                    <div class="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 py-2.5 first:pt-0 last:pb-0">
+                                        <dt class="sm:w-28 sm:pt-1.5 flex-shrink-0 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0 [&_svg]:text-primary [&_svg]:flex-shrink-0">
+											<?php echo get_svg_icon( $row['icon'] ) . esc_html( $row['label'] ); ?>
+                                        </dt>
+                                        <dd class="flex flex-wrap gap-1.5">
+											<?php foreach ( $row['terms'] as $chip_term ) : ?>
+                                                <a href="<?php echo esc_url( get_term_link( $chip_term->term_id ) ); ?>"
+                                                   class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-caption font-semibold hover:bg-rose-50 hover:text-primary transition-colors"><?php echo esc_html( $chip_term->name ); ?></a>
+											<?php endforeach; ?>
+                                        </dd>
+                                    </div>
+								<?php endforeach; ?>
+                            </dl>
 						<?php endif; ?>
 
                         <!-- Actions -->
@@ -334,11 +369,17 @@ while ( have_posts() ) : the_post();
 							// 1-based, matching the /download/{n}/ endpoint.
 							$file_url  = $download_url . ( $index + 1 ) . '/';
 							$file_type = ! empty( $file['file_type'] ) ? $file['file_type'] : '';
+							// The badge shows the archive the link really serves (zip, 7z, iso...),
+							// read off the URL; the Format line keeps the editor's file_type.
+							$file_ext = strtolower( pathinfo( (string) wp_parse_url( $file['url'] ?? '', PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+							if ( ! preg_match( '/^[a-z0-9]{1,5}$/', $file_ext ) ) {
+								$file_ext = '';
+							}
 							?>
                             <div class="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-rose-50/20 transition-colors">
                                 <div class="flex items-start gap-3.5 flex-1 min-w-0">
                                     <div class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption flex-shrink-0 mt-0.5 uppercase">
-										<?php echo esc_html( $file_type ? ltrim( $file_type, '.' ) : '#' . ( $index + 1 ) ); ?>
+										<?php echo esc_html( $file_ext ? $file_ext : '#' . ( $index + 1 ) ); ?>
                                     </div>
                                     <div class="min-w-0">
                                         <span class="font-bold text-slate-900 text-meta sm:text-body block"><?php echo esc_html( $file['name'] ); ?></span>
@@ -355,8 +396,10 @@ while ( have_posts() ) : the_post();
                                 </div>
                                 <div class="flex items-center gap-2 self-start md:self-center flex-shrink-0">
                                     <a href="<?php echo esc_url( $file_url ); ?>"
-                                       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white font-bold text-caption uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all [&_svg]:w-3.5 [&_svg]:h-3.5">
-										<?php echo get_svg_icon( 'download' ) . esc_html__( 'Download', 'rom' ); ?>
+                                       class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white font-bold text-[11px] uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all">
+                                        <?php // Own icon: the shared 'download' one is painted pink and vanishes on this button. ?>
+                                        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+										<?php esc_html_e( 'Download', 'rom' ); ?>
                                     </a>
                                 </div>
                             </div>
@@ -412,7 +455,7 @@ while ( have_posts() ) : the_post();
                                class="text-caption font-bold text-primary hover:text-primary-hover w-fit"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
 							<?php while ( $emu_query->have_posts() ) : $emu_query->the_post(); ?>
                                 <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-between gap-3 hover:border-slate-200 transition-colors">
                                     <div>
@@ -495,7 +538,7 @@ while ( have_posts() ) : the_post();
                         <a href="<?php echo esc_url( get_term_link( $primary_collection->term_id ) ); ?>"
                            class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 						<?php while ( $collection_roms_query->have_posts() ) : $collection_roms_query->the_post();
 							get_template_part( 'template-parts/rom-card' );
 						endwhile; wp_reset_postdata(); ?>
@@ -534,7 +577,7 @@ while ( have_posts() ) : the_post();
                     <a href="<?php echo esc_url( $console_link ); ?>"
                        class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
 					<?php while ( $related_query->have_posts() ) : $related_query->the_post();
 						get_template_part( 'template-parts/rom-card' );
 					endwhile; wp_reset_postdata(); ?>

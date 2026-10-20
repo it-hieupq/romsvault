@@ -9,7 +9,7 @@ $type  = $args['type'] ?? [];
     <?php echo $title ?>
 </h3>
 
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
     <?php foreach ( $terms as $term ) : 
         $image = get_field('cat_image', 'term_' . $term->term_id); 
         ?>

@@ -29,7 +29,7 @@ global $post;
 						<?php _e( 'List of available consoles', 'rom' ) ?>
                     </h3>
 
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
 						<?php foreach ( $terms as $term ) :
 							$image = get_field( 'emulator_console_image', 'term_' . $term->term_id );
 							?>

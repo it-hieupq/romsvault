@@ -35,7 +35,7 @@ $template_slug = get_taxonomy_template_slug_by_post_type( $taxonomy_post_type );
             </h1>
 
 			<?php if ( have_posts() ) : ?>
-                <div class="<?php echo 'rom-card' === $template_slug ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6' : 'space-y-4'; ?>">
+                <div class="<?php echo 'rom-card' === $template_slug ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4' : 'space-y-4'; ?>">
 					<?php while ( have_posts() ) : the_post();
                         get_template_part( 'template-parts/' . $template_slug );
 					endwhile; ?>
