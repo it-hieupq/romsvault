@@ -38,8 +38,12 @@ endif;
 ?>
 
 <section class="hero-container relative mb-10">
-	<div class="absolute top-0 w-full h-[20rem]"><img src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" class="h-full w-full"></div>
-	<div class="relative w-full z-10 sm:pt-[14rem] pt-[8rem]">
+	<?php // Hero art matches template-parts/hero.php: 500px tall, bottom 60% fading into the page. ?>
+	<div class="absolute top-0 w-full h-[500px]">
+		<img src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" class="h-full w-full object-cover object-bottom" alt="">
+		<div class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-slate-50 to-transparent pointer-events-none"></div>
+	</div>
+	<div class="relative w-full z-10 sm:pt-[10rem] pt-[6rem]">
 
 		<div class="content-container px-4 sm:px-6 lg:px-8 w-full rounded-2xl">
 			<div class="bg-white rounded-2xl shadow-md p-5 lg:p-6">

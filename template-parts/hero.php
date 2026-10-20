@@ -1,9 +1,13 @@
 <section class="hero-container relative">
-	<div class="absolute top-0 w-full h-[20rem]"><img class="h-full w-full" src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" alt=""></div>
-	<div class="relative w-full z-10 pt-[18rem]">
+	<?php // Hero art matches template-parts/rom-filter.php: 500px tall, bottom 60% fading into the page. ?>
+	<div class="absolute top-0 w-full h-[500px]">
+		<img class="h-full w-full object-cover object-bottom" src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" alt="">
+		<div class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-slate-50 to-transparent pointer-events-none"></div>
+	</div>
+	<div class="relative w-full z-10 sm:pt-[10rem] pt-[6rem]">
 		<!-- Search Section inside Hero -->
 		<div class="content-container px-4 sm:px-6 lg:px-8 w-full rounded-2xl">
-			<div class="bg-white rounded-2xl shadow-md p-6 lg:p-8">
+			<div class="bg-white rounded-2xl shadow-md p-5 lg:p-6">
 
                 <?php
 				 if (is_search()) :
