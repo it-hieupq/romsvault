@@ -17,8 +17,18 @@
     <?php // Member auth (P2.0): mark <html> logged-in BEFORE paint to avoid a guest->avatar flash. Cache-safe (static + reads only client localStorage). ?>
     <script>(function(){try{var r=localStorage.getItem('rf_display');if(r){var d=JSON.parse(r);if(!d.exp||d.exp*1000>Date.now())document.documentElement.classList.add('rf-authed');}}catch(e){}})();</script>
 
+    <?php
+    // Icons are re-exported together from logo-mark.svg; the mtime in the URL
+    // lets browsers and Cloudflare pick up new art under the same file names.
+    $mark_ver = filemtime( get_template_directory() . '/assets/images/logo-mark-192.png' );
+    ?>
     <?php if($favicon_url = get_field( 'favicon', 'option' ) ): ?>
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo $favicon_url; ?>">
+    <?php else : $icon_dir = get_template_directory_uri() . '/assets/images/'; ?>
+        <?php // Default icons, exported from assets/images/logo-mark.svg. ?>
+        <link rel="icon" href="<?php echo esc_url( $icon_dir . 'favicon.ico?v=' . $mark_ver ); ?>" sizes="any">
+        <link rel="icon" type="image/png" sizes="64x64" href="<?php echo esc_url( $icon_dir . 'favicon-64.png?v=' . $mark_ver ); ?>">
+        <link rel="apple-touch-icon" href="<?php echo esc_url( $icon_dir . 'apple-touch-icon.png?v=' . $mark_ver ); ?>">
     <?php endif; ?>
 
 	<?php wp_head(); ?>
@@ -89,14 +99,9 @@ $search_param  = $browse_url ? 'q' : 's';
                 <?php if ( $logo_url ) : ?>
                     <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $site_name ); ?>" class="h-8 sm:h-9 w-auto">
                 <?php else : ?>
-                    <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="2" y="6" width="20" height="12" rx="4"></rect>
-                            <path d="M6 12h4m-2-2v4"></path>
-                            <line x1="15" y1="11" x2="15" y2="11.01"></line>
-                            <line x1="18" y1="13" x2="18" y2="13.01"></line>
-                        </svg>
-                    </span>
+                    <?php // Mark only; the site name beside it stays live text. 192px covers 3x screens. ?>
+                    <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-mark-192.png?v=' . $mark_ver ); ?>" alt="" width="48" height="48"
+                         class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0">
                 <?php endif; ?>
 
                 <?php
@@ -107,8 +112,8 @@ $search_param  = $browse_url ? 'q' : 's';
                 ?>
 
                 <div class="<?php echo esc_attr( $class ); ?>">
-                    <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( $site_name ); ?></span>
-                    <span class="text-[10px] sm:text-[11px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
+                    <span class="text-lg sm:text-xl font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( $site_name ); ?></span>
+                    <span class="text-[9px] sm:text-[10px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>
                 </div>
             </a>
 
