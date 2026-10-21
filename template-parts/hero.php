@@ -1,6 +1,6 @@
 <section class="hero-container relative">
 	<?php // Hero art matches template-parts/rom-filter.php: 500px tall, bottom 60% fading into the page. ?>
-	<div class="absolute top-0 w-full h-[500px]">
+	<div class="absolute top-0 w-full h-[350px] -z-10">
 		<img class="h-full w-full object-cover object-bottom" src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" alt="">
 		<div class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-slate-50 to-transparent pointer-events-none"></div>
 	</div>

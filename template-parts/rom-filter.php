@@ -39,7 +39,7 @@ endif;
 
 <section class="hero-container relative mb-10">
 	<?php // Hero art matches template-parts/hero.php: 500px tall, bottom 60% fading into the page. ?>
-	<div class="absolute top-0 w-full h-[500px]">
+	<div class="absolute top-0 w-full h-[350px] -z-10">
 		<img src="<?php echo get_stylesheet_directory_uri().'/assets/images/hero.png' ?>" class="h-full w-full object-cover object-bottom" alt="">
 		<div class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-slate-50 to-transparent pointer-events-none"></div>
 	</div>
@@ -128,7 +128,7 @@ endif;
                     </div>
 
                     <div class="mb-4 pt-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-3">
 
                         <?php if (!is_tax('console')) : ?>
                             <div class="custom-select-wrapper" id="console-select-wrapper">

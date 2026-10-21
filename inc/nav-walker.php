@@ -193,12 +193,10 @@ function rom_display_header_menu( $theme_location = 'primary' ) {
     foreach ( $menu_items as $item ) {
         // Check if menu item should be active
         $is_active = rom_is_menu_item_active( $item );
-        
-        // Build classes. The <nav> wrapper in header.php sets the shared size and
-        // weight; the active item is a filled pill, the rest tint on hover.
+
         $link_classes = $is_active
-                ? 'px-3.5 py-1.5 rounded-xl bg-primary text-white font-bold shadow-sm shadow-primary/25'
-                : 'px-3.5 py-1.5 rounded-xl hover:text-primary hover:bg-rose-50/50 transition-colors';
+                ? 'px-3.5 py-1.5 rounded-full bg-primary text-white font-bold shadow-sm shadow-primary/25'
+                : 'px-3.5 py-1.5 rounded-full hover:text-primary hover:bg-rose-50/50 transition-colors';
 
         echo '<a class="inline-flex items-center gap-1.5 ' . esc_attr( $link_classes ) . '" href="' . esc_url( $item->url ) . '">';
         echo rom_menu_icon_svg( get_post_meta( $item->ID, '_menu_item_icon', true ), 'w-4 h-4 flex-shrink-0' );

@@ -24,7 +24,7 @@ global $post;
 			if ( $terms && is_array( $terms ) ):
 				?>
                 <section class="content-container w-full text-gray-900 rounded-lg">
-                    <h3 class="text-lg font-semibold mb-8 flex items-center text-gray-600">
+                    <h3 class="text-lg font-semibold mb-8 flex items-center">
                         <span class="w-3 h-3 rounded-full bg-rom-pink mr-2"></span>
 						<?php _e( 'List of available consoles', 'rom' ) ?>
                     </h3>
