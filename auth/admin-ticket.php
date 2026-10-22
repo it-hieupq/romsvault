@@ -23,17 +23,17 @@ if ( ! defined( 'RF_TICKET_RESPONSE_MAXLEN' ) ) {
  */
 function app_ticket_menu(): void
 {
-	add_menu_page(
+	add_submenu_page(
+		'options', // Configs (inc/options.php)
 		__( 'Requests', 'rom' ),
 		__( 'Requests', 'rom' ),
 		'manage_options',
 		'ticket',
-		'app_ticket_render_page',
-		'dashicons-tickets',
-		3.2
+		'app_ticket_render_page'
 	);
 }
-add_action( 'admin_menu', 'app_ticket_menu' );
+// After ACF adds the Configs menu at 99 (see auth/admin-ratings.php).
+add_action( 'admin_menu', 'app_ticket_menu', 100 );
 
 /**
  * Update a ticket's status + admin reply. Only non-terminal tickets can change; admins

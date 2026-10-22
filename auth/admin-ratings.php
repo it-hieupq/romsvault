@@ -232,17 +232,18 @@ class RF_Ratings_List_Table extends WP_List_Table {
  * grouped with Members/Report above Posts.
  */
 function rf_ratings_admin_menu(): void {
-	add_menu_page(
+	add_submenu_page(
+		'options', // Configs (inc/options.php)
 		__( 'Ratings & Reviews', 'rom' ),
 		__( 'Ratings & Reviews', 'rom' ),
 		'manage_options',
 		'rf-ratings',
-		'rf_ratings_render_page',
-		'dashicons-star-filled',
-		3.2 // above Posts (5); grouped under Members (3) / Report (3.1)
+		'rf_ratings_render_page'
 	);
 }
-add_action( 'admin_menu', 'rf_ratings_admin_menu' );
+// After ACF adds the Configs menu at 99: a submenu registered before its parent
+// gets the wrong hook name and the page refuses access.
+add_action( 'admin_menu', 'rf_ratings_admin_menu', 100 );
 
 /**
  * Handle hide/unhide/delete before any output (nonce + capability guarded).

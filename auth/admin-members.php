@@ -280,17 +280,18 @@ class RF_Members_List_Table extends WP_List_Table {
  */
 function rf_members_admin_menu(): void
 {
-	add_menu_page(
+	add_submenu_page(
+		'options', // Configs (inc/options.php)
 		__( 'Members', 'rom' ),
 		__( 'Members', 'rom' ),
 		'edit_users',
 		'rf-members',
 		'rf_members_render_page',
-		'dashicons-groups',
-		3 // above Posts (5); free slot between Dashboard (2) and separator (4)
+		1 // right after Configs itself, ahead of Report which ACF adds first
 	);
 }
-add_action( 'admin_menu', 'rf_members_admin_menu' );
+// After ACF adds the Configs menu at 99 (see auth/admin-ratings.php).
+add_action( 'admin_menu', 'rf_members_admin_menu', 100 );
 
 /**
  * Handle block/unblock before any output (nonce + capability guarded). Only

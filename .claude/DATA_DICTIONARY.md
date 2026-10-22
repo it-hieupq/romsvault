@@ -83,7 +83,6 @@ tiền tố `field_` kiểu ACF UI — key thường trùng luôn với name.
 | `internal_note` | textarea | — | — | |
 | `image` | gallery | — | — | screenshots |
 | `grabber_gallery` | group | — | — | sub: `grabber_input` (text), `grabber_button` (text, default `Grab Images`) |
-| `grabber_file` | group | — | — | sub: `grb_file_name`, `grb_file_url`, `grabber_file_button` |
 | `download_note` | textarea | — | — | |
 | `download_list` | repeater | — | — | § 3.8 |
 | `download_list_aff` | repeater | — | — | link affiliate, § 3.8 |
@@ -202,7 +201,7 @@ Match bằng `strpos($link_url, $a['aff_host']) !== false`, lấy **aff đầu t
 
 ### 4.3 Report field group — `auth/admin-report.php`
 ⚠️ Group này đăng **rỗng**: chỉ có `location`, **không có `key` và không có `fields`**.
-Nội dung trang Report thực tế render bằng hook `toplevel_page_report` (priority 5 và 20),
+Nội dung trang Report thực tế render bằng hook `configs_page_report` (priority 5 và 20),
 đọc bảng `{prefix}member_report`. Danh sách loại report (`page_report_issues`) nằm ở
 options page `options`, không ở đây.
 

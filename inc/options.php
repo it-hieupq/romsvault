@@ -25,6 +25,10 @@ if( function_exists('acf_add_options_page') ) {
 		'icon_url' 		=> 'dashicons-wordpress-alt',
 		'id'			=> 'option',
 		'post_id' 		=> 'option',
+		// Report and the member admin pages hang under this menu. Without this,
+		// ACF swaps the menu over to its first child page and Configs itself
+		// becomes unreachable.
+		'redirect'		=> false,
 		'position'		=> 3.3, // above Posts (5); grouped under Members (3)
 	));
 }

@@ -1,7 +1,5 @@
 <?php
 
-use YoastSEO_Vendor\GuzzleHttp\Client;
-
 function k_grabber_multi_init()
 {
     /**
@@ -1850,71 +1848,6 @@ case strpos($url, 'gamesdb.launchbox-app.com') !== false:
 }
 
 add_action('wp_ajax_k_grabber_gallery_multi', 'k_grabber_gallery_multi');
-
-function k_grab_file()
-{
-    try {
-        $params = $_REQUEST['acf'];
-        $file_url = $params['url'];
-        $input_file_name = $params['file_name'] ?? 'empty_name';
-        $post_id = $params['postId'];
-        $post_name = $params['title'];
-        $type = $params['post_type'];
-
-        if (!empty($file_url)) {
-            $upload_dir = wp_upload_dir();
-            $upload_path = $upload_dir['basedir'];
-            $upload_url = $upload_dir['baseurl'];
-
-            $retro_path = $upload_path . '/grabber/' . $type;
-
-            $type = 'rom';
-            $console = wp_get_post_terms($post_id, 'console')[0]->name;
-            $retro_path = WP_CONTENT_DIR . "/guest-upload/$type/$console/$post_name";
-
-            if (!file_exists($retro_path)) {
-                wp_mkdir_p($retro_path);
-            }
-
-            $file_extension = pathinfo(parse_url($file_url, PHP_URL_PATH), PATHINFO_EXTENSION);
-            $file_name = $input_file_name;
-            $save_path = $retro_path . '/' . $file_name;
-
-            $client = new Client();
-
-            try {
-                $response = $client->get($file_url, [
-                    'verify' => false,
-                    'sink' => $save_path
-                ]);
-
-                if ($response->getStatusCode() == 200) {
-                    $file_size_mb = round(filesize($save_path) / (1024 * 1024), 2) . ' MB';
-                    $file_info = array(
-                        'name' => pathinfo($file_name, PATHINFO_FILENAME),
-                        'url' => content_url("/guest-upload/$type/$console/$post_name/$file_name"),
-                        'file_size' => $file_size_mb,
-                        'file_type' => ''
-                    );
-
-                    add_row('download_list', $file_info, $post_id);
-                } else {
-                    _e('Failed to download file. HTTP Code: ' . $response->getStatusCode());
-                }
-            } catch (\Throwable $th) {
-                _e($th);
-                exit;
-            }
-        }
-        exit;
-    } catch (\Throwable $th) {
-        _e($th);
-        exit;
-    }
-}
-
-add_action('wp_ajax_k_grab_file', 'k_grab_file');
-
 
 
 function grabber_nintendolife_ac($url, $console, $type, $stt)

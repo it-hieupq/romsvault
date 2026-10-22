@@ -386,47 +386,6 @@ function k_init_rom() {
 					'width' => '100',
 				),
 			),
-			
-						// grabber file
-			array(
-				'key'       => 'grabber_file',
-				'name'      => 'grabber_file',
-				'label'     => 'Grabber File',
-				'type'      => 'group',
-				'sub_fields' => array(
-					array(
-						'key'       => 'grb_file_name',
-						'name'      => 'grb_file_name',
-						'label'     => 'File Name',
-						'type'      => 'text',
-						'wrapper'   => array(
-							'width' => '45',
-						),
-					),
-					array(
-						'key'       => 'grb_file_url',
-						'name'      => 'grb_file_url',
-						'label'     => 'File Url',
-						'type'      => 'text',
-						'wrapper'   => array(
-							'width' => '45',
-						),
-					),
-					array(
-						'key'       => 'grabber_file_button',
-						'name'      => 'grabber_file_button',
-						'type'      => 'text',
-						'wrapper'   => array(
-							'width' => '10',
-						),
-						'readonly' => 1,
-						'default_value' => 'Grab Files',
-					),
-				),
-				'wrapper' => array(
-					'width' => '100',
-				),
-			),
 
             array (
                 'key'   		=> 'download_note',

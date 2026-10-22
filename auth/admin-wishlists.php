@@ -220,17 +220,17 @@ class RF_Wishlists_List_Table extends WP_List_Table {
  * grouped with Members/Report/Ratings above Posts.
  */
 function rf_wishlists_admin_menu(): void {
-	add_menu_page(
+	add_submenu_page(
+		'options', // Configs (inc/options.php)
 		__( 'Wishlists', 'rom' ),
 		__( 'Wishlists', 'rom' ),
 		'manage_options',
 		'rf-wishlists',
-		'rf_wishlists_render_page',
-		'dashicons-heart',
-		3.25 // above Posts (5); grouped under Members (3) / Report (3.1) / Ratings (3.2)
+		'rf_wishlists_render_page'
 	);
 }
-add_action( 'admin_menu', 'rf_wishlists_admin_menu' );
+// After ACF adds the Configs menu at 99 (see auth/admin-ratings.php).
+add_action( 'admin_menu', 'rf_wishlists_admin_menu', 100 );
 
 /**
  * Render the Wishlists list page.

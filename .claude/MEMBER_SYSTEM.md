@@ -353,23 +353,26 @@ hoặc trang download.
 
 ## 11. Trang admin (6)
 
-Chỉ require khi `is_admin()`.
+Chỉ require khi `is_admin()`. Cả 6 trang là **submenu của Configs** (`options`,
+`inc/options.php`), theo thứ tự trong bảng.
 
-| File | Menu slug | Capability | Icon | Position |
-|---|---|---|---|---|
-| `admin-members.php` | `rf-members` | `edit_users` | `dashicons-groups` | 3 |
-| `admin-report.php` | `report` | `manage_options` | `dashicons-warning` | 3.1 (ACF options page) |
-| `admin-ratings.php` | `rf-ratings` | `manage_options` | `dashicons-star-filled` | 3.2 |
-| `admin-wishlists.php` | `rf-wishlists` | `manage_options` | `dashicons-heart` | 3.25 |
-| `admin-ticket.php` | `ticket` | `manage_options` | `dashicons-tickets` | 3.2 |
-| `admin-contact.php` | `contact` | `manage_options` | `dashicons-email` | 3.3 |
+| File | Menu slug | Capability | Vị trí |
+|---|---|---|---|
+| `admin-members.php` | `rf-members` | `edit_users` | Configs › Members (`position` 1, trước Report) |
+| `admin-report.php` | `report` | `manage_options` | Configs › Report (ACF options page, `parent_slug: options`) |
+| `admin-ratings.php` | `rf-ratings` | `manage_options` | Configs › Ratings & Reviews |
+| `admin-wishlists.php` | `rf-wishlists` | `manage_options` | Configs › Wishlists |
+| `admin-ticket.php` | `ticket` | `manage_options` | Configs › Requests |
+| `admin-contact.php` | `contact` | `manage_options` | Configs › Contact |
 
-> ⚠️ `rf-ratings` và `ticket` cùng position `3.2`; `inc/options.php` (`options`) cũng ở
-> `3.3` trùng với `contact`. Thứ tự menu giữa các cặp này không xác định.
+> ⚠️ 5 trang `add_submenu_page( 'options', … )` hook `admin_menu` ở priority **100**: ACF
+> chỉ tạo menu Configs ở 99, đăng ký submenu trước cha thì sai hook name và trang báo
+> không có quyền. Configs đặt `'redirect' => false`, nếu không ACF đổi menu cha sang trang
+> con đầu tiên và form Configs không vào được.
 
 `admin-report.php` không dùng `add_menu_page` — nó đăng **ACF options page** slug
-`report`, rồi hook `toplevel_page_report` (priority 5 / 20) để chèn bảng trước & sau
-field ACF.
+`report`, rồi hook `configs_page_report` (priority 5 / 20) để chèn bảng trước & sau
+field ACF. Tên hook và body class đổi theo tiêu đề menu cha (`Configs`).
 
 ### AJAX admin (`admin-ajax.php`)
 

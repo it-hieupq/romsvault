@@ -23,17 +23,17 @@ if ( ! defined( 'RF_CONTACT_RESPONSE_MAXLEN' ) ) {
  * Register the top-level "Contact" admin menu (native page + own render callback).
  */
 function app_contact_menu(): void {
-	add_menu_page(
+	add_submenu_page(
+		'options', // Configs (inc/options.php)
 		__( 'Contact', 'rom' ),
 		__( 'Contact', 'rom' ),
 		'manage_options',
 		'contact',
-		'app_contact_render_page',
-		'dashicons-email',
-		3.3
+		'app_contact_render_page'
 	);
 }
-add_action( 'admin_menu', 'app_contact_menu' );
+// After ACF adds the Configs menu at 99 (see auth/admin-ratings.php).
+add_action( 'admin_menu', 'app_contact_menu', 100 );
 
 /**
  * Save (or clear) the admin reply for one message. An empty reply stores NULL, which

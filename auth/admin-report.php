@@ -19,8 +19,9 @@ function app_report_init() {
             'capability' => 'manage_options',
             'id' => 'report',
             'post_id' => 'report',
-//            'parent' => 'edit.php',
-            'position' => 3.1, // above Posts (5); grouped under Members (3)
+            // Submenu of Configs (inc/options.php), which makes the page hook
+            // and body class configs_page_report.
+            'parent_slug' => 'options',
         ));
     }
 
@@ -133,7 +134,7 @@ add_action('wp_ajax_app_report_delete_rows', 'app_report_delete_rows');
  * create an action for your options page that will run before the ACF callback function
  * see above for information on the hook you need to use
  */
-add_action('toplevel_page_report', 'app_before_report_page', 5);
+add_action('configs_page_report', 'app_before_report_page', 5);
 function app_before_report_page() {
     // Before ACF outputs the options page content start an object buffer so that we can capture the output
     ob_start();
@@ -143,7 +144,7 @@ function app_before_report_page() {
  * create an action for your options page that will run after the ACF callback function
  * see above for information on the hook you need to use
  */
-add_action('toplevel_page_report', 'app_after_report_page', 20);
+add_action('configs_page_report', 'app_after_report_page', 20);
 function app_after_report_page(){
     // After ACF finishes get the output and modify it
     $content = ob_get_clean();
@@ -204,52 +205,52 @@ function app_after_report_page(){
         ?>
         <style>
             /* Prevent horizontal scroll */
-            body.toplevel_page_report {
+            body.configs_page_report {
                 overflow-x: hidden !important;
             }
             
             /* Hide default ACF form submit button */
-            body.toplevel_page_report .acf-form-submit,
-            body.toplevel_page_report #submitdiv,
-            body.toplevel_page_report .submitbox,
-            body.toplevel_page_report .acf-button,
-            body.toplevel_page_report input[type="submit"].acf-button {
+            body.configs_page_report .acf-form-submit,
+            body.configs_page_report #submitdiv,
+            body.configs_page_report .submitbox,
+            body.configs_page_report .acf-button,
+            body.configs_page_report input[type="submit"].acf-button {
                 display: none !important;
             }
             
             /* Full width layout */
-            body.toplevel_page_report #postbox-container-1 {
+            body.configs_page_report #postbox-container-1 {
                 display: none !important;
             }
             
-            body.toplevel_page_report #postbox-container-2 {
+            body.configs_page_report #postbox-container-2 {
                 width: 100% !important;
                 margin-right: 0 !important;
                 box-sizing: border-box !important;
             }
             
-            body.toplevel_page_report #post-body-content {
+            body.configs_page_report #post-body-content {
                 width: 100% !important;
                 box-sizing: border-box !important;
             }
             
-            body.toplevel_page_report #post-body {
+            body.configs_page_report #post-body {
                 width: 100% !important;
                 box-sizing: border-box !important;
             }
             
-            body.toplevel_page_report .wrap {
+            body.configs_page_report .wrap {
                 box-sizing: border-box !important;
                 padding: 0 !important;
                 margin: 0 !important;
             }
             
-            body.toplevel_page_report #wpbody-content {
+            body.configs_page_report #wpbody-content {
                 box-sizing: border-box !important;
                 overflow-x: hidden !important;
             }
             
-            body.toplevel_page_report #wpbody-content .wrap {
+            body.configs_page_report #wpbody-content .wrap {
                 margin-left: 2px !important;
                 margin-right: 0 !important;
                 padding-right: 10px !important;
@@ -259,33 +260,33 @@ function app_after_report_page(){
                 box-sizing: border-box !important;
             }
             
-            body.toplevel_page_report .acf-postbox {
+            body.configs_page_report .acf-postbox {
                 max-width: 100% !important;
                 width: 100% !important;
                 box-sizing: border-box !important;
                 margin: 0 !important;
             }
             
-            body.toplevel_page_report #post-body.columns-2 {
+            body.configs_page_report #post-body.columns-2 {
                 width: 100% !important;
             }
             
-            body.toplevel_page_report .postbox-container {
+            body.configs_page_report .postbox-container {
                 box-sizing: border-box !important;
                 padding: 0 !important;
                 margin: 0 !important;
             }
             
-            body.toplevel_page_report #wpcontent {
+            body.configs_page_report #wpcontent {
                 box-sizing: border-box !important;
                 overflow-x: hidden !important;
             }
             
-            body.toplevel_page_report .postbox {
+            body.configs_page_report .postbox {
                 box-sizing: border-box !important;
             }
             
-            body.toplevel_page_report .inside {
+            body.configs_page_report .inside {
                 box-sizing: border-box !important;
                 padding: 0 !important;
             }
