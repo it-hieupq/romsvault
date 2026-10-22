@@ -62,7 +62,7 @@ endif;
                          <h1 class="text-xl sm:text-3xl font-bold text-gray-900">
                              <?php
                              /* translators: %1$s and %2$s wrap the highlighted words in a span */
-                             printf( esc_html__( 'Download %1$sFree ROMs%2$s & ISOs for Every Retro Console', 'rom' ), '<span class="text-rom-pink">', '</span>' );
+                             printf( esc_html__( 'Download %1$sFree ROMs%2$s & ISOs for Retro Consoles', 'rom' ), '<span class="text-rom-pink">', '</span>' );
                              ?>
                          </h1>
                          <p class="text-sm text-muted max-w-2xl mx-auto">

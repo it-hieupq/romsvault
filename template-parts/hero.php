@@ -29,6 +29,11 @@
                     <?php k_breadcrumb(); ?>
                 </div>
 
+                <?php // Optional one-line lead under the breadcrumb, passed as $args['intro']. ?>
+                <?php if ( ! empty( $args['intro'] ) ) : ?>
+                    <p class="max-w-2xl mx-auto -mt-2 text-center text-body text-slate-600"><?php echo esc_html( $args['intro'] ); ?></p>
+                <?php endif; ?>
+
                 <?php if (is_search()) : ?>
                     <form class="flex flex-col lg:flex-row gap-3" method="GET" action="<?php home_url() ?>">
                         <label class="relative flex-1">

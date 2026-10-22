@@ -6,20 +6,12 @@
  */
 
 get_header();
-get_template_part( 'template-parts/hero' );
+// The page excerpt is the lead line under the breadcrumb, editable in wp-admin.
+get_template_part( 'template-parts/hero', null, array( 'intro' => get_post_field( 'post_excerpt', get_queried_object_id() ) ) );
 global $post;
 while ( have_posts() ) : the_post();
     ?>
-    <?php if ( $post->post_content ) : ?>
-        <section class="py-6 text-gray-900">
-            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <h1 class="text-lg font-bold"><?php esc_html_e( 'Explore our best ROM\'s Collection', 'rom' ); ?></h1>
-                <?php the_content(); ?>
-            </div>
-        </section>
-    <?php endif; ?>
-
-    <section class="pb-6 text-gray-900">
+    <section class="pt-8 pb-6 text-gray-900">
         <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <?php
             $terms = get_terms( array( 'taxonomy' => 'collection', 'fields' => 'all' ) );
@@ -38,6 +30,23 @@ while ( have_posts() ) : the_post();
             ?>
         </div>
     </section>
+
+    <?php // The page's own text, below the grid. The hero already holds the h1. ?>
+    <?php if ( $post->post_content ) : ?>
+        <section class="pt-10 md:pt-14 pb-12 text-gray-900">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 lg:p-9 shadow-card space-y-7">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'About', 'rom' ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'ROM collections by game series', 'rom' ); ?></h2>
+                    </div>
+                    <div class="revert page-content text-slate-700 text-body max-w-content">
+                        <?php the_content(); ?>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
 <?php
 endwhile;
 
