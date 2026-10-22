@@ -79,10 +79,10 @@ JWK → PEM được tự dựng bằng DER encoding thủ công (`rf_der_len`, 
 | `RF_SESSION_PATH` | `/wp-json/rf/v1` | **cố ý** hẹp — không chạm HTML cached |
 
 - Session id = `bin2hex(random_bytes(32))` → opaque 256-bit.
-- Redis key: `rfsess:{site}:{id}`, `{site}` = `WP_REDIS_PREFIX` bỏ `_`/`:` cuối (không có thì
-  host của `home_url()`). **Cố ý ngoài** `WP_REDIS_PREFIX`: plugin Redis Object Cache flush
-  bằng `SCAN MATCH '<prefix>*'` sẽ logout toàn bộ member. Có `{site}` để session id của site
-  khác dùng chung Redis không resolve ra member id ở đây.
+- Redis key: `{WP_REDIS_PREFIX}rf_sess:{id}` (không có prefix thì `{host}:rf_sess:{id}`).
+  **Cố ý trong** `WP_REDIS_PREFIX`: flush object cache = logout toàn bộ member — đó là cách
+  chủ động kết thúc mọi session. Prefix/host còn giữ session id của site khác dùng chung
+  Redis không resolve ra member id ở đây.
 - Cookie: `HttpOnly`, `SameSite=Lax`, `Secure` khi `is_ssl()`.
 - `rf_redis()` là connection **riêng**, độc lập plugin Redis Object Cache —
   bật/tắt plugin đó **không** làm logout member. Trả `null` (không throw) khi

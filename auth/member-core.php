@@ -125,14 +125,14 @@ if ( ! defined( 'RF_SESSION_PATH' ) ) {
 /**
  * Redis key of a session.
  *
- * Deliberately outside WP_REDIS_PREFIX: the Redis Object Cache plugin flushes by
- * SCAN MATCH '<prefix>*', which would log every member out on a cache flush. It
- * still names the site, so a session id minted by another site sharing this
+ * Inside WP_REDIS_PREFIX on purpose: flushing the object cache logs every member
+ * out, which is the intended way to end all sessions at once. Without a prefix
+ * the site host stands in, so a session id minted by another site sharing this
  * Redis cannot resolve to a member id here.
  */
 function rf_session_key( $id ) {
-	$site = defined( 'WP_REDIS_PREFIX' ) && WP_REDIS_PREFIX ? rtrim( WP_REDIS_PREFIX, '_:' ) : (string) wp_parse_url( home_url(), PHP_URL_HOST );
-	return 'rfsess:' . $site . ':' . $id;
+	$prefix = defined( 'WP_REDIS_PREFIX' ) && WP_REDIS_PREFIX ? WP_REDIS_PREFIX : wp_parse_url( home_url(), PHP_URL_HOST ) . ':';
+	return $prefix . 'rf_sess:' . $id;
 }
 
 /**

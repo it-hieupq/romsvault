@@ -36,7 +36,7 @@ Historical plans & specs (design rationale, not current state) live in `.claude/
 `plan/google-login-members.md`, `plan/2026-08-06-member-request-ticket.md`, `plan/RATING_PLAN.md`,
 `plan/wishlist_plan_v2.md`, `plan/wishlist_v5_loadtest.md`, `spec/2026-08-06-member-request-ticket-design.md`,
 `brd/google-login-members.html`, `detail/auth-salvage-notes.md`.
-Operational test plan: [`docs/tracking-test-plan.md`](../docs/tracking-test-plan.md).
+Deploy & verify steps per feature (live search, tracking): [`.docs/DEPLOYMENT.md`](../.docs/DEPLOYMENT.md).
 
 **The theme has exactly two custom post types: `rom` and `emulator`** (plus WordPress `post` and `page`). Anything else is not part of this site.
 

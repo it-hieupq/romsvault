@@ -272,7 +272,7 @@ Cột, index và lý do thiết kế từng bảng: [MEMBER_SYSTEM.md § 6](./ME
 | `rftrk:pending_downloads` | `tracking/` | **không TTL** | hash `{post_id => delta}` |
 | `rftrk:*:flushing` | `tracking/flush.php` | — | bản copy đang drain (RENAME) |
 | `rftrk:last_flush` | `tracking/flush.php` | — | heartbeat timestamp, đọc bởi `tracking/status.php` |
-| `rfsess:{site}:{id}` | `auth/member-core.php` | `RF_SESSION_TTL` = 7 ngày | session member — **ngoài** `WP_REDIS_PREFIX` để cache flush không logout |
+| `{WP_REDIS_PREFIX}rf_sess:{id}` | `auth/member-core.php` | `RF_SESSION_TTL` = 7 ngày | session member — flush object cache = logout tất cả (chủ ý) |
 | `{WP_REDIS_PREFIX}rf_action_rl:{member_id}` | `auth/member-core.php` | `RF_ACTION_WINDOW` = 180s | throttle 30 action |
 | `{WP_REDIS_PREFIX}rf_google_jwks` | `auth/auth-google.php` | — | cache JWKS Google |
 | `{WP_REDIS_PREFIX}rf_google_jwks:refresh` | `auth/auth-google.php` | 60s | cờ: đã force refresh JWKS trong phút này |
