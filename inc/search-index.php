@@ -8,7 +8,7 @@
  * Every constant can be overridden from wp-config.php.
  */
 
-// Defaults for the Configs > Live search fields, used while a field is empty.
+// Defaults for the Configs > General fields, used while a field is empty.
 defined( 'ROM_SEARCH_CRON_INTERVAL' ) || define( 'ROM_SEARCH_CRON_INTERVAL', HOUR_IN_SECONDS );
 defined( 'ROM_SEARCH_BUILD_BATCH' ) || define( 'ROM_SEARCH_BUILD_BATCH', 500 );
 // A two-letter shard holding more records than this splits into three-letter shards.
@@ -549,7 +549,7 @@ add_action( 'init', function () {
 }, 20 );
 
 /*
- * Rebuild now: Configs > Live search. Result goes through a short-lived
+ * Rebuild now: Configs > General. Result goes through a short-lived
  * transient rather than the query string, which can be copied and shared.
  */
 

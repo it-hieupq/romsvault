@@ -6,12 +6,12 @@
  *
  *   cd /path/to/theme/tracking && php flush.php
  *
- * The summary goes to stdout and errors to stderr, so the panel running the task
- * captures both — do not redirect them to a file, or its own log stays empty.
+ * One summary line goes to stdout and errors to stderr, so the panel running the
+ * task captures both — do not redirect them to a file, or its own log stays
+ * empty. Add --verbose for one line per post and per console term.
  *
- * A 5,000 post batch measures ~1.8s against a 600s interval, so runs do not
- * overlap. If that margin ever narrows, wrap the command in `flock -n`: two
- * concurrent runs would each read the same buffer and double every count.
+ * Runs never overlap: two concurrent runs would each read the same buffer and
+ * double every count, so a run that finds the lock held exits at once.
  *
  * Ordering matters throughout: the buffer is moved aside with RENAME so counts
  * arriving mid-flush accumulate in a fresh key, and the moved copy is deleted
@@ -26,6 +26,18 @@ if ( 'cli' !== PHP_SAPI ) {
     http_response_code( 403 );
     exit( 1 );
 }
+
+// Held until the process exits. Without a temp dir to lock in, run unguarded
+// rather than never flush.
+$rftrk_lock = fopen( sys_get_temp_dir() . '/rftrk-flush.lock', 'c' );
+if ( ! $rftrk_lock ) {
+    fwrite( STDERR, "[rf-flush] Could not open the lock file, running without it\n" );
+} elseif ( ! flock( $rftrk_lock, LOCK_EX | LOCK_NB ) ) {
+    fwrite( STDERR, "[rf-flush] Another flush is still running, skipped\n" );
+    exit( 0 );
+}
+
+define( 'RFTRK_VERBOSE', in_array( '--verbose', $argv ?? array(), true ) );
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/../../../../wp-load.php';
@@ -59,8 +71,8 @@ function rftrk_flush_redis(): ?Redis {
  * Keep only the IDs that still resolve to a published post.
  *
  * This is the validation the beacon skips. Doing it here costs one query per
- * chunk instead of one per page view. The title comes along for the per-post
- * log line, which is why this does not just select the type.
+ * chunk instead of one per page view. The title is only fetched with --verbose,
+ * for the per-post log line.
  *
  * @param int[] $post_ids IDs to check.
  * @return array<int,array{type:string,title:string}> Map of post ID to type and title.
@@ -68,16 +80,17 @@ function rftrk_flush_redis(): ?Redis {
 function rftrk_published_posts( array $post_ids ) {
     global $wpdb;
 
-    $posts = array();
+    $posts   = array();
+    $columns = RFTRK_VERBOSE ? 'ID, post_type, post_title' : 'ID, post_type';
 
     foreach ( array_chunk( $post_ids, RFTRK_SQL_CHUNK ) as $chunk ) {
         $in   = implode( ',', array_map( 'intval', $chunk ) );
-        $rows = $wpdb->get_results( "SELECT ID, post_type, post_title FROM {$wpdb->posts} WHERE ID IN ({$in}) AND post_status = 'publish'" );
+        $rows = $wpdb->get_results( "SELECT {$columns} FROM {$wpdb->posts} WHERE ID IN ({$in}) AND post_status = 'publish'" );
 
         foreach ( $rows as $row ) {
             $posts[ (int) $row->ID ] = array(
                 'type'  => $row->post_type,
-                'title' => $row->post_title,
+                'title' => $row->post_title ?? '',
             );
         }
     }
@@ -92,8 +105,8 @@ function rftrk_published_posts( array $post_ids ) {
  * pair update_post_meta() performs per post. The rows change behind WordPress's
  * back, so the cached meta is dropped for every post touched.
  *
- * The starting values are selected alongside the row check — the same query
- * either way — so every post can be reported on its own line.
+ * The starting values come with the row check — the same query either way — so
+ * --verbose can report every post on its own line.
  *
  * @param array<int,int>                            $deltas   Map of post ID to delta, already validated.
  * @param string                                    $meta_key Counter to add to.
@@ -127,15 +140,17 @@ function rftrk_add_post_meta( array $deltas, $meta_key, array $posts ) :void {
         }
         $existing = array_keys( $current );
 
-        foreach ( $ids as $post_id ) {
-            printf(
-                "  %s | %d | %d | +%d | %s\n",
-                $meta_key,
-                $post_id,
-                $current[ $post_id ] ?? 0,
-                (int) $chunk[ $post_id ],
-                $posts[ $post_id ]['title'] ?? ''
-            );
+        if ( RFTRK_VERBOSE ) {
+            foreach ( $ids as $post_id ) {
+                printf(
+                    "  %s | %d | %d | +%d | %s\n",
+                    $meta_key,
+                    $post_id,
+                    $current[ $post_id ] ?? 0,
+                    (int) $chunk[ $post_id ],
+                    $posts[ $post_id ]['title'] ?? ''
+                );
+            }
         }
 
         if ( $existing ) {
@@ -236,16 +251,18 @@ function rftrk_add_term_meta( array $deltas, array $posts ) : void {
             $current = (int) get_term_meta( $term_id, $meta_key, true );
             update_term_meta( $term_id, $meta_key, $current + $delta );
 
-            $term = get_term( $term_id );
+            if ( RFTRK_VERBOSE ) {
+                $term = get_term( $term_id );
 
-            printf(
-                "  %s | %d | %d | +%d | %s\n",
-                $meta_key,
-                $term_id,
-                $current,
-                $delta,
-                ( $term && ! is_wp_error( $term ) ) ? $term->name : ''
-            );
+                printf(
+                    "  %s | %d | %d | +%d | %s\n",
+                    $meta_key,
+                    $term_id,
+                    $current,
+                    $delta,
+                    ( $term && ! is_wp_error( $term ) ) ? $term->name : ''
+                );
+            }
         }
     }
 }

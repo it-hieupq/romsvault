@@ -172,6 +172,11 @@ Chia theo tab:
 | | `favicon` | image | |
 | | `social_networks` | repeater | sub: `social_network_icon`, `social_network_url` |
 | | `copyright` | — | |
+| | `search_live_header`, `search_live_filter` | true_false | Live search; mặc định bật, tắt = bỏ dropdown, form vẫn chạy |
+| | `search_cron_minutes` | number | trống = `ROM_SEARCH_CRON_INTERVAL` (60 phút) |
+| | `search_build_batch` | number | trống = `ROM_SEARCH_BUILD_BATCH` (500) |
+| | `search_index_status` | message | render bởi `inc/search-index.php`, nút Rebuild now |
+| | `tracking_status` | message | render bởi `tracking/status.php` |
 | Ads (`tab_ads`) | `ads_banner` | — | |
 | JS (`tab_js`) | `header_js` | — | inject `<head>` |
 | | `footer_js` | — | inject footer |
@@ -267,7 +272,7 @@ Cột, index và lý do thiết kế từng bảng: [MEMBER_SYSTEM.md § 6](./ME
 | `rftrk:pending_views` | `tracking/` | **không TTL** | hash `{post_id => delta}` |
 | `rftrk:pending_downloads` | `tracking/` | **không TTL** | hash `{post_id => delta}` |
 | `rftrk:*:flushing` | `tracking/flush.php` | — | bản copy đang drain (RENAME) |
-| `rftrk:last_flush` | `tracking/flush.php` | — | heartbeat timestamp |
+| `rftrk:last_flush` | `tracking/flush.php` | — | heartbeat timestamp, đọc bởi `tracking/status.php` |
 | `{WP_REDIS_PREFIX}rf_sess:{id}` | `auth/member-core.php` | `RF_SESSION_TTL` = 7 ngày | session member |
 | `{WP_REDIS_PREFIX}rf_action_rl:{member_id}` | `auth/member-core.php` | `RF_ACTION_WINDOW` = 180s | throttle 30 action |
 | `{WP_REDIS_PREFIX}rf_google_jwks` | `auth/auth-google.php` | — | cache JWKS Google |
@@ -285,6 +290,8 @@ Cột, index và lý do thiết kế từng bảng: [MEMBER_SYSTEM.md § 6](./ME
 | `member:{id}:wishlist` | `4 * HOUR_IN_SECONDS` | `auth/actions/wishlist.php` |
 | `member:{id}:tickets` | `DAY_IN_SECONDS` | `auth/actions/ticket.php` |
 | `member:{id}:contacts` | `DAY_IN_SECONDS` | `auth/actions/contact.php` |
+| `rftrk_status` | `5 * MINUTE_IN_SECONDS` | `tracking/status.php` — heartbeat + số post đang chờ, cho admin notice |
+| `rom_search_rebuild_notice_{user_id}` | `MINUTE_IN_SECONDS` | `inc/search-index.php` — kết quả nút Rebuild now |
 
 Convention key per-member: `rf_member_cache_key( $entity, $member_id )` →
 `member:{id}:{entity}`. Theme option **không** có tầng cache riêng — đọc trực tiếp bằng
@@ -297,6 +304,7 @@ Convention key per-member: `rf_member_cache_key( $entity, $member_id )` →
 | `rf_member_db_version` | `auth/setting-member.php` | hiện `'7'` |
 | `rf_member_pages_rw` | `auth/member-pages.php` | hiện `'3'` — **bump khi thêm route member** |
 | `default_term_console` | WP core (từ `register_taxonomy()`) | `term_id` của console `unknown` |
+| `rom_search_index_version` | `inc/search-index.php` | unix ts lần ghi index gần nhất, autoload; cache-buster `manifest.json?v=` |
 
 ---
 

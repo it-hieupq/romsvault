@@ -323,6 +323,7 @@ if ( is_admin() ) {
 	require get_template_directory() . '/auth/admin-wishlists.php'; // Wishlists admin page (member_wishlist, grouped by post)
 	require get_template_directory() . '/auth/admin-ticket.php'; // Requests admin page (member_ticket)
 	require get_template_directory() . '/auth/admin-contact.php'; // Contact admin page (member_contact)
+	require get_template_directory() . '/tracking/status.php'; // tracking status in Configs > General + stale flush notice
 }
 
 /**

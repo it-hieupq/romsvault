@@ -11,12 +11,8 @@
  */
 
 /**
- * Redis connection. Production keeps Redis on the web host, so 127.0.0.1 is the
- * default; environments where it lives elsewhere override it.
- *
- * Two sources, because the callers are reached differently: flush.php runs
- * under the CLI and reads the real environment, while track.php runs under
- * PHP-FPM, where an nginx `fastcgi_param` arrives in $_SERVER, not in getenv().
+ * Redis connection. Production keeps Redis on the web host, so the beacon
+ * (PHP-FPM), the flush (CLI) and the admin status all connect to 127.0.0.1.
  */
 define( 'RFTRK_REDIS_HOST', '127.0.0.1' );
 define( 'RFTRK_REDIS_PORT', 6379 );

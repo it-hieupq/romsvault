@@ -52,7 +52,8 @@ romsvault/
 ├── tracking/                  # beacon view/download — KHÔNG bootstrap WordPress
 │   ├── config.php             # chỉ define(), không logic
 │   ├── track.php              # endpoint POST /t
-│   └── flush.php              # CLI, drain Redis → DB
+│   ├── flush.php              # CLI, drain Redis → DB (flock, --verbose)
+│   └── status.php             # admin: trạng thái ở Configs > General + notice khi flush ngừng
 │
 ├── caching/
 │   ├── AppSecurity.php        # sanitize / validate / security header / client IP
@@ -60,7 +61,7 @@ romsvault/
 │
 ├── grabber/                   # scrape metadata/gallery/file cho ROM (admin-only)
 │
-├── inc/                       # utility, ajax, options, seo, insert-link*, breadcrumb, nav-walker, menu-icons
+├── inc/                       # utility, ajax, options, seo, insert-link*, breadcrumb, nav-walker, menu-icons, search-index (quick search, .docs/search-index-plan.md)
 │   ├── acf/                   # ACF PRO bundled (vendor, include bị comment)
 │   └── acf-quick-edit-fields/ # vendor
 │
