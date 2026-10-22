@@ -112,12 +112,19 @@ function rf_rest_rating_submit( WP_REST_Request $request ) {
 	}
 
 	// Fold the new score into the running average (unchanged legacy k_rating logic).
+	// Two ratings folding into the same post at once would each read the old
+	// count and one would be lost, so the read-modify-write runs under a per-post
+	// MySQL lock. If the lock times out the update still goes ahead.
+	$lock = 'rf_rating_' . $post_id;
+	$wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $lock ) );
+	wp_cache_delete( $post_id, 'post_meta' ); // re-read what the last holder wrote
 	$count     = (int) get_post_meta( $post_id, 'rating_count', true );
 	$avg       = (float) get_post_meta( $post_id, 'rating_avg', true );
 	$new_count = $count + 1;
 	$new_avg   = round( ( ( $avg * $count ) + $score ) / $new_count, 2 );
 	update_post_meta( $post_id, 'rating_count', $new_count );
 	update_post_meta( $post_id, 'rating_avg', $new_avg );
+	$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
 
 	return new WP_REST_Response( array(
 		'ok'      => true,

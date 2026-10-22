@@ -112,6 +112,17 @@ function rf_google_jwks( $force = false ) {
 	$cache_key = ( defined( 'WP_REDIS_PREFIX' ) ? WP_REDIS_PREFIX : '' ) . 'rf_google_jwks';
 	$redis     = function_exists( 'rf_redis' ) ? rf_redis() : null;
 
+	// At most one forced refresh a minute. A forged token only has to carry an
+	// unknown kid to force one, and without this every such login attempt would
+	// cost a request to Google.
+	if ( $force && $redis ) {
+		try {
+			if ( ! $redis->set( $cache_key . ':refresh', 1, array( 'nx', 'ex' => 60 ) ) ) {
+				$force = false;
+			}
+		} catch ( \Throwable $e ) {}
+	}
+
 	if ( ! $force && $redis ) {
 		try {
 			$cached = $redis->get( $cache_key );
@@ -213,13 +224,26 @@ function rf_verify_google_id_token( $jwt, $expected_nonce = '' ) {
 	if ( empty( $payload['email_verified'] ) || empty( $payload['email'] ) ) {
 		return new WP_Error( 'unverified_email', 'Email not verified' );
 	}
-	// Enforce the client nonce whenever the TOKEN carries one (our GSI tokens always
-	// do) — otherwise a replay could skip the check just by omitting nonce in the body.
+	// The nonce ties the token to the sign-in the client started, so a token minted
+	// for another flow is refused. It is not replay protection: the client picks
+	// the nonce, and anyone holding the token can read it from the payload.
 	if ( ! empty( $payload['nonce'] ) && ! hash_equals( (string) $payload['nonce'], (string) $expected_nonce ) ) {
 		return new WP_Error( 'bad_nonce', 'Nonce mismatch' );
 	}
 	if ( empty( $payload['sub'] ) ) {
 		return new WP_Error( 'no_sub', 'Missing subject' );
+	}
+	// Replay protection: each token signs in once. Keyed by its signature, which
+	// is unique per token, and kept until the token would expire anyway.
+	$redis = function_exists( 'rf_redis' ) ? rf_redis() : null;
+	if ( $redis ) {
+		try {
+			$used_key = ( defined( 'WP_REDIS_PREFIX' ) ? WP_REDIS_PREFIX : '' ) . 'rf_jti:' . hash( 'sha256', $s64 );
+			$ttl      = max( 60, (int) $payload['exp'] - $now );
+			if ( ! $redis->set( $used_key, 1, array( 'nx', 'ex' => $ttl ) ) ) {
+				return new WP_Error( 'token_reused', 'Token already used' );
+			}
+		} catch ( \Throwable $e ) {}
 	}
 	return $payload;
 }

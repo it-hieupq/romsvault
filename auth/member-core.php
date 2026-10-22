@@ -24,16 +24,23 @@ if ( ! defined( 'RF_REST_NS' ) ) {
  * with `rest_cookie_invalid_nonce` (no X-WP-Nonce) before our handler runs — so
  * a staff-who-is-also-a-member gets a bogus 401/403 and looks logged out. Clear
  * that specific error for our namespace only (runs after core's check at 100).
- * Safe: our handlers still enforce the same-origin + X-RF-Auth + session checks.
+ *
+ * The namespace is matched on the dispatched route, never on a substring of the
+ * URI: "rf/v1/" in a query string used to wave a core route through with a bad
+ * nonce while still logged in as the WP user, which voided the REST API's CSRF
+ * protection. The WP user is also dropped, since our handlers authenticate by
+ * the member session and never read it.
  */
 add_filter( 'rest_authentication_errors', function ( $result ) {
-	if ( is_wp_error( $result ) && $result->get_error_code() === 'rest_cookie_invalid_nonce' ) {
-		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
-		if ( strpos( $uri, 'rf/v1/' ) !== false ) {
-			return true;
-		}
+	if ( ! is_wp_error( $result ) || $result->get_error_code() !== 'rest_cookie_invalid_nonce' ) {
+		return $result;
 	}
-	return $result;
+	$route = isset( $GLOBALS['wp']->query_vars['rest_route'] ) ? '/' . ltrim( (string) $GLOBALS['wp']->query_vars['rest_route'], '/' ) : '';
+	if ( strpos( $route, '/' . RF_REST_NS . '/' ) !== 0 ) {
+		return $result;
+	}
+	wp_set_current_user( 0 );
+	return true;
 }, 101 );
 
 /**
@@ -115,8 +122,17 @@ if ( ! defined( 'RF_SESSION_PATH' ) ) {
 	define( 'RF_SESSION_PATH', '/wp-json/rf/v1' ); // cookie scope: dynamic REST only, never front-end HTML
 }
 
+/**
+ * Redis key of a session.
+ *
+ * Deliberately outside WP_REDIS_PREFIX: the Redis Object Cache plugin flushes by
+ * SCAN MATCH '<prefix>*', which would log every member out on a cache flush. It
+ * still names the site, so a session id minted by another site sharing this
+ * Redis cannot resolve to a member id here.
+ */
 function rf_session_key( $id ) {
-	return ( defined( 'WP_REDIS_PREFIX' ) ? WP_REDIS_PREFIX : '' ) . 'rf_sess:' . $id;
+	$site = defined( 'WP_REDIS_PREFIX' ) && WP_REDIS_PREFIX ? rtrim( WP_REDIS_PREFIX, '_:' ) : (string) wp_parse_url( home_url(), PHP_URL_HOST );
+	return 'rfsess:' . $site . ':' . $id;
 }
 
 /**

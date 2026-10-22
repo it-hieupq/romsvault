@@ -51,11 +51,14 @@ is_admin() → auth/admin-*.php (6 trang)
    - `alg === RS256`, có `kid`
    - chữ ký kiểm với **Google JWKS** `RF_GOOGLE_JWKS_URL`
      = `https://www.googleapis.com/oauth2/v3/certs`, cache trong Redis
-     (`{WP_REDIS_PREFIX}rf_google_jwks`); `kid` lạ → force refresh đúng **1 lần** (key rotation)
+     (`{WP_REDIS_PREFIX}rf_google_jwks`); `kid` lạ → force refresh đúng **1 lần** (key rotation),
+     và tối đa **1 lần/60s** cho cả site (cờ `…rf_google_jwks:refresh`, chặn spam `kid` giả)
    - `aud === GOOGLE_CLIENT_ID`
    - `iss ∈ {accounts.google.com, https://accounts.google.com}`
    - `exp` còn hạn, `iat` tươi trong `RF_IAT_LEEWAY` = **300s** (chống replay)
    - `email_verified`, có `sub`
+   - nonce trong token khớp nonce client gửi (gắn token với lượt sign-in; **không** chống replay)
+   - mỗi token chỉ đăng nhập **1 lần**: `{WP_REDIS_PREFIX}rf_jti:{sha256(chữ ký)}`, SET NX tới `exp`
    - JWKS không lấy được → `503 jwks_unavailable` (không fail-open)
 4. Upsert `{prefix}member` theo `google_sub`, cập nhật `last_login_at`.
 5. Tạo session Redis, set cookie, trả về member payload.
@@ -76,7 +79,10 @@ JWK → PEM được tự dựng bằng DER encoding thủ công (`rf_der_len`, 
 | `RF_SESSION_PATH` | `/wp-json/rf/v1` | **cố ý** hẹp — không chạm HTML cached |
 
 - Session id = `bin2hex(random_bytes(32))` → opaque 256-bit.
-- Redis key: `{WP_REDIS_PREFIX}rf_sess:{id}`.
+- Redis key: `rfsess:{site}:{id}`, `{site}` = `WP_REDIS_PREFIX` bỏ `_`/`:` cuối (không có thì
+  host của `home_url()`). **Cố ý ngoài** `WP_REDIS_PREFIX`: plugin Redis Object Cache flush
+  bằng `SCAN MATCH '<prefix>*'` sẽ logout toàn bộ member. Có `{site}` để session id của site
+  khác dùng chung Redis không resolve ra member id ở đây.
 - Cookie: `HttpOnly`, `SameSite=Lax`, `Secure` khi `is_ssl()`.
 - `rf_redis()` là connection **riêng**, độc lập plugin Redis Object Cache —
   bật/tắt plugin đó **không** làm logout member. Trả `null` (không throw) khi
@@ -100,9 +106,14 @@ Mọi endpoint gọi guard này **trừ** `GET /download-url` (dựa vào `SameS
 ### 5.2 Vá xung đột với WP REST nonce
 
 `rest_authentication_errors` priority **101**: nếu lỗi là `rest_cookie_invalid_nonce`
-và URI chứa `rf/v1/` → bỏ qua. Lý do: staff đang đăng nhập wp-admin gửi kèm WP auth
-cookie tới `/wp-json`, core reject trước khi handler chạy → member-cũng-là-staff bị
-401 giả. Vá này an toàn vì handler vẫn tự kiểm same-origin + `X-RF-Auth` + session.
+và **route đang dispatch** (`$wp->query_vars['rest_route']`) bắt đầu bằng `/rf/v1/` → bỏ
+lỗi **và** `wp_set_current_user( 0 )`. Lý do: staff đang đăng nhập wp-admin gửi kèm WP
+auth cookie tới `/wp-json`, core reject trước khi handler chạy → member-cũng-là-staff bị
+401 giả. Handler `rf/v1` chỉ dùng session member, không đọc WP user.
+
+> ⚠️ Bản cũ so `strpos( REQUEST_URI, 'rf/v1/' )` và giữ nguyên WP user: chuỗi đó nằm trong
+> query string của **route core** là qua được với nonce sai, quyền admin — vô hiệu CSRF của
+> toàn REST API (vá 22/10/2026). Không được quay lại so chuỗi trên URI.
 
 ### 5.3 Throttle
 

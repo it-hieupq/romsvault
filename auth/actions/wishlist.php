@@ -81,7 +81,9 @@ function rf_rest_wishlist_set( WP_REST_Request $request ) {
 			return new WP_REST_Response( array( 'ok' => false, 'error' => 'rate_limited' ), 429 );
 		}
 		global $wpdb;
-		$ids = array_values( array_unique( array_filter( array_map( 'absint', $remove ) ) ) );
+		// A wishlist never holds more than RF_WISHLIST_MAX items, so neither does a
+		// removal; the cap keeps a crafted request from building a huge IN list.
+		$ids = array_slice( array_values( array_unique( array_filter( array_map( 'absint', $remove ) ) ) ), 0, RF_WISHLIST_MAX );
 		if ( $ids ) {
 			$in = implode( ',', $ids ); // all absint -> safe to inline
 			$wpdb->query( $wpdb->prepare(
