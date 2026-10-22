@@ -63,6 +63,12 @@ function get_brows_page_url() {
  */
 function get_cached_terms(string $taxonomy, array $post_ids, int $term_id, $force_load = false): array
 {
+	// No roms, no terms. get_terms() reads an empty object_ids as "no filter"
+	// and would hand back the whole taxonomy, cached for a day.
+	if (!$post_ids) {
+		return array();
+	}
+
 	$cache_key = $taxonomy . '_terms_of_' . $term_id;
 	
 	$terms = get_transient($cache_key);

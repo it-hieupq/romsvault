@@ -30,7 +30,11 @@ if ($is_tax) :
             $post_ids = array();
         }
 
-        set_transient('post_ids_of_' . $current_term->term_id, $post_ids, DAY_IN_SECONDS);
+        // An empty term is not cached, so its first rom shows up in the
+        // options on the next render rather than a day later.
+        if ($post_ids) {
+            set_transient('post_ids_of_' . $current_term->term_id, $post_ids, DAY_IN_SECONDS);
+        }
     endif;
 else :
     $filter_url =  get_filter_base_url();
