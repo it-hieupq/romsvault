@@ -729,127 +729,6 @@ if (clearFiltersBtn) {
     });
 }
 
-/** Autocomplete Search **/
-
-function createSearchBox({input, resultsContainer, filterTitle = null}) {
-
-    function normalize(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
-
-    function highlightText(title, query) {
-        
-        const normTitle = normalize(title);
-        const normQuery = normalize(query);
-        
-        const index = normTitle.indexOf(normQuery);
-        
-        if (index === -1) return title;
-
-        const realStart = index;
-        const realEnd = index + query.length; 
-
-        return (title.slice(0, realStart) + "<strong>" + title.slice(realStart, realEnd) + "</strong>" + title.slice(realEnd));
-        
-    }
-
-    input.addEventListener('input', async function () {
-        
-        const query = this.value.trim().toLowerCase();
-
-        if (!query) {
-            
-            resultsContainer.innerHTML = '';
-            
-            resultsContainer.hidden = true;
-            
-            return;
-        }
-        else {
-            resultsContainer.hidden = false;
-        }
-
-        const site_url = (typeof ajax !== 'undefined' && ajax.site_url) ? ajax.site_url : window.location.origin;
-        let api_url = site_url + '/api/search?s=' + encodeURIComponent(query);
-
-        // The heading reads "Nintendo DS ROMs"; the raw term name rides in data-scope.
-        if (filterTitle && filterTitle.dataset.scope) {
-            api_url += '&c=' + encodeURIComponent(filterTitle.dataset.scope);
-        }
-
-        try {
-            
-            const response = await fetch(api_url);
-            const data = await response.json();
-
-            resultsContainer.innerHTML = '';
-            
-            const fragment = document.createDocumentFragment();
-
-            data.forEach(item => {
-                
-                const div = document.createElement('div');
-                div.className = 'magic-search-item truncate';
-
-                const a = document.createElement('a');
-                a.href = item.url;
-
-                const img = document.createElement('img');
-                img.src = item.icon;
-                img.alt = item.title;
-                img.height = 45;
-                img.width = 45;
-                img.loading = 'lazy';
-                
-                const imgContainer = document.createElement('div');
-                imgContainer.appendChild(img);
-
-                let titleHighlighted = highlightText(item.title, query);
-                let displayTitle = titleHighlighted;
-
-                const consoleTitle = `<span class="inline-block bg-white text-rom-pink text-xs border border-rom-pink px-3 py-1 mr-1 mb-1 rounded-full">${item.console}</span> `;
-
-                const titleSpan = document.createElement('span');
-                titleSpan.innerHTML = consoleTitle + displayTitle;
-
-                const sizeSpan = document.createElement('span');
-                sizeSpan.innerHTML = item.size;
-
-                a.appendChild(imgContainer);
-                a.appendChild(titleSpan);
-                a.appendChild(sizeSpan);
-
-                div.appendChild(a);
-                
-                fragment.appendChild(div);
-                
-            });
-
-            resultsContainer.appendChild(fragment);
-
-        } catch (err) {
-            console.error(err);
-        }
-        
-    });
-}
-
-const filterTitle = document.getElementById('filter-title');
-
-const search_input_1 = document.getElementById('searchInput');
-const search_result_1 = document.getElementById('magic-search-results');
-
-if (search_input_1) {
-    
-    createSearchBox({
-        input: search_input_1,
-        resultsContainer: search_result_1,
-        filterTitle: filterTitle
-    });
-
-}
-
-
 // Report Form Modal Handler
 (function() {
     'use strict';
@@ -1087,6 +966,295 @@ function showCopyMessage(buttonElement) {
     var els = document.querySelectorAll('.rating');
     for (var i = 0; i < els.length; i++) renderStars(els[i]);
   }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+// ---------------------------------------------------------------------------
+// Live search suggestions. The index is static JSON in uploads/search-index/
+// (inc/search-index.php, .docs/search-index-plan.md): a manifest of shard keys,
+// and one shard per leading letters of a title word. Focus loads the manifest,
+// a query loads at most one shard, and filtering happens in memory, so typing
+// never reaches PHP. Config arrives as window.romSearch (functions.php).
+// ---------------------------------------------------------------------------
+(function () {
+  var cfg = window.romSearch;
+  if (!cfg || !window.fetch) return;
+
+  // Letters remove_accents() turns into something NFD cannot reach.
+  var FOLD = { 'ß': 's', 'æ': 'ae', 'œ': 'oe', 'ø': 'o', 'ł': 'l', 'đ': 'd', 'ð': 'd', 'þ': 'th', 'ħ': 'h', 'ı': 'i', 'ĳ': 'ij', 'ŋ': 'n', 'ŧ': 't', 'ſ': 's', 'ĸ': 'k' };
+  var FOLD_RE = /[ßæœøłđðþħıĳŋŧſĸ]/g;
+  var stop = {};
+  cfg.stop.forEach(function (w) { stop[w] = true; });
+
+  var manifest = null, manifestLoad = null, failed = false, split = {};
+  var shards = {}; // key => entries once loaded
+  var loading = {}; // key => pending promise
+
+  // Must fold like rom_search_words() in PHP, or a query picks a shard its game is not in.
+  function fold(s) {
+    return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(FOLD_RE, function (c) { return FOLD[c]; });
+  }
+  function words(s) {
+    return s.match(/[a-z0-9]+/g) || [];
+  }
+  // Plain words first, then the joiner-free reading ("F.E.A.R." -> "fear").
+  function titleWords(title) {
+    var folded = fold(title);
+    var list = words(folded);
+    words(folded.replace(/[^a-z0-9\s]+/g, '')).forEach(function (w) {
+      if (list.indexOf(w) < 0) list.push(w);
+    });
+    return list;
+  }
+
+  function getJson(url) {
+    return fetch(url, { credentials: 'omit' }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    });
+  }
+
+  function loadManifest() {
+    if (!manifestLoad) {
+      manifestLoad = getJson(cfg.manifest).then(function (m) {
+        manifest = m;
+        m.split.forEach(function (k) { split[k] = true; });
+      }).catch(function () { failed = true; });
+    }
+    return manifestLoad;
+  }
+
+  function loadShard(key) {
+    if (!loading[key]) {
+      loading[key] = getJson(cfg.shards + key + '.json?h=' + manifest.keys[key][1]).then(function (list) {
+        shards[key] = list.map(function (r) { return { r: r, w: titleWords(r[1]) }; });
+      }).catch(function () { delete loading[key]; });
+    }
+    return loading[key];
+  }
+
+  // Pick the one shard that answers the query. Any word's shard holds every
+  // match, so take one already loaded, else the smallest; avoid stopwords
+  // (never keyed) and bare two-letter words under a split key (their shard
+  // only holds that exact word).
+  function plan(query) {
+    var tokens = words(fold(query));
+    var best = null;
+    tokens.forEach(function (t) {
+      if (t.length < 2) return;
+      var key = t.slice(0, 2), bare = false;
+      if (split[key]) {
+        if (t.length > 2) key = t.slice(0, 3);
+        else bare = true;
+      }
+      var count = manifest.keys[key] ? manifest.keys[key][0] : 0;
+      var score = (shards[key] ? -1 : count) + (stop[t] ? 2e9 : 0) + (bare ? 1e9 : 0);
+      if (!best || score < best.score) best = { key: key, count: count, bare: bare, score: score };
+    });
+    return best && { tokens: tokens, key: best.key, empty: best.count === 0, bare: best.bare };
+  }
+
+  // Every query word must start some title word. Rank: the title starts with
+  // the whole query, then with its first word, then the rest; shard order
+  // (newest first) breaks ties.
+  // With a scope only that console's roms count; the shard holds every
+  // console, so the scoped list is still complete.
+  function match(entries, tokens, scope) {
+    var phrase = tokens.join(' ');
+    var hits = [];
+    entries.forEach(function (e) {
+      if (scope && e.r[4] !== scope) return;
+      var ok = tokens.every(function (t) {
+        return e.w.some(function (w) { return w.startsWith(t); });
+      });
+      if (!ok) return;
+      var plain = words(fold(e.r[1])).join(' ');
+      var rank = plain.startsWith(phrase) ? 0 : (plain.startsWith(tokens[0]) ? 1 : 2);
+      hits.push({ r: e.r, rank: rank, i: hits.length });
+    });
+    hits.sort(function (a, b) { return a.rank - b.rank || a.i - b.i; });
+    return hits.slice(0, cfg.max).map(function (h) { return h.r; });
+  }
+
+  // "View all" goes where the results come from: a scoped box submits its own
+  // form (the console archive), otherwise the site-wide search of the header.
+  function allUrl(query, input, scope) {
+    var source = scope ? input : document.getElementById('header-search');
+    var url = new URL(source && source.form ? source.form.action : '/', location.href);
+    url.searchParams.set(source ? source.name : 's', query);
+    return url.href;
+  }
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text) node.textContent = text;
+    return node;
+  }
+
+  function attach(input, panel, outside, scope) {
+    var timer = 0, seq = 0, active = -1, options = [];
+
+    input.setAttribute('autocomplete', 'off');
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-controls', panel.id);
+    input.setAttribute('aria-expanded', 'false');
+
+    function hide() {
+      panel.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+      active = -1;
+    }
+
+    function fill(nodes) {
+      panel.replaceChildren.apply(panel, nodes);
+      options = Array.prototype.slice.call(panel.querySelectorAll('[role="option"]'));
+      active = -1;
+      input.removeAttribute('aria-activedescendant');
+      panel.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function skeleton() {
+      var rows = [];
+      for (var i = 0; i < 3; i++) {
+        var row = el('div', 'search-skeleton');
+        var thumb = el('span', 'search-skeleton-bar');
+        thumb.style.cssText = 'width:4.25rem;height:4.75rem;flex:none';
+        var line = el('span', 'search-skeleton-bar');
+        line.style.cssText = 'height:0.75rem;width:' + (70 - i * 15) + '%';
+        row.append(thumb, line);
+        rows.push(row);
+      }
+      fill(rows);
+    }
+
+    function item(r, i) {
+      var link = el('a', 'search-result');
+      // Index paths are site-relative; refuse anything else as an href.
+      link.href = r[2].charAt(0) === '/' ? r[2] : '#';
+      link.id = panel.id + '-' + i;
+      link.setAttribute('role', 'option');
+      link.setAttribute('aria-selected', 'false');
+      if (r[3]) {
+        var img = el('img', 'search-result-thumb');
+        img.src = /^(https?:)?\/\//.test(r[3]) ? r[3] : cfg.img + r[3];
+        img.alt = '';
+        img.loading = 'lazy';
+        img.width = 68;
+        img.height = 76;
+        link.append(img);
+      } else {
+        link.append(el('span', 'search-result-thumb'));
+      }
+      var info = el('span', 'search-result-info');
+      info.append(el('span', 'search-result-title', r[1]));
+      if (r[4] || r[5]) {
+        var meta = el('span', 'search-result-meta');
+        if (r[4]) {
+          // Console colour from Configs, as on the rom card; bg-primary without one.
+          var badge = el('span', 'search-result-badge', r[4]);
+          if (cfg.consoles[r[4]]) badge.style.cssText = cfg.consoles[r[4]];
+          meta.append(badge);
+        }
+        if (r[5]) meta.append(el('span', 'search-result-size', r[5]));
+        info.append(meta);
+      }
+      link.append(info);
+      return link;
+    }
+
+    function show(results, query, p) {
+      var nodes = results.map(item);
+      // A bare two-letter word under a split key only finds that exact word.
+      if (p.bare) nodes.push(el('div', 'search-results-note', cfg.i18n.more));
+      else if (!results.length) nodes.push(el('div', 'search-results-note', cfg.i18n.none.replace('%s', query)));
+      var all = el('a', 'search-results-all', cfg.i18n.all.replace('%s', query));
+      all.href = allUrl(query, input, scope);
+      all.id = panel.id + '-all';
+      all.setAttribute('role', 'option');
+      nodes.push(all);
+      fill(nodes);
+    }
+
+    function run() {
+      var query = input.value.trim();
+      var mine = ++seq;
+      if (query.length < cfg.min || failed) return hide();
+      if (!manifest) {
+        skeleton();
+        loadManifest().then(function () { if (mine === seq) run(); });
+        return;
+      }
+      var p = plan(query);
+      if (!p) return hide();
+      if (p.empty) return show([], query, p);
+      if (shards[p.key]) return show(match(shards[p.key], p.tokens, scope), query, p);
+      skeleton();
+      loadShard(p.key).then(function () {
+        if (mine !== seq) return;
+        if (shards[p.key]) show(match(shards[p.key], p.tokens, scope), query, p);
+        else hide();
+      });
+    }
+
+    function highlight(i) {
+      if (active >= 0) {
+        options[active].classList.remove('is-active');
+        options[active].setAttribute('aria-selected', 'false');
+      }
+      active = i;
+      options[i].classList.add('is-active');
+      options[i].setAttribute('aria-selected', 'true');
+      options[i].scrollIntoView({ block: 'nearest' });
+      input.setAttribute('aria-activedescendant', options[i].id);
+    }
+
+    input.addEventListener('focus', loadManifest);
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      if (input.value.trim().length < cfg.min) {
+        seq++;
+        return hide();
+      }
+      timer = setTimeout(run, cfg.debounce);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (panel.hidden || !options.length) return;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        var step = e.key === 'ArrowDown' ? 1 : -1;
+        highlight(active < 0 ? (step > 0 ? 0 : options.length - 1) : (active + step + options.length) % options.length);
+      } else if (e.key === 'Enter' && active >= 0) {
+        // With nothing highlighted Enter submits the form as before.
+        e.preventDefault();
+        location.href = options[active].href;
+      } else if (e.key === 'Escape') {
+        hide();
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (!outside.contains(e.target)) hide();
+    });
+    outside.addEventListener('focusout', function (e) {
+      if (!e.relatedTarget || !outside.contains(e.relatedTarget)) hide();
+    });
+  }
+
+  function bind(inputId, panelId, outsideOf, scope) {
+    var input = document.getElementById(inputId);
+    var panel = document.getElementById(panelId);
+    if (input && panel) attach(input, panel, outsideOf(input, panel), scope);
+  }
+
+  function init() {
+    // The header box always searches the whole site; only the filter box is scoped.
+    if (cfg.at.header) bind('header-search', 'header-search-results', function (input) { return input.form; }, '');
+    if (cfg.at.filter) bind('searchInput', 'filter-search-results', function (input, panel) { return panel.parentNode; }, cfg.scope);
+  }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

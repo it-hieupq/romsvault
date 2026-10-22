@@ -172,6 +172,13 @@ function rom_enqueue_scripts() {
 
 	wp_localize_script( 'main-js', 'ajax', $localize_data );
 
+	// Live search suggestions. Inline JSON rather than wp_localize_script, which
+	// would turn the numbers and booleans into strings.
+	$search_config = rom_search_js_config();
+	if ( $search_config ) {
+		wp_add_inline_script( 'main-js', 'window.romSearch = ' . wp_json_encode( $search_config, JSON_UNESCAPED_SLASHES ) . ';', 'before' );
+	}
+
 	// Member rating & reviews UI (rf/v1/rating) — single valid-post-type + download page.
 	if ( ( is_singular() && valid_post_type( $post_type ) ) || $is_download_page ) {
 		wp_enqueue_script(
@@ -349,6 +356,11 @@ require get_template_directory() . '/inc/utility-post-type.php';
  * Theme Options.
  */
 require get_template_directory() . '/inc/options.php';
+
+/**
+ * Quick search index (static JSON shards in uploads/search-index/).
+ */
+require get_template_directory() . '/inc/search-index.php';
 
 /**
  * Load Breadcrumb

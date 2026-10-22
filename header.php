@@ -91,7 +91,8 @@ $search_param  = $browse_url ? 'q' : 's';
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06)]">
     <div class="h-0.5 w-full bg-gradient-to-r from-primary via-primary-accent to-primary"></div>
 
-    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+    <?php // relative: the search suggestions panel spans this container. ?>
+    <div class="relative max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-[72px] sm:h-[88px] gap-6">
 
             <!-- Logo -->
@@ -129,14 +130,19 @@ $search_param  = $browse_url ? 'q' : 's';
 
             <!-- Desktop search: plain GET so it still works on a cached page with JS off. -->
             <div class="hidden lg:flex flex-1 max-w-xs">
-                <form action="<?php echo esc_url( $search_action ); ?>" method="get" role="search" class="w-full relative">
+                <form action="<?php echo esc_url( $search_action ); ?>" method="get" role="search" class="w-full">
                     <label class="sr-only" for="header-search"><?php esc_html_e( 'Search ROMs', 'rom' ); ?></label>
-                    <input type="search" id="header-search" name="<?php echo esc_attr( $search_param ); ?>"
-                           placeholder="<?php esc_attr_e( 'Search ROMs & ISOs...', 'rom' ); ?>"
-                           class="w-full pl-9 pr-4 py-2 rounded-full bg-slate-50 border border-slate-200/90 text-meta text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-inner">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+                    <div class="relative">
+                        <input type="search" id="header-search" name="<?php echo esc_attr( $search_param ); ?>"
+                               placeholder="<?php esc_attr_e( 'Search ROMs & ISOs...', 'rom' ); ?>"
+                               class="w-full pl-9 pr-4 py-2 rounded-full bg-slate-50 border border-slate-200/90 text-meta text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-inner">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <?php if ( rom_search_location_enabled( 'header' ) ) : ?>
+                        <div id="header-search-results" class="search-results search-results--header" role="listbox" aria-label="<?php esc_attr_e( 'Search suggestions', 'rom' ); ?>" hidden></div>
+                    <?php endif; ?>
                 </form>
             </div>
 

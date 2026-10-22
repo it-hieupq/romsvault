@@ -74,7 +74,6 @@ endif;
 						$title = get_the_title();
 					elseif (is_tax() || is_category() || is_tag()) :
 						$title = single_term_title('', false);
-						$scope = $title;
 						// "Nintendo DS ROMs" is what people search for; skip the suffix if the name already says it.
 						// Windows games are PC games, not ROMs.
 						if ( is_tax( 'console', 'windows' ) ) :
@@ -89,7 +88,7 @@ endif;
 					endif;
 					?>
 
-					<h1 id="filter-title" class="text-2xl font-bold text-rom-pink text-center" data-scope="<?php echo esc_attr( $scope ?? '' ); ?>"><?php echo esc_html( $title ); ?></h1>
+					<h1 id="filter-title" class="text-2xl font-bold text-rom-pink text-center"><?php echo esc_html( $title ); ?></h1>
 				<?php endif; ?>
 			
 				<?php if (!is_front_page() && !is_home()) : ?>
@@ -111,9 +110,8 @@ endif;
 				?>
                 <form action="<?php echo $filter_url ?>" method="get" style="position: relative;">
                     
-                    <div id="magic-search-results"></div>
                     
-                    <div class="flex flex-col lg:flex-row gap-3">
+                    <div class="relative flex flex-col lg:flex-row gap-3">
                         <label class="relative flex-1">
                             <input type="text" id="searchInput" placeholder="<?php esc_attr_e( 'Search games, ROMs or ISOs…', 'rom' ); ?>"
                                    name="q"
@@ -125,6 +123,9 @@ endif;
                                 </button>
                           </span>
                         </label>
+                        <?php if ( rom_search_location_enabled( 'filter' ) ) : ?>
+                            <div id="filter-search-results" class="search-results" role="listbox" aria-label="<?php esc_attr_e( 'Search suggestions', 'rom' ); ?>" hidden></div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-4 pt-4">
