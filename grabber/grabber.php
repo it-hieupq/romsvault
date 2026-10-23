@@ -323,6 +323,7 @@ add_action('wp_ajax_k_grabber', 'k_grabber');
  * lands on the brand term instead of creating a variant of it. No comma may stay
  * in a name: the classic tag box joins a rom's terms with commas and splits them
  * again on save, which turned "Atari, Inc." into the terms "Atari" and "Inc.".
+ * The cleaned name is then mapped to its brand by k_grabber_brand_aliases().
  *
  * @param mixed $names Scraped names; a missing list counts as none.
  * @return string[]
@@ -336,11 +337,66 @@ function k_grabber_company_names($names) {
 			$name = trim(preg_replace('/(^|[\s,]+)(inc|incorporated|ltd|limited|llc|corp|corporation|co|gmbh|s\.?a|plc|k\.?k)\.?$/i', '', $name));
 		} while ($name !== $prev);
 		$name = trim(preg_replace('/\s*,\s*/', ' ', $name));
-		if ($name !== '') {
-			$clean[] = $name;
+		if ($name === '') {
+			continue;
 		}
+		foreach (k_grabber_brand_aliases() as $pattern => $brand) {
+			if (preg_match($pattern, $name)) {
+				$name = $brand;
+				break;
+			}
+		}
+		$clean[] = $name;
 	}
 	return array_values(array_unique($clean));
+}
+
+/**
+ * Brand alias table for dev/pub names: pattern => brand term name.
+ *
+ * Dev and pub terms were folded into one term per brand (studios, regional arms,
+ * labels and pre-merger names included), so a new grab has to land on that same
+ * term: "Ubisoft Montreal" -> "Ubisoft", "SCEA" -> "Sony", "Squaresoft" -> "Square
+ * Enix". Matching is case-insensitive, so "SEGA" also finds the dev term "Sega".
+ *
+ * The first matching pattern wins. Names that share a prefix with a different
+ * company are excluded: Spike Chunsoft, Human Head, Climax Entertainment. Zoo is
+ * left out because ZOO Corporation (Japan) is not Zoo Digital (UK).
+ *
+ * @return array<string, string>
+ */
+function k_grabber_brand_aliases() {
+	static $aliases = null;
+	if ($aliases !== null) {
+		return $aliases;
+	}
+	$aliases = array(
+		'/^(bandai|namco|namcot)\b/i'                          => 'Bandai Namco',
+		'/^(square|squaresoft|enix)\b/i'                       => 'Square Enix',
+		'/^(koei|tecmo)\b/i'                                   => 'Koei Tecmo',
+		'/^(sega|sammy|segasoft)\b/i'                          => 'SEGA',
+		'/^(sony|sce|scea|scee|scei|scej|sie|siea|siee)\b/i'   => 'Sony',
+		'/^(ea|electronic arts)\b/i'                           => 'Electronic Arts',
+		'/^ubi ?soft\b/i'                                      => 'Ubisoft',
+		'/^warner\b/i'                                         => 'Warner Bros.',
+		'/^spike\b(?! chunsoft)/i'                             => 'Spike',
+		'/^human\b(?! head)/i'                                 => 'Human',
+		'/^climax\b(?! entertainment)/i'                       => 'Climax',
+	);
+	$prefix_brands = array(
+		'Activision', 'Aksys', 'Arc System Works', 'Asmik', 'Atari', 'Atlus', 'Banpresto', 'Bethesda',
+		'Capcom', 'Codemasters', 'Conspiracy', 'Crave', 'Cryo Interactive', 'Culture Brain', 'Data East',
+		'Digital Eclipse', 'Disney', 'Eidos', 'Eurocom', 'Global A', 'GungHo', 'Hasbro', 'Hudson',
+		'Idea Factory', 'Imagineer', 'Infogrames', 'Interplay', 'Irem', 'Jaleco', 'JVC', 'Kadokawa', 'Kemco',
+		'Konami', 'Majesco', 'Marvelous', 'Microsoft', 'Midas', 'Midway', 'Mindscape', 'Natsume',
+		'Nintendo', 'Nippon Ichi', 'NIS', 'Pandemic', 'Psygnosis', 'Rare', 'Red Storm', 'Rockstar',
+		'Sierra', 'SNK', 'Southpeak', 'Sting', 'Success', 'Taito', 'Takara', 'Team17', 'Telltale', 'THQ',
+		'Titus', 'Toho', 'Tokuma Shoten', 'Tomy', 'Victor', 'Virgin', 'Visual Concepts', 'Vivendi', 'Xseed',
+	);
+	foreach ($prefix_brands as $brand) {
+		$aliases['/^' . preg_quote($brand, '/') . '\b/i'] = $brand;
+	}
+	return $aliases;
 }
 
 /**
