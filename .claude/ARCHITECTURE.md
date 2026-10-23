@@ -130,7 +130,7 @@ Taxonomy: `emulator_console`, `os`
 | `collection` | `true` | `slug: collection`, `hierarchical: false` | — | `taxonomy-collection.php` |
 | `region` | `true` | `slug: roms/region`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `language` | `true` | `slug: roms/language`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
-| `genre` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
+| `genre` | `true` | `slug: roms/genre`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `dev` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `pub` | `false` | `slug: roms/publisher`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `type` | `true` | default, **bị override thành URL không prefix** (§ 5.3) | ✅ | `taxonomy-type.php` |

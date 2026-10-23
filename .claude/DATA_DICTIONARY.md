@@ -45,7 +45,7 @@ Theme có đúng **2 CPT**.
 | `collection` | `true` | `collection` | — |
 | `region` | `true` | `roms/region` (`with_front: false`) | — |
 | `language` | `true` | `roms/language` (`with_front: false`) | — |
-| `genre` | `true` | default | — |
+| `genre` | `true` | `roms/genre` (`with_front: false`) | — |
 | `dev` | `false` | `roms/developer` (`with_front: false`) | — |
 | `pub` | `false` | `roms/publisher` (`with_front: false`) | — |
 | `type` | `true` | default → **override thành `/{slug}/` không prefix** | ✅ |
