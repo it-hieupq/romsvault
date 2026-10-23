@@ -131,8 +131,8 @@ Taxonomy: `emulator_console`, `os`
 | `region` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `language` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `genre` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
-| `dev` | `false` | default, `hierarchical: false` | — | `taxonomy.php` |
-| `pub` | `false` | default, `hierarchical: false` | — | `taxonomy.php` |
+| `dev` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
+| `pub` | `false` | `slug: roms/publisher`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `type` | `true` | default, **bị override thành URL không prefix** (§ 5.3) | ✅ | `taxonomy-type.php` |
 
 ### 4.2 Của `emulator`

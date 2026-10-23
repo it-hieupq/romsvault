@@ -183,7 +183,7 @@ function k_init_rom() {
 			),
 			'hierarchical'      	=> false,
 			'public'            	=> true,
-            'rewrite' 				=> array('hierarchical' => false),
+            'rewrite' 				=> array('slug' => 'roms/developer', 'with_front' => false, 'hierarchical' => false),
 		) 
 	);
 
@@ -207,7 +207,7 @@ function k_init_rom() {
 			),
 			'hierarchical'      	=> false,
 			'public'            	=> true,
-            'rewrite' 				=> array('hierarchical' => false),
+            'rewrite' 				=> array('slug' => 'roms/publisher', 'with_front' => false, 'hierarchical' => false),
 		) 
 	);
 
@@ -806,6 +806,10 @@ add_action('parse_query', function ($query) {
  * redirect_canonical 301s it to its permalink. The lookahead on the single rule keeps
  * WP's own taxonomy endpoints (/roms/{console}/feed/) reachable, and download_file is
  * 1-based - absent means the page lists every file.
+ *
+ * The dev and pub archives live under the same prefix (/roms/developer/{term}/,
+ * /roms/publisher/{term}/), so their WP-generated rules are moved ahead of the rom
+ * single rule, which would otherwise read the term slug as a rom post_name.
  */
 add_filter('rewrite_rules_array', function ($rules) {
 	$new_rules = array(
@@ -813,8 +817,15 @@ add_filter('rewrite_rules_array', function ($rules) {
 		'roms/[^/]+/([^/]+)/download/?$'             => 'index.php?post_type=rom&name=$matches[1]&download=1',
 		'roms/[^/]+/(?!(?:feed|embed)/?$)([^/]+)/?$' => 'index.php?post_type=rom&name=$matches[1]',
 	);
-	
-	return $new_rules + $rules;
+
+	$tax_rules = array();
+	foreach ($rules as $regex => $query) {
+		if (strpos($regex, 'roms/developer/') === 0 || strpos($regex, 'roms/publisher/') === 0) {
+			$tax_rules[$regex] = $query;
+		}
+	}
+
+	return $tax_rules + $new_rules + $rules;
 });
 
 /**

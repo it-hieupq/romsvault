@@ -46,8 +46,8 @@ Theme có đúng **2 CPT**.
 | `region` | `true` | default | — |
 | `language` | `true` | default | — |
 | `genre` | `true` | default | — |
-| `dev` | `false` | default | — |
-| `pub` | `false` | default | — |
+| `dev` | `false` | `roms/developer` (`with_front: false`) | — |
+| `pub` | `false` | `roms/publisher` (`with_front: false`) | — |
 | `type` | `true` | default → **override thành `/{slug}/` không prefix** | ✅ |
 
 ### Của `emulator`
