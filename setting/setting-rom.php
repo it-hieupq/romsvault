@@ -212,28 +212,28 @@ function k_init_rom() {
 	);
 
 	/**
-	 * Add type taxonomy
+	 * Add release type taxonomy (key stays "type"): Hack, Fan Translation, Homebrew...
 	 */
-	register_taxonomy('type', array('rom'), 
+	register_taxonomy('type', array('rom'),
 		array(
 			'labels'            => array(
-				'name'              => __( 'Type', 'rom' ),
-				'singular_name'     => __( 'Type', 'rom' ),
-				'search_items'      => __( 'Search Type', 'rom' ),
-				'all_items'         => __( 'All Type', 'rom' ),
-				'parent_item'       => __( 'Parent Type', 'rom' ),
-				'parent_item_colon' => __( 'Parent Type:', 'rom' ),
-				'edit_item'         => __( 'Edit Type', 'rom' ),
-				'update_item'       => __( 'Update Type', 'rom' ),
-				'add_new_item'      => __( 'Add Type', 'rom' ),
-				'new_item_name'     => __( 'Type Name', 'rom' ),
-				'menu_name'         => __( 'Type', 'rom' ),
+				'name'              => __( 'Release Types', 'rom' ),
+				'singular_name'     => __( 'Release Type', 'rom' ),
+				'search_items'      => __( 'Search Release Types', 'rom' ),
+				'all_items'         => __( 'All Release Types', 'rom' ),
+				'parent_item'       => __( 'Parent Release Type', 'rom' ),
+				'parent_item_colon' => __( 'Parent Release Type:', 'rom' ),
+				'edit_item'         => __( 'Edit Release Type', 'rom' ),
+				'update_item'       => __( 'Update Release Type', 'rom' ),
+				'add_new_item'      => __( 'Add Release Type', 'rom' ),
+				'new_item_name'     => __( 'Release Type Name', 'rom' ),
+				'menu_name'         => __( 'Release Type', 'rom' ),
 			),
 			'show_in_rest'          => true,
 			'hierarchical'      	=> true,
 			'public'            	=> true,
 			'query_var'         	=> 'type',
-			'rewrite' => array('hierarchical' => false),
+			'rewrite' => array('slug' => 'roms/release', 'with_front' => false, 'hierarchical' => false),
 		) 
 	);
 
@@ -612,7 +612,7 @@ function k_rom_columns_head($cols) {
 		array( 'download_list_aff' => __( 'Download List (AFF)' , 'rom' ) ),
 		array( 'status' => __( 'Status' , 'rom' ) ),
 		array( 'hide' => __( 'Hide' , 'rom' ) ),
-		array( 'type' => __( 'Type' , 'rom' ) ),
+		array( 'type' => __( 'Release Type' , 'rom' ) ),
 		array( 'views' => __( 'Views' , 'rom' ) ),
 		array_slice( $cols, 3, null, false )
 	);
@@ -779,9 +779,11 @@ add_action('parse_query', function ($query) {
  * WP's own taxonomy endpoints (/roms/{console}/feed/) reachable, and download_file is
  * 1-based - absent means the page lists every file.
  *
- * The dev, pub, language, region and genre archives live under the same prefix (/roms/developer/{term}/,
- * /roms/publisher/{term}/, /roms/language/{term}/, /roms/region/{term}/, /roms/genre/{term}/), so their WP-generated rules are moved ahead of the rom
- * single rule, which would otherwise read the term slug as a rom post_name.
+ * The dev, pub, language, region, genre and type (release type) archives live under the
+ * same prefix (/roms/developer/{term}/, /roms/publisher/{term}/, /roms/language/{term}/,
+ * /roms/region/{term}/, /roms/genre/{term}/, /roms/release/{term}/), so their WP-generated
+ * rules are moved ahead of the rom single rule, which would otherwise read the term
+ * slug as a rom post_name.
  */
 add_filter('rewrite_rules_array', function ($rules) {
 	$new_rules = array(
@@ -792,43 +794,13 @@ add_filter('rewrite_rules_array', function ($rules) {
 
 	$tax_rules = array();
 	foreach ($rules as $regex => $query) {
-		if (strpos($regex, 'roms/developer/') === 0 || strpos($regex, 'roms/publisher/') === 0 || strpos($regex, 'roms/language/') === 0 || strpos($regex, 'roms/region/') === 0 || strpos($regex, 'roms/genre/') === 0) {
+		if (preg_match('#^roms/(developer|publisher|language|region|genre|release)/#', $regex)) {
 			$tax_rules[$regex] = $query;
 		}
 	}
 
 	return $tax_rules + $new_rules + $rules;
 });
-
-/**
- * Generate rewrite rules for type taxonomy without prefix
- */
-function k_rewrite_type_taxonomy_link($wp_rewrite) {
-	$terms = get_terms(array(
-		'taxonomy' => 'type',
-		'hide_empty' => false,
-	));
-	
-	if (!empty($terms) && !is_wp_error($terms)) {
-		$rules = array();
-		foreach ($terms as $term) {
-			// Main term archive
-			$rules[$term->slug . '/?$'] = 'index.php?type=' . $term->slug;
-			// Pagination
-			$rules[$term->slug . '/page/?([0-9]{1,})/?$'] = 'index.php?type=' . $term->slug . '&paged=' . $wp_rewrite->preg_index(1);
-		}
-		
-		// Merge with global rules (add at the end for low priority)
-		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
-	}
-}
-add_filter('generate_rewrite_rules', 'k_rewrite_type_taxonomy_link');
-
-// Those rules are generated per type term, so a new, renamed or deleted term has no
-// root-level rule until the rewrite rules are rebuilt.
-add_action( 'created_type', 'flush_rewrite_rules', 10, 0 );
-add_action( 'edited_type', 'flush_rewrite_rules', 10, 0 );
-add_action( 'delete_type', 'flush_rewrite_rules', 10, 0 );
 
 add_filter('preview_post_link', function($preview_link, $post) {
 	if ($post->post_type === 'rom') {
@@ -868,14 +840,6 @@ add_filter('post_type_link', function ($permalink, $post, $leavename = false, $s
 	return home_url( 'roms/' . $console_slug . '/' . $post_name . '/' );
 
 }, 10, 4);
-
-// Rewrite term link for type taxonomy to remove 'type' prefix
-add_filter('term_link', function ($termlink, $term, $taxonomy) {
-	if ($taxonomy === 'type') {
-		return home_url('/' . $term->slug . '/');
-	}
-	return $termlink;
-}, 10, 3);
 
 add_action('after_switch_theme', function () {
 	flush_rewrite_rules();

@@ -36,7 +36,7 @@ function k_grabber_multi_init()
                     'allow_null' => 1,
                 ),
                 array(
-                    'label' => __('Type', 'rom'),
+                    'label' => __('Release Type', 'rom'),
                     'name' => 'grabber_type',
                     'key' => 'grabber_type',
                     'type' => 'taxonomy',

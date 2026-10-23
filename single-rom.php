@@ -65,7 +65,7 @@ while ( have_posts() ) : the_post();
 		'dev'        => array( 'dev', __( 'Developer', 'rom' ) ),
 		'pub'        => array( 'joystick', __( 'Publisher', 'rom' ) ),
 		'collection' => array( 'collection', __( 'Collection', 'rom' ) ),
-		'type'       => array( 'type', __( 'Type', 'rom' ) ),
+		'type'       => array( 'type', __( 'Release Type', 'rom' ) ),
 		'language'   => array( 'flag', __( 'Language', 'rom' ) ),
 	) as $spec_tax => $spec_meta ) {
 		$spec_terms = wp_get_post_terms( $post->ID, $spec_tax, array( 'fields' => 'all' ) );

@@ -471,7 +471,7 @@ function initCustomSelect(wrapperId, triggerId, dropdownId, selectedTextId, opti
 // Initialize all custom selects
 initCustomSelect('genre-select-wrapper', 'genre-select-trigger', 'genre-dropdown', 'genre-selected-text', {placeholder: 'Select Genre'});
 initCustomSelect('collection-select-wrapper', 'collection-select-trigger', 'collection-dropdown', 'collection-selected-text', {placeholder: 'Select Collection'});
-initCustomSelect('type-select-wrapper', 'type-select-trigger', 'type-dropdown', 'type-selected-text', {placeholder: 'Select Type'});
+initCustomSelect('type-select-wrapper', 'type-select-trigger', 'type-dropdown', 'type-selected-text', {placeholder: 'Select Release Type'});
 const consoleSelectWrapper = document.getElementById('console-select-wrapper');
 if (consoleSelectWrapper) {
     initCustomSelect('console-select-wrapper', 'console-select-trigger', 'console-dropdown', 'console-selected-text', {placeholder: 'Select Console'});
@@ -518,7 +518,7 @@ function getSvgIcon(key = '') {
 const filterConfig = {
     'genre': {label: 'Genre', name: 'genres[]', iconKey: 'genre'},
     'collection': {label: 'Collection', name: 'collections[]', iconKey: 'collection'},
-    'type': {label: 'Type', name: 'types[]', iconKey: 'type'},
+    'type': {label: 'Release Type', name: 'types[]', iconKey: 'type'},
     'console': {label: 'Console', name: 'consoles[]', iconKey: 'console'},
     'sort': {label: 'Sort', name: 'sort', iconKey: 'sort'}
 };
@@ -667,7 +667,7 @@ function initSelectedFilters() {
             let placeholderText = 'Select ';
             if (placeholder.includes('genre')) placeholderText = 'Select Genre';
             else if (placeholder.includes('collection')) placeholderText = 'Select Collection';
-            else if (placeholder.includes('type')) placeholderText = 'Select Type';
+            else if (placeholder.includes('type')) placeholderText = 'Select Release Type';
             else if (placeholder.includes('console')) placeholderText = 'Select Console';
             else if (placeholder.includes('sort')) placeholderText = 'Select Sort';
             selectedText.textContent = placeholderText;

@@ -247,7 +247,7 @@ function k_admin_posts_filter_restrict_manage_posts() {
      $terms = get_terms(array('taxonomy' => 'type', 'hide_empty' => false));
         ?>
         <select name="type" style="width: 90px;">
-	        <option value=""><?php _e('Type', 'rom'); ?></option>
+	        <option value=""><?php _e('Release Type', 'rom'); ?></option>
 	        <?php
 	            $current_v = isset($_GET['type'])? $_GET['type']:'';
 	            foreach ($terms as $term) {

@@ -48,7 +48,7 @@ Theme có đúng **2 CPT**.
 | `genre` | `true` | `roms/genre` (`with_front: false`) | — |
 | `dev` | `false` | `roms/developer` (`with_front: false`) | — |
 | `pub` | `false` | `roms/publisher` (`with_front: false`) | — |
-| `type` | `true` | default → **override thành `/{slug}/` không prefix** | ✅ |
+| `type` (label "Release Type") | `true` | `roms/release` (`with_front: false`) | ✅ |
 
 ### Của `emulator`
 | Taxonomy | `hierarchical` | Rewrite slug |

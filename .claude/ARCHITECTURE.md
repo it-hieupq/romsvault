@@ -133,7 +133,7 @@ Taxonomy: `emulator_console`, `os`
 | `genre` | `true` | `slug: roms/genre`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `dev` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `pub` | `false` | `slug: roms/publisher`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
-| `type` | `true` | default, **bị override thành URL không prefix** (§ 5.3) | ✅ | `taxonomy-type.php` |
+| `type` (label "Release Type") | `true` | `slug: roms/release`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | ✅ | `taxonomy-type.php` |
 
 ### 4.2 Của `emulator`
 
@@ -171,7 +171,7 @@ console thì không có URL dùng được — permalink rơi về dạng query,
 | Console archive | `/roms/{console_slug}/` |
 | Collection | `/collection/{slug}/` |
 | Language archive | `/roms/language/{slug}/` |
-| Type archive | `/{type_slug}/` — **không prefix** |
+| Release type archive (taxonomy `type`) | `/roms/release/{type_slug}/` |
 | Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
 | Emulator console archive | `/emulators/{slug}/` (+ `/page/{n}/`) |
 | Download | `{permalink của post}` + `download/[{file_index}/]` |
@@ -197,16 +197,15 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 > ROM truy cập qua segment console **sai** vẫn resolve, rồi `redirect_canonical` 301 về
 > permalink đúng (§ 5.5).
 
-### 5.3 Taxonomy `type` — chiếm URL gốc
+### 5.3 Taxonomy archive dưới `/roms/`
 
-- **`generate_rewrite_rules`** → `k_rewrite_type_taxonomy_link()`: sinh `{slug}/?$` và
-  `{slug}/page/?([0-9]{1,})/?$` cho mọi term `type`, prepend vào `$wp_rewrite->rules`.
-- **`term_link`** → `/{term->slug}/`.
-- **301 redirect** `/type/{slug}/…` → `/{slug}/…` ở `template_redirect` **priority 1**
-  (giữ query string). Bỏ qua khi `is_admin()`, `wp_doing_ajax()`, `wp_doing_cron()`.
+`dev`, `pub`, `language`, `region`, `genre` và `type` dùng rewrite slug
+`roms/{developer|publisher|language|region|genre|release}` (`release` = taxonomy `type`). Rule WP sinh cho chúng được
+`rewrite_rules_array` (`setting/setting-rom.php`) đưa lên trước rule rom single
+`roms/[^/]+/([^/]+)/?$`, vì rule đó sẽ đọc slug term thành `post_name` của rom.
+Rule là generic, không sinh theo từng term ⇒ thêm/sửa term không cần flush.
 
-> ⚠️ Term `type` chiếm namespace URL gốc ⇒ **slug term `type` xung đột trực tiếp với slug
-> của page và post**. Kiểm tra trùng trước khi tạo term `type` mới.
+> ⚠️ Không đặt slug console trùng `developer`, `publisher`, `language`, `region`, `genre`, `release`.
 
 ### 5.4 Emulator
 
@@ -258,7 +257,6 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 |---|---|
 | `after_switch_theme` | `setting/setting-rom.php`, `auth/setting-member.php` |
 | `admin_init` + guard option `rf_member_pages_rw` | `auth/member-pages.php` — **bump giá trị option khi thêm route member mới** |
-| `created_type` / `edited_type` / `delete_type` | `setting/setting-rom.php` — rule root-level của `type` là thứ duy nhất còn sinh per-term |
 
 ---
 
@@ -536,7 +534,7 @@ hiện chỉ trả về literal English. i18n chưa thật sự hoạt động.
 5. **Không hardcode domain** — PHP dùng `site_url()` / `home_url()` / `content_url()`;
    JS dùng `ajax.site_url`.
 6. **Flush rewrite rules** sau khi thêm route member (kèm bump option
-   `rf_member_pages_rw`). Rule của `rom`, `emulator` và hai taxonomy console đều generic
-   nên không cần; term `type` tự flush bằng hook.
+   `rf_member_pages_rw`). Rule của `rom`, `emulator` và các taxonomy đều generic
+   nên không cần.
 7. **Verify** — sau sửa PHP: `php -l <file>`; sau sửa JS: `node --check <file>`.
 8. **Không stage** `tailwindcss/node_modules/`, `assets/css/output.css`, lockfile.
