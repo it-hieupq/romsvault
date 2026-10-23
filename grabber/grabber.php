@@ -378,7 +378,13 @@ function k_grabber_brand_aliases() {
 		'/^(sony|sce|scea|scee|scei|scej|sie|siea|siee)\b/i'   => 'Sony',
 		'/^(ea|electronic arts)\b/i'                           => 'Electronic Arts',
 		'/^ubi ?soft\b/i'                                      => 'Ubisoft',
-		'/^warner\b/i'                                         => 'Warner Bros.',
+		'/^(warner|wb)\b/i'                                    => 'Warner Bros.',
+		'/^(takara|tomy)\b/i'                                  => 'Takara Tomy',
+		'/^kce\b/i'                                            => 'Konami',
+		'/^d3(\s?publisher)?\b/i'                              => 'D3Publisher',
+		'/^focus entertainment\b/i'                            => 'Focus Home Interactive',
+		'/^buena vista\b/i'                                    => 'Buena Vista Games',
+		'/^circle ent(ertainment|\.)?$/i'                      => 'CIRCLE Entertainment',
 		'/^spike\b(?! chunsoft)/i'                             => 'Spike',
 		'/^human\b(?! head)/i'                                 => 'Human',
 		'/^climax\b(?! entertainment)/i'                       => 'Climax',
@@ -390,8 +396,8 @@ function k_grabber_brand_aliases() {
 		'Idea Factory', 'Imagineer', 'Infogrames', 'Interplay', 'Irem', 'Jaleco', 'JVC', 'Kadokawa', 'Kemco',
 		'Konami', 'Majesco', 'Marvelous', 'Microsoft', 'Midas', 'Midway', 'Mindscape', 'Natsume',
 		'Nintendo', 'Nippon Ichi', 'NIS', 'Pandemic', 'Psygnosis', 'Rare', 'Red Storm', 'Rockstar',
-		'Sierra', 'SNK', 'Southpeak', 'Sting', 'Success', 'Taito', 'Takara', 'Team17', 'Telltale', 'THQ',
-		'Titus', 'Toho', 'Tokuma Shoten', 'Tomy', 'Victor', 'Virgin', 'Visual Concepts', 'Vivendi', 'Xseed',
+		'Sierra', 'SNK', 'Southpeak', 'Sting', 'Success', 'Taito', 'Team17', 'Telltale', 'THQ',
+		'Titus', 'Toho', 'Tokuma Shoten', 'Victor', 'Virgin', 'Visual Concepts', 'Vivendi', 'Xseed',
 	);
 	foreach ($prefix_brands as $brand) {
 		$aliases['/^' . preg_quote($brand, '/') . '\b/i'] = $brand;
