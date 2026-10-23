@@ -127,7 +127,7 @@ Taxonomy: `emulator_console`, `os`
 | Taxonomy | `hierarchical` | `rewrite` | REST | Template |
 |---|---|---|---|---|
 | `console` | `true` | `slug: roms`, `with_front: false`, `hierarchical: false` | ✅ | `taxonomy-console.php` |
-| `collection` | `true` | `slug: collection`, `hierarchical: false` | — | `taxonomy-collection.php` |
+| `collection` | `true` | `slug: roms/collection`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy-collection.php` |
 | `region` | `true` | `slug: roms/region`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `language` | `true` | `slug: roms/language`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `genre` | `true` | `slug: roms/genre`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
@@ -169,7 +169,7 @@ console thì không có URL dùng được — permalink rơi về dạng query,
 |---|---|
 | ROM single | `/roms/{console_slug}/{post_name}/` |
 | Console archive | `/roms/{console_slug}/` |
-| Collection | `/collection/{slug}/` |
+| Collection | `/roms/collection/{slug}/` (trang tổng hợp vẫn là page `/collection/`) |
 | Language archive | `/roms/language/{slug}/` |
 | Release type archive (taxonomy `type`) | `/roms/release/{type_slug}/` |
 | Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
@@ -200,12 +200,12 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 ### 5.3 Taxonomy archive dưới `/roms/`
 
 `dev`, `pub`, `language`, `region`, `genre` và `type` dùng rewrite slug
-`roms/{developer|publisher|language|region|genre|release}` (`release` = taxonomy `type`). Rule WP sinh cho chúng được
+`roms/{developer|publisher|language|region|genre|release|collection}` (`release` = taxonomy `type`). Rule WP sinh cho chúng được
 `rewrite_rules_array` (`setting/setting-rom.php`) đưa lên trước rule rom single
 `roms/[^/]+/([^/]+)/?$`, vì rule đó sẽ đọc slug term thành `post_name` của rom.
 Rule là generic, không sinh theo từng term ⇒ thêm/sửa term không cần flush.
 
-> ⚠️ Không đặt slug console trùng `developer`, `publisher`, `language`, `region`, `genre`, `release`.
+> ⚠️ Không đặt slug console trùng `developer`, `publisher`, `language`, `region`, `genre`, `release`, `collection`.
 
 ### 5.4 Emulator
 

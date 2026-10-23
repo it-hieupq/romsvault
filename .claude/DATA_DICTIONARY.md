@@ -42,7 +42,7 @@ Theme có đúng **2 CPT**.
 | Taxonomy | `hierarchical` | Rewrite slug | REST |
 |---|---|---|---|
 | `console` | `true` | `roms` (`with_front: false`) | ✅ |
-| `collection` | `true` | `collection` | — |
+| `collection` | `true` | `roms/collection` (`with_front: false`) | — |
 | `region` | `true` | `roms/region` (`with_front: false`) | — |
 | `language` | `true` | `roms/language` (`with_front: false`) | — |
 | `genre` | `true` | `roms/genre` (`with_front: false`) | — |
