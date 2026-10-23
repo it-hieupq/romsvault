@@ -268,7 +268,7 @@ function grabber_mobygames_ac($url, $console, $type, $stt)
 
                 if (!empty($devs)) {
                     $terms = array();
-                    foreach ($devs as $dev) {
+                    foreach (k_grabber_company_names($devs) as $dev) {
                         if (term_exists($dev, 'dev')) {
                             $term = term_exists($dev, 'dev');
                         } else {
@@ -279,7 +279,7 @@ function grabber_mobygames_ac($url, $console, $type, $stt)
                     wp_set_post_terms($post_id, $terms, 'dev');
                 }
 
-               wp_set_post_terms($post_id, $pubs, 'pub');
+               wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 				
                 echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
@@ -567,8 +567,8 @@ function grabber_igdb_ac($url, $console, $type, $stt)
             wp_set_post_terms($post_id, $terms, 'genre');
         }
 
-wp_set_post_terms($post_id, $devs, 'dev');
-wp_set_post_terms($post_id, $pubs, 'pub');
+wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 
         //Screenshot
         $screenshots = [];
@@ -726,7 +726,7 @@ function grabber_romstation_ac($url, $console, $type, $stt)
                     wp_set_post_terms($post_id, $terms, 'genre');
                 }
 
-                wp_set_post_terms($post_id, $devs, 'dev');
+                wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
 
                 echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
@@ -878,8 +878,8 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
             }
         }
 
-wp_set_post_terms($post_id, $devs, 'dev');
-wp_set_post_terms($post_id, $pubs, 'pub');
+wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 
         // Xử lý gallery
         $count = 0;
@@ -1102,8 +1102,8 @@ function grabber_gog_ac($url, $console, $type, $stt)
                     wp_set_post_terms($post_id, $terms, 'genre');
                 }
 
-                wp_set_post_terms($post_id, $devs, 'dev');
-                wp_set_post_terms($post_id, $pubs, 'pub');
+                wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+                wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 
                 echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
             }
@@ -1255,8 +1255,8 @@ function grabber_backloggd_ac($url, $console, $type, $stt)
                 }
 
 
-				wp_set_post_terms($post_id, $devs, 'dev');
-               wp_set_post_terms($post_id, $pubs, 'pub');
+				wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+               wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 				
 				
                 echo json_encode(array('status' => true, 'message' => $stt . '. ' . __('Created:', 'rom') . ' <a href="' . get_edit_post_link($post_id) . '">' . get_the_title($post_id) . '</a><br>'));
@@ -1460,8 +1460,8 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
                     wp_set_post_terms($post_id, $terms, 'genre');
                 }
 
-                wp_set_post_terms($post_id, $devs, 'dev');
-                wp_set_post_terms($post_id, $pubs, 'pub'); 
+                wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+                wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub'); 
 
                 if (!empty($regions)) {
                     $terms = array();
@@ -2010,8 +2010,8 @@ function grabber_nintendolife_ac($url, $console, $type, $stt)
                 }
 
 
-         wp_set_post_terms($post_id, $devs, 'dev');
-         wp_set_post_terms($post_id, $pubs, 'pub');
+         wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+         wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 
                 if (!empty($genres)) {
                     $terms = array();
@@ -2210,8 +2210,8 @@ function grabber_pushsquare_ac($url, $console, $type, $stt)
                 }
 
 
-                wp_set_post_terms($post_id, $devs, 'dev');
-                wp_set_post_terms($post_id, $pubs, 'pub');
+                wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+                wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 
 
                 if (!empty($genres)) {

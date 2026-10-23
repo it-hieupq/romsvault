@@ -248,8 +248,8 @@ if ($temp_post_id > 0) {
                             wp_set_post_terms($post_id, $terms, 'genre');
                         }
 
-wp_set_post_terms($post_id, $devs, 'dev');
-wp_set_post_terms($post_id, $pubs, 'pub');
+wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
+wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
 						
 						//new curl to get image
                         $count = 0;
@@ -315,6 +315,33 @@ wp_set_post_terms($post_id, $pubs, 'pub');
 }
 
 add_action('wp_ajax_k_grabber', 'k_grabber');
+
+/**
+ * Clean scraped developer/publisher names before they become dev/pub terms.
+ *
+ * Trailing legal suffixes are dropped ("Konami Co., Ltd." -> "Konami"), so a grab
+ * lands on the brand term instead of creating a variant of it. No comma may stay
+ * in a name: the classic tag box joins a rom's terms with commas and splits them
+ * again on save, which turned "Atari, Inc." into the terms "Atari" and "Inc.".
+ *
+ * @param mixed $names Scraped names; a missing list counts as none.
+ * @return string[]
+ */
+function k_grabber_company_names($names) {
+	$clean = array();
+	foreach ((array) $names as $name) {
+		$name = trim((string) $name);
+		do {
+			$prev = $name;
+			$name = trim(preg_replace('/(^|[\s,]+)(inc|incorporated|ltd|limited|llc|corp|corporation|co|gmbh|s\.?a|plc|k\.?k)\.?$/i', '', $name));
+		} while ($name !== $prev);
+		$name = trim(preg_replace('/\s*,\s*/', ' ', $name));
+		if ($name !== '') {
+			$clean[] = $name;
+		}
+	}
+	return array_values(array_unique($clean));
+}
 
 /**
  * Store a downloaded image as an attachment, compressed to WebP.
