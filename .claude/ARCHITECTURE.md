@@ -129,7 +129,7 @@ Taxonomy: `emulator_console`, `os`
 | `console` | `true` | `slug: roms`, `with_front: false`, `hierarchical: false` | ✅ | `taxonomy-console.php` |
 | `collection` | `true` | `slug: collection`, `hierarchical: false` | — | `taxonomy-collection.php` |
 | `region` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
-| `language` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
+| `language` | `true` | `slug: roms/language`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `genre` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `dev` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `pub` | `false` | `slug: roms/publisher`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
@@ -170,7 +170,7 @@ console thì không có URL dùng được — permalink rơi về dạng query,
 | ROM single | `/roms/{console_slug}/{post_name}/` |
 | Console archive | `/roms/{console_slug}/` |
 | Collection | `/collection/{slug}/` |
-| Language archive | `/language/{slug}/` |
+| Language archive | `/roms/language/{slug}/` |
 | Type archive | `/{type_slug}/` — **không prefix** |
 | Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
 | Emulator console archive | `/emulators/{slug}/` (+ `/page/{n}/`) |

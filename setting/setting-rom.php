@@ -135,7 +135,7 @@ function k_init_rom() {
 			),
 			'hierarchical'      	=> true,
 			'public'            	=> true,
-            'rewrite' 				=> array('hierarchical' => false),
+            'rewrite' 				=> array('slug' => 'roms/language', 'with_front' => false, 'hierarchical' => false),
 		) 
 	);
 
@@ -807,8 +807,8 @@ add_action('parse_query', function ($query) {
  * WP's own taxonomy endpoints (/roms/{console}/feed/) reachable, and download_file is
  * 1-based - absent means the page lists every file.
  *
- * The dev and pub archives live under the same prefix (/roms/developer/{term}/,
- * /roms/publisher/{term}/), so their WP-generated rules are moved ahead of the rom
+ * The dev, pub and language archives live under the same prefix (/roms/developer/{term}/,
+ * /roms/publisher/{term}/, /roms/language/{term}/), so their WP-generated rules are moved ahead of the rom
  * single rule, which would otherwise read the term slug as a rom post_name.
  */
 add_filter('rewrite_rules_array', function ($rules) {
@@ -820,7 +820,7 @@ add_filter('rewrite_rules_array', function ($rules) {
 
 	$tax_rules = array();
 	foreach ($rules as $regex => $query) {
-		if (strpos($regex, 'roms/developer/') === 0 || strpos($regex, 'roms/publisher/') === 0) {
+		if (strpos($regex, 'roms/developer/') === 0 || strpos($regex, 'roms/publisher/') === 0 || strpos($regex, 'roms/language/') === 0) {
 			$tax_rules[$regex] = $query;
 		}
 	}

@@ -44,7 +44,7 @@ Theme có đúng **2 CPT**.
 | `console` | `true` | `roms` (`with_front: false`) | ✅ |
 | `collection` | `true` | `collection` | — |
 | `region` | `true` | default | — |
-| `language` | `true` | default | — |
+| `language` | `true` | `roms/language` (`with_front: false`) | — |
 | `genre` | `true` | default | — |
 | `dev` | `false` | `roms/developer` (`with_front: false`) | — |
 | `pub` | `false` | `roms/publisher` (`with_front: false`) | — |
