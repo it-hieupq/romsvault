@@ -237,7 +237,7 @@ if ($temp_post_id > 0) {
 
                         if (!empty($genres)) {
                             $terms = array();
-                            foreach ($genres as $genre) {
+                            foreach (k_grabber_genre_names($genres) as $genre) {
                                 if (term_exists($genre, 'genre')) {
                                     $term = term_exists($genre, 'genre');
                                 } else {
@@ -410,6 +410,61 @@ function k_grabber_brand_aliases() {
 		$aliases['/^' . preg_quote($brand, '/') . '\b/i'] = $brand;
 	}
 	return $aliases;
+}
+
+/**
+ * Map scraped genre names onto the genre terms the site keeps.
+ *
+ * Sources name the same genre differently ("Sport" / "Sports", "RPG" /
+ * "Role-Playing", "Platform" / "Platformer"), and those were folded into one term
+ * each. Names are entity-decoded first ("Shoot&#039;em up"); one name may map to
+ * several genres ("Adventure/ Visual Novel"). Unknown names pass through as they are.
+ *
+ * @param mixed $genres Scraped genre names; a missing list counts as none.
+ * @return string[]
+ */
+function k_grabber_genre_names($genres) {
+	static $aliases = array(
+		'/^(role-?playing( \(rpg\))?|rpg)$/i'                           => 'Role-Playing (RPG)',
+		'/^(sports?|soccer)$/i'                                         => 'Sports',
+		'/^platform(er)?$/i'                                            => 'Platformer',
+		'/^simulat(or|ion)$/i'                                          => 'Simulation',
+		"/^(hack and slash\\/ ?)?beat ?'?em ?up$/i"                     => "Beat 'em up",
+		"/^shoot ?'?em ?up$/i"                                          => "Shoot 'em up",
+		'/^(education(al)?|edutainment)$/i'                             => 'Education',
+		'/^party( game)?$/i'                                            => 'Party',
+		'/^quiz(\/ ?trivia)?$/i'                                        => 'Quiz',
+		'/^(racing( \/ driving)?|rally|off-road)$/i'                    => 'Racing',
+		'/^strategy( \/ tactics)?$/i'                                   => 'Strategy',
+		'/^(casino|gambling|miscellaneous\/ ?gambling)$/i'              => 'Casino',
+		'/^manage(ment|rial)$/i'                                        => 'Management',
+		'/^point[- ]?(and|&)[- ]?click$/i'                              => 'Point-and-click',
+		'/^(life simulation|virtual life)$/i'                           => 'Life Simulation',
+		'/^card( game)?$/i'                                             => 'Card Game',
+		'/^(board game|chess)$/i'                                       => 'Board Game',
+		'/^(puzzle|reflexion)$/i'                                       => 'Puzzle',
+		'/^(music|rhythm)$/i'                                           => 'Music',
+		'/^(compilation|bundle)$/i'                                     => 'Compilation',
+		'/^(other|misc)$/i'                                             => 'Other',
+		'/^adventure\/ ?visual novel$/i'                                => array('Adventure', 'Visual Novel'),
+	);
+	$clean = array();
+	foreach ((array) $genres as $genre) {
+		$genre = trim(html_entity_decode((string) $genre, ENT_QUOTES, 'UTF-8'));
+		if ($genre === '') {
+			continue;
+		}
+		foreach ($aliases as $pattern => $to) {
+			if (preg_match($pattern, $genre)) {
+				$genre = $to;
+				break;
+			}
+		}
+		foreach ((array) $genre as $name) {
+			$clean[] = $name;
+		}
+	}
+	return array_values(array_unique($clean));
 }
 
 /**

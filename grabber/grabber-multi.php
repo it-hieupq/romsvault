@@ -255,7 +255,7 @@ function grabber_mobygames_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -416,7 +416,7 @@ function grabber_retrostic_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -556,7 +556,7 @@ function grabber_igdb_ac($url, $console, $type, $stt)
 
         if (!empty($genres)) {
             $terms = array();
-            foreach ($genres as $genre) {
+            foreach (k_grabber_genre_names($genres) as $genre) {
                 if (term_exists($genre, 'genre')) {
                     $term = term_exists($genre, 'genre');
                 } else {
@@ -715,7 +715,7 @@ function grabber_romstation_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -863,7 +863,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
         // Thiết lập genres nếu có
         if (!empty($genres)) {
             $terms = array();
-            foreach ($genres as $genre) {
+            foreach (k_grabber_genre_names($genres) as $genre) {
                 if (term_exists($genre, 'genre')) {
                     $term = term_exists($genre, 'genre');
                 } else {
@@ -1091,7 +1091,7 @@ function grabber_gog_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -1243,7 +1243,7 @@ function grabber_backloggd_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -1449,7 +1449,7 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -2015,7 +2015,7 @@ function grabber_nintendolife_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
@@ -2216,7 +2216,7 @@ function grabber_pushsquare_ac($url, $console, $type, $stt)
 
                 if (!empty($genres)) {
                     $terms = array();
-                    foreach ($genres as $genre) {
+                    foreach (k_grabber_genre_names($genres) as $genre) {
                         if (term_exists($genre, 'genre')) {
                             $term = term_exists($genre, 'genre');
                         } else {
