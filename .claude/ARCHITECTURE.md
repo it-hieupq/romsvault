@@ -128,7 +128,7 @@ Taxonomy: `emulator_console`, `os`
 |---|---|---|---|---|
 | `console` | `true` | `slug: roms`, `with_front: false`, `hierarchical: false` | ✅ | `taxonomy-console.php` |
 | `collection` | `true` | `slug: collection`, `hierarchical: false` | — | `taxonomy-collection.php` |
-| `region` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
+| `region` | `true` | `slug: roms/region`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `language` | `true` | `slug: roms/language`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `genre` | `true` | default, `hierarchical: false` | — | `taxonomy.php` |
 | `dev` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |

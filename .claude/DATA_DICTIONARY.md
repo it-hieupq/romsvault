@@ -43,7 +43,7 @@ Theme có đúng **2 CPT**.
 |---|---|---|---|
 | `console` | `true` | `roms` (`with_front: false`) | ✅ |
 | `collection` | `true` | `collection` | — |
-| `region` | `true` | default | — |
+| `region` | `true` | `roms/region` (`with_front: false`) | — |
 | `language` | `true` | `roms/language` (`with_front: false`) | — |
 | `genre` | `true` | default | — |
 | `dev` | `false` | `roms/developer` (`with_front: false`) | — |
