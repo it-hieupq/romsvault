@@ -335,6 +335,11 @@ function k_grabber_company_names($names) {
 		do {
 			$prev = $name;
 			$name = trim(preg_replace('/(^|[\s,]+)(inc|incorporated|ltd|limited|llc|corp|corporation|co|gmbh|s\.?a|plc|k\.?k)\.?$/i', '', $name));
+			// The suffix is part of the name when only a bare word or a dangling "&" would be
+			// left: "Sun Corporation", "New Corporation", "Mitsui & Co.". Keep the last good form.
+			if ($name !== '' && (substr($name, -1) === '&' || in_array(strtolower($name), array('new', 'sun', 'ray', 'net', 'log', 'hi'), true))) {
+				$name = $prev;
+			}
 		} while ($name !== $prev);
 		$name = trim(preg_replace('/\s*,\s*/', ' ', $name));
 		if ($name === '') {
@@ -371,6 +376,8 @@ function k_grabber_brand_aliases() {
 		return $aliases;
 	}
 	$aliases = array(
+		'/^nintendo 64 wizard$/i'                              => 'Nintendo 64 Wizard',
+		'/^(square electronic arts|electronic arts square|square ea)\b/i' => 'Square Enix',
 		'/^(bandai|namco|namcot)\b/i'                          => 'Bandai Namco',
 		'/^(square|squaresoft|enix)\b/i'                       => 'Square Enix',
 		'/^(koei|tecmo)\b/i'                                   => 'Koei Tecmo',
