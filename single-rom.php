@@ -491,7 +491,7 @@ while ( have_posts() ) : the_post();
 							<?php echo esc_html( sprintf( __( '%s Setup Guide', 'rom' ), $console->name ) ); ?>
                         </h2>
                     </div>
-                    <div class="prose max-w-none text-slate-700 text-body"><?php echo wpautop( $console_guide ); ?></div>
+                    <div class="revert page-content max-w-none text-slate-700 text-body"><?php echo wpautop( $console_guide ); ?></div>
                 </div>
             </div>
         </section>

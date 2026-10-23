@@ -97,7 +97,7 @@ $score = round($score, 1, PHP_ROUND_HALF_DOWN);
                         <div class="font-bold text-rom-pink mb-3 flex items-center">
                             <?php echo get_svg_icon( 'noti' ) . ' ' . esc_html( __( 'Note', 'rom' ) ); ?>
                         </div>
-                        <?php echo wp_kses_post( $guide ); ?>
+                        <div class="revert page-content"><?php echo wp_kses_post( $guide ); ?></div>
                     </div>
                 <?php endif; ?>
 
