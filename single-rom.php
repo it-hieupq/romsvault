@@ -74,6 +74,7 @@ while ( have_posts() ) : the_post();
 		}
 		if ( in_array( $spec_tax, array( 'region', 'language' ), true ) ) {
 			$chip_rows[] = array(
+				'tax'   => $spec_tax,
 				'icon'  => $spec_meta[0],
 				'label' => $spec_meta[1],
 				'terms' => $spec_terms,
@@ -209,7 +210,7 @@ while ( have_posts() ) : the_post();
                                         <dd class="flex flex-wrap gap-1.5">
 											<?php foreach ( $row['terms'] as $chip_term ) : ?>
                                                 <a href="<?php echo esc_url( get_term_link( $chip_term->term_id ) ); ?>"
-                                                   class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-caption font-semibold hover:bg-rose-50 hover:text-primary transition-colors"><?php echo esc_html( $chip_term->name ); ?></a>
+                                                   class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-caption font-semibold hover:bg-rose-50 hover:text-primary transition-colors"><?php echo esc_html( trim( ( 'region' === $row['tax'] ? rom_region_flag( $chip_term->slug ) : '' ) . ' ' . $chip_term->name ) ); ?></a>
 											<?php endforeach; ?>
                                         </dd>
                                     </div>

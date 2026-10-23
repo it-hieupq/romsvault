@@ -111,8 +111,8 @@ khác trong DB đều coi là public.
 | `console_color` | color_picker | — | nền badge console trên `rom-card`; đọc qua `inc/utility.php:rom_console_badge_style()` (`sanitize_hex_color`, chữ trắng/tối tự chọn theo độ sáng). Trống → `bg-primary` |
 | `console_guide` | wysiwyg | — | |
 
-### 3.3 `region_settings` — `setting/setting-rom.php`
-**Location:** taxonomy `region` · `region_image` (image)
+### 3.3 `region_settings` — removed
+Region terms have no fields. The flag shown next to a region is an emoji from `inc/utility.php:rom_region_flag()`.
 
 ### 3.4 `collection_settings` — `setting/setting-rom.php`
 **Location:** taxonomy `collection` · `collection_banner` (image)
@@ -225,7 +225,6 @@ options page `options`, không ở đây.
 | `console_rom_downloads` | `console` | `tracking/flush.php:rftrk_add_term_meta()` |
 | `emulator_console_downloads` | `emulator_console` | `tracking/flush.php:rftrk_add_term_meta()` |
 | `cat_image`, `console_guide` | `console` | admin |
-| `region_image` | `region` | admin |
 | `collection_banner` | `collection` | admin |
 
 ---

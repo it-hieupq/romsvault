@@ -965,3 +965,41 @@ function rom_console_badge_style( $term ) {
 
 	return 'background-color:#' . $hex . ';color:' . $text . ';';
 }
+
+/**
+ * Flag emoji for a region term slug. World, Asia and Latin America get a globe;
+ * Scandinavia has no single flag and gets ''. Windows renders flag emoji as the
+ * two-letter code, which still reads fine next to the name.
+ */
+function rom_region_flag( $slug ) {
+	static $flags = array(
+		'usa' => '🇺🇸', 'japan' => '🇯🇵', 'europe' => '🇪🇺', 'world' => '🌍', 'asia' => '🌏', 'latin-america' => '🌎',
+		'germany' => '🇩🇪', 'korea' => '🇰🇷', 'france' => '🇫🇷', 'australia' => '🇦🇺', 'italy' => '🇮🇹', 'spain' => '🇪🇸',
+		'russia' => '🇷🇺', 'netherlands' => '🇳🇱', 'china' => '🇨🇳', 'brazil' => '🇧🇷', 'taiwan' => '🇹🇼', 'canada' => '🇨🇦',
+		'poland' => '🇵🇱', 'sweden' => '🇸🇪', 'uk' => '🇬🇧', 'portugal' => '🇵🇹', 'denmark' => '🇩🇰', 'norway' => '🇳🇴',
+		'finland' => '🇫🇮', 'india' => '🇮🇳', 'greece' => '🇬🇷', 'ireland' => '🇮🇪', 'hong-kong' => '🇭🇰', 'mexico' => '🇲🇽',
+		'israel' => '🇮🇱',
+	);
+	return isset( $flags[ $slug ] ) ? $flags[ $slug ] : '';
+}
+
+/**
+ * A rom's regions in the order a card shows them. get_the_terms() sorts by name, so
+ * "Australia + Europe + USA" led with Australia; World, USA, Europe and Japan come
+ * first, then the regions with the most roms.
+ *
+ * @param WP_Term[]|false|WP_Error $terms Region terms of the rom.
+ * @return WP_Term[]
+ */
+function rom_sort_regions( $terms ) {
+	if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		return array();
+	}
+	$rank = array( 'world' => 0, 'usa' => 1, 'europe' => 2, 'japan' => 3 );
+	usort( $terms, function ( $a, $b ) use ( $rank ) {
+		$ra = isset( $rank[ $a->slug ] ) ? $rank[ $a->slug ] : 9;
+		$rb = isset( $rank[ $b->slug ] ) ? $rank[ $b->slug ] : 9;
+		return $ra !== $rb ? $ra - $rb : $b->count - $a->count;
+	} );
+	return $terms;
+}

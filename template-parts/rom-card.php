@@ -10,8 +10,15 @@ $card_id       = get_the_ID();
 $card_consoles = get_the_terms( $card_id, 'console' );
 $card_console  = ( ! is_wp_error( $card_consoles ) && ! empty( $card_consoles ) ) ? $card_consoles[0] : null;
 
-$card_regions = get_the_terms( $card_id, 'region' );
-$card_region  = ( ! is_wp_error( $card_regions ) && ! empty( $card_regions ) ) ? $card_regions[0] : null;
+// Up to two regions as "🇺🇸 USA · 🇪🇺 Europe", then "+N"; every name is in the tooltip.
+$card_regions      = rom_sort_regions( get_the_terms( $card_id, 'region' ) );
+$card_region_shown = array_slice( $card_regions, 0, 2 );
+$card_region_more  = count( $card_regions ) - count( $card_region_shown );
+$card_region_bits  = array();
+foreach ( $card_region_shown as $card_region ) {
+	// Each flag + name stays on one line when the badge wraps.
+	$card_region_bits[] = '<span class="whitespace-nowrap">' . esc_html( trim( rom_region_flag( $card_region->slug ) . ' ' . $card_region->name ) ) . '</span>';
+}
 
 $card_genres      = get_the_terms( $card_id, 'genre' );
 $card_genre_names = array();
@@ -60,8 +67,9 @@ $card_sizes = '(min-width: 1400px) 260px, (min-width: 1280px) 20vw, (min-width: 
 			) );
 		endif; ?>
 
-		<?php if ( $card_region ) : ?>
-            <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 text-slate-200 text-[10px] font-bold uppercase backdrop-blur-sm"><?php echo esc_html( $card_region->name ); ?></span>
+		<?php if ( $card_region_bits ) : ?>
+            <?php // Long lists wrap inside the cover instead of running off its left edge. ?>
+            <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 text-slate-200 text-[10px] font-bold uppercase backdrop-blur-sm" style="max-width:calc(100% - 1.25rem);text-align:right" title="<?php echo esc_attr( implode( ', ', wp_list_pluck( $card_regions, 'name' ) ) ); ?>"><?php echo implode( ' · ', $card_region_bits ); // Each bit is escaped above. ?><?php if ( $card_region_more ) : ?> <span class="text-slate-400">+<?php echo (int) $card_region_more; ?></span><?php endif; ?></span>
 		<?php endif; ?>
     </div>
 

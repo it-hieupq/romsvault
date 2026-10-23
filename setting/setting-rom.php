@@ -569,34 +569,6 @@ function k_init_rom() {
 		'label_placement' => 'top',
 	) );
 
-	/**
-	 * Add region field group
-	 */
-	acf_add_local_field_group( array(
-		'key'		=> 'region_settings',
-		'fields' 	=> array (
-			array (
-				'key' 	=> 'region_image',
-				'label' => __( 'Image', 'rom' ),
-				'name' 	=> 'region_image',
-				'type' 	=> 'image',
-				'show_column' 		 => 1,
-				'show_column_weight' => 10,
-			),
-		),
-		'location' => array (
-			array (
-				array (
-					'param'    => 'taxonomy',
-					'operator' => '==',
-					'value'    => 'region',
-				),
-			),
-		),
-		'position' => 'normal',
-		'label_placement' => 'top',
-	) );
-
     /**
      * Add collection field group
      */

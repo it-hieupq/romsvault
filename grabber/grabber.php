@@ -468,6 +468,49 @@ function k_grabber_genre_names($genres) {
 }
 
 /**
+ * Map scraped region names onto the region terms the site keeps.
+ *
+ * Sources write the same region as "US", "United States", "EUR", "JPN" or "PAL";
+ * those land on USA, Europe, Japan... instead of becoming new terms. "Unknown" and
+ * similar placeholders are dropped. Unknown names pass through as they are.
+ *
+ * @param mixed $regions Scraped region names; a missing list counts as none.
+ * @return string[]
+ */
+function k_grabber_region_names($regions) {
+	static $aliases = array(
+		'/^(us|u|usa|u\.s\.a?\.?|united states( of america)?|america|na|north america)$/i' => 'USA',
+		'/^(eu|e|eur|europe|pal)$/i'                                   => 'Europe',
+		'/^(jp|j|jpn|japan)$/i'                                        => 'Japan',
+		'/^(world|worldwide|ww|global)$/i'                             => 'World',
+		'/^(uk|gb|united kingdom|great britain|england)$/i'            => 'UK',
+		'/^(korea|south korea|kr|kor)$/i'                              => 'Korea',
+		'/^(germany|deutschland|de|ger)$/i'                            => 'Germany',
+		'/^(france|fr|fra)$/i'                                         => 'France',
+		'/^(australia|au|aus)$/i'                                      => 'Australia',
+		'/^(netherlands|holland|nl)$/i'                                => 'Netherlands',
+		'/^(brazil|brasil|br)$/i'                                      => 'Brazil',
+		'/^(russia|russian federation|ru)$/i'                          => 'Russia',
+		'/^(china|cn|chn)$/i'                                          => 'China',
+		'/^(unknown|n\/?a|none|-+|\?+)$/i'                             => '',
+	);
+	$clean = array();
+	foreach ((array) $regions as $region) {
+		$region = trim(html_entity_decode((string) $region, ENT_QUOTES, 'UTF-8'));
+		foreach ($aliases as $pattern => $to) {
+			if (preg_match($pattern, $region)) {
+				$region = $to;
+				break;
+			}
+		}
+		if ($region !== '') {
+			$clean[] = $region;
+		}
+	}
+	return array_values(array_unique($clean));
+}
+
+/**
  * Store a downloaded image as an attachment, compressed to WebP.
  *
  * Shared by every grabber download path. The bytes are checked before anything

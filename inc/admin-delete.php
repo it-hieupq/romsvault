@@ -25,7 +25,6 @@ function rom_media_termmeta_keys(): array {
 		'cat_image',
 		'emulator_console_image',
 		'collection_banner',
-		'region_image',
 	) );
 }
 

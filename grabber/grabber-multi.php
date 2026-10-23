@@ -702,7 +702,7 @@ function grabber_romstation_ac($url, $console, $type, $stt)
 
                 if (!empty($regions)) {
                     $terms = array();
-                    foreach ($regions as $region) {
+                    foreach (k_grabber_region_names($regions) as $region) {
                         if (term_exists($region, 'region')) {
                             $term = term_exists($region, 'region');
                         } else {
@@ -1465,7 +1465,7 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
 
                 if (!empty($regions)) {
                     $terms = array();
-                    foreach ($regions as $region) {
+                    foreach (k_grabber_region_names($regions) as $region) {
                         if (term_exists($region, 'region')) {
                             $term = term_exists($region, 'region');
                         } else {
