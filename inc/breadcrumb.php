@@ -157,10 +157,10 @@ function k_breadcrumb() {
 	// Author and date archives are not handled: both answer 404 on this site.
 
 	$home_title = __( 'Home', 'rom' );
-	$separator  = '<span class="mx-2 text-gray-400" aria-hidden="true">/</span>';
+	$separator  = '<span class="mx-2 text-slate-300" aria-hidden="true">/</span>';
 	?>
     <nav aria-label="<?php esc_attr_e( 'Breadcrumb', 'rom' ); ?>">
-        <ul id="breadcrumb" class="pb-3 flex flex-wrap items-center text-sm [&_a:hover]:underline font-bold">
+        <ul id="breadcrumb" class="pb-3 flex flex-wrap items-center text-meta font-medium [&_a:hover]:underline">
             <li class="flex items-center">
                 <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="text-rom-pink hover:underline inline-flex items-center">
                     <?php echo get_svg_icon( 'home' ) . esc_html( $home_title ); ?>
@@ -172,9 +172,9 @@ function k_breadcrumb() {
 				?>
                 <li class="flex items-center">
 					<?php if ( ! $is_last && ! empty( $crumb['url'] ) ) : ?>
-                        <a href="<?php echo esc_url( $crumb['url'] ); ?>" class="text-gray-500 hover:underline"><?php echo esc_html( $crumb['label'] ); ?></a>
+                        <a href="<?php echo esc_url( $crumb['url'] ); ?>" class="text-slate-500 hover:underline"><?php echo esc_html( $crumb['label'] ); ?></a>
 					<?php else : ?>
-                        <span class="text-gray-500"<?php echo $is_last ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $crumb['label'] ); ?></span>
+                        <span class="<?php echo $is_last ? 'text-slate-700 font-semibold' : 'text-slate-500'; ?>"<?php echo $is_last ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $crumb['label'] ); ?></span>
 					<?php endif; ?>
 					<?php if ( ! $is_last ) { echo $separator; } ?>
                 </li>

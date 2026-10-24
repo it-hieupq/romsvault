@@ -55,12 +55,13 @@ $rf_ticket_types = rf_ticket_types();
 </style>
 <section class="py-8 text-gray-900" data-rf-ticket-page data-rf-status-labels="<?php echo esc_attr( wp_json_encode( array_values( rf_ticket_statuses() ) ) ); ?>" data-rf-status-colors="<?php echo esc_attr( wp_json_encode( rf_ticket_status_colors() ) ); ?>">
 	<div class="content-container px-4 sm:px-6 lg:px-8 w-full max-w-6xl">
-		<h1 class="text-2xl font-bold mb-6 text-rom-pink"><?php esc_html_e( 'Create Request', 'rom' ); ?></h1>
+		<?php // One column: the form for everyone, then the member's own requests underneath. ?>
+		<div class="max-w-2xl mx-auto space-y-6">
 
-		<div class="grid gap-6 lg:grid-cols-3 items-start">
+			<h1 class="text-2xl font-bold text-rom-pink"><?php esc_html_e( 'Create Request', 'rom' ); ?></h1>
 
-			<!-- LEFT: create form (shown to everyone; submit is gated to sign-in for guests) -->
-			<div class="lg:col-span-1 space-y-4">
+			<!-- Create form (shown to everyone; submit is gated to sign-in for guests) -->
+			<div class="space-y-4">
 
 				<!-- Lock notice: member-only; auth.js reveals it when an open request exists -->
 				<div data-rf-ticket-lock style="display:none" class="rf-authed-only flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-sm text-amber-700 mb-4">
@@ -102,16 +103,6 @@ $rf_ticket_types = rf_ticket_types();
 
 			</div>
 
-			<!-- RIGHT -->
-			<div class="lg:col-span-2">
-
-				<!-- Guest: sign-in prompt (mirrors the member panel position) -->
-				<div class="rf-guest-only bg-white rounded-2xl shadow-md p-8 text-center">
-					<svg class="w-10 h-10 mx-auto mb-3 text-rom-pink" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0v.75H4.5v-.75z"/></svg>
-					<p class="text-gray-600 mb-4"><?php esc_html_e( 'Sign in to submit a request and track its status.', 'rom' ); ?></p>
-					<button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full font-semibold hover:bg-rom-pink-dark transition"><?php esc_html_e( 'Sign in', 'rom' ); ?></button>
-				</div>
-
 				<!-- Member: current request + lazy history -->
 				<div class="rf-authed-only">
 
@@ -122,7 +113,7 @@ $rf_ticket_types = rf_ticket_types();
 					</div>
 					<div data-rf-current-card class="hidden"></div>
 					<div data-rf-current-none class="hidden bg-white rounded-xl shadow-md p-10 text-center text-gray-500">
-						<?php esc_html_e( 'You have no open request. Submit one on the left.', 'rom' ); ?>
+						<?php esc_html_e( 'You have no open request. Submit one above.', 'rom' ); ?>
 					</div>
 
 					<!-- Request history: one accordion card — toggle header + divided item rows -->
@@ -144,7 +135,6 @@ $rf_ticket_types = rf_ticket_types();
 					</div>
 
 				</div>
-			</div>
 
 		</div>
 	</div>
