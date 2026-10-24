@@ -20,7 +20,7 @@ get_template_part( 'template-parts/hero');
 				</h2>
 			</div>
 
-			<div class="space-y-4">
+			<div>
 				<?php
 				$term = get_queried_object();
 				$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
@@ -43,10 +43,12 @@ get_template_part( 'template-parts/hero');
 				$query = new WP_Query( $args );
 
 				if ( $query->have_posts() ) :
+					echo '<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">';
 					while ( $query->have_posts() ) :
 						$query->the_post();
 						get_template_part( 'template-parts/emu-item' );
 					endwhile;
+					echo '</div>';
 
 					k_pagination( $query->max_num_pages );
 

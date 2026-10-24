@@ -16,11 +16,12 @@ $card_desc   = wp_strip_all_tags( $card_term->description );
 $card_count  = (int) $card_term->count;
 ?>
 <a href="<?php echo esc_url( get_term_link( $card_term ) ); ?>" class="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-subtle hover:shadow-card-hover hover:border-primary/50 transition-all flex flex-col">
-    <div class="relative aspect-video overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100">
+    <?php // 16:9 plus a fixed 50px, which aspect-ratio alone can't express. ?>
+    <div class="relative overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100" style="padding-top:calc(56.25% + 50px)">
 		<?php if ( ! empty( $card_banner['ID'] ) ) :
 			// The banner only has a 300px 'thumbnail' size; srcset lets wide/retina cells pull the original.
 			echo wp_get_attachment_image( $card_banner['ID'], 'thumbnail', false, array(
-				'class'   => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
+				'class'   => 'absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
 				'alt'     => $card_term->name,
 				'loading' => 'lazy',
 				'sizes'   => '(min-width: 1400px) 440px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',

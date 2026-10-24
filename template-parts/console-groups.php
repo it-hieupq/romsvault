@@ -24,9 +24,7 @@ if ( $rows ) :
                         if ($term->count <= 0) {
                             continue;
                         }
-                        // A term that went away between two cache writes still
-                        // reaches here; get_term_link() answers WP_Error for it and
-                        // echoing that is a fatal.
+
                         $term_link = get_term_link( $term->term_id );
                         if ( is_wp_error( $term_link ) ) {
                             continue;
@@ -43,7 +41,7 @@ if ( $rows ) :
                                 <div class="font-bold text-base text-center mb-6 hover:text-rom-pink"><?php echo $term->name ?></div>
                                 <div class="text-xs text-gray-500 flex justify-between">
                                     <span class="inline-flex items-center">
-                                        <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>
+                                        <?php echo get_svg_icon( 'gamepad' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __('ROM', 'rom') ?>
                                     </span>
                                     <span class="inline-flex items-center">
                                         <?php

@@ -43,7 +43,7 @@ global $post;
                                     <div class="font-bold text-base text-center mb-6 hover:text-rom-pink"><?php echo $term->name ?></div>
                                     <div class="text-xs text-gray-500 flex justify-between">
                                         <span class="inline-flex items-center">
-                                            <?php echo get_svg_icon( 'joystick' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __( 'Emulators', 'rom' ) ?>
+                                            <?php echo get_svg_icon( 'gamepad' ) . number_format( $term->count ?: 0, 0, '' ) . ' ' . __( 'Emulators', 'rom' ) ?>
                                         </span>
 
                                         <span class="inline-flex items-center">

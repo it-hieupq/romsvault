@@ -312,11 +312,17 @@ while ( have_posts() ) : the_post();
 							// 1-based, matching the /download/{n}/ endpoint.
 							$file_url  = $download_url . ( $index + 1 ) . '/';
 							$file_type = ! empty( $file['file_type'] ) ? $file['file_type'] : '';
+							// Same as the rom page: the badge shows the archive the link really
+							// serves, read off the URL; the Format line keeps the editor's file_type.
+							$file_ext = strtolower( pathinfo( (string) wp_parse_url( $file['url'] ?? '', PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+							if ( ! preg_match( '/^[a-z0-9]{1,5}$/', $file_ext ) ) {
+								$file_ext = '';
+							}
 							?>
                             <div class="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-rose-50/20 transition-colors">
                                 <div class="flex items-start gap-3.5 flex-1 min-w-0">
                                     <div class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption flex-shrink-0 mt-0.5 uppercase">
-										<?php echo esc_html( $file_type ? ltrim( $file_type, '.' ) : '#' . ( $index + 1 ) ); ?>
+										<?php echo esc_html( $file_ext ? $file_ext : '#' . ( $index + 1 ) ); ?>
                                     </div>
                                     <div class="min-w-0">
                                         <span class="font-bold text-slate-900 text-meta sm:text-body block"><?php echo esc_html( $file['name'] ); ?></span>
@@ -333,8 +339,10 @@ while ( have_posts() ) : the_post();
                                 </div>
                                 <div class="flex items-center gap-2 self-start md:self-center flex-shrink-0">
                                     <a href="<?php echo esc_url( $file_url ); ?>"
-                                       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white font-bold text-caption uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all [&_svg]:w-3.5 [&_svg]:h-3.5">
-											<?php echo get_svg_icon( 'download' ) . esc_html__( 'Download', 'rom' ); ?>
+                                       class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white font-bold text-[11px] uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all">
+                                        <?php // Own icon: the shared 'download' one is painted pink and vanishes on this button. ?>
+                                        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+											<?php esc_html_e( 'Download', 'rom' ); ?>
                                     </a>
                                 </div>
                             </div>
@@ -395,7 +403,7 @@ while ( have_posts() ) : the_post();
                     <a href="<?php echo esc_url( $console_link ); ?>"
                        class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
-                <div class="space-y-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
 					<?php while ( $related_query->have_posts() ) : $related_query->the_post();
 						get_template_part( 'template-parts/emu-item' );
 					endwhile; wp_reset_postdata(); ?>
