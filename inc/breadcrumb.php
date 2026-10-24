@@ -1,381 +1,185 @@
 <?php
-// Breadcrumbs
+/**
+ * Breadcrumbs.
+ *
+ * k_breadcrumb() collects the trail as label/url pairs, then renders it once,
+ * so every branch is escaped the same way. The last crumb is the current page
+ * and never links.
+ */
+
+/**
+ * ID of the published page using $template ('page-roms.php'...), or 0.
+ *
+ * _wp_page_template is matched by meta_value, which has no index, so the answer
+ * is kept in a transient and dropped whenever a page is saved or deleted.
+ */
+function rf_template_page( $template ) {
+	static $pages = array();
+
+	if ( ! isset( $pages[ $template ] ) ) {
+		$key     = 'rf_tpl_page_' . md5( $template );
+		$page_id = get_transient( $key );
+		if ( false === $page_id ) {
+			$ids     = get_posts( array(
+				'post_type'      => 'page',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_key'       => '_wp_page_template',
+				'meta_value'     => $template,
+			) );
+			$page_id = $ids ? (int) $ids[0] : 0;
+			set_transient( $key, $page_id, DAY_IN_SECONDS );
+		}
+		$pages[ $template ] = (int) $page_id;
+	}
+
+	return $pages[ $template ];
+}
+
+function rf_template_page_flush( $post_id ) {
+	if ( 'page' !== get_post_type( $post_id ) ) {
+		return;
+	}
+	foreach ( get_rom_page_templates() as $template ) {
+		delete_transient( 'rf_tpl_page_' . md5( $template ) );
+	}
+}
+add_action( 'save_post_page', 'rf_template_page_flush' );
+add_action( 'before_delete_post', 'rf_template_page_flush' );
+
+/**
+ * The listing page a crumb trail hangs off: Roms for rom content, Emulators
+ * for emulator content, Collections for collection terms. Empty when the page
+ * doesn't exist.
+ */
+function rf_breadcrumb_section( $post_type, $taxonomy = '' ) {
+	if ( 'collection' === $taxonomy ) {
+		$template = 'page-collections.php';
+	} else {
+		$template = array(
+			'rom'      => 'page-roms.php',
+			'emulator' => 'page-emulators.php',
+		)[ $post_type ] ?? '';
+	}
+
+	$page_id = $template ? rf_template_page( $template ) : 0;
+	if ( ! $page_id ) {
+		return array();
+	}
+
+	return array( array( 'label' => get_the_title( $page_id ), 'url' => get_permalink( $page_id ) ) );
+}
+
+/**
+ * Linked crumbs for a term and its ancestors, root first.
+ */
+function rf_breadcrumb_terms( $term, $include_self = true ) {
+	$ids = array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) );
+	if ( $include_self ) {
+		$ids[] = $term->term_id;
+	}
+
+	$crumbs = array();
+	foreach ( $ids as $id ) {
+		$item = get_term( $id, $term->taxonomy );
+		$link = $item instanceof WP_Term ? get_term_link( $item ) : '';
+		if ( $link && ! is_wp_error( $link ) ) {
+			$crumbs[] = array( 'label' => $item->name, 'url' => $link );
+		}
+	}
+
+	return $crumbs;
+}
+
+/**
+ * Crumbs between Home and a post: its category chain for blog posts, or the
+ * listing page plus the console term for roms and emulators.
+ */
+function rf_breadcrumb_post_trail( $post_id ) {
+	$post_type = get_post_type( $post_id );
+
+	if ( 'post' === $post_type ) {
+		$categories = get_the_category( $post_id );
+		return $categories ? rf_breadcrumb_terms( end( $categories ) ) : array();
+	}
+
+	$crumbs   = rf_breadcrumb_section( $post_type );
+	$taxonomy = get_custom_console_name( (string) $post_type );
+	$terms    = $taxonomy ? get_the_terms( $post_id, $taxonomy ) : false;
+	if ( $terms && ! is_wp_error( $terms ) ) {
+		$crumbs = array_merge( $crumbs, rf_breadcrumb_terms( $terms[0] ) );
+	}
+
+	return $crumbs;
+}
+
 function k_breadcrumb() {
+	$crumbs = array();
 
-    // Settings
-    $breadcrums_id = 'breadcrumb';
-    $home_title = __('Home', 'rom');
+	if ( get_query_var( 'download' ) ) {
+		// The download page renders through template_redirect on top of the single.
+		$post_id  = get_queried_object_id();
+		$crumbs   = rf_breadcrumb_post_trail( $post_id );
+		$crumbs[] = array( 'label' => get_the_title( $post_id ), 'url' => get_permalink( $post_id ) );
+		$crumbs[] = array( 'label' => __( 'Download', 'rom' ) );
+	} elseif ( is_single() ) {
+		$post_id  = get_queried_object_id();
+		$crumbs   = rf_breadcrumb_post_trail( $post_id );
+		$crumbs[] = array( 'label' => get_the_title( $post_id ) );
+	} elseif ( is_tax() ) {
+		$term     = get_queried_object();
+		$tax      = get_taxonomy( $term->taxonomy );
+		$crumbs   = rf_breadcrumb_section( $tax ? (string) reset( $tax->object_type ) : '', $term->taxonomy );
+		$crumbs   = array_merge( $crumbs, rf_breadcrumb_terms( $term, false ) );
+		$crumbs[] = array( 'label' => $term->name );
+	} elseif ( is_post_type_archive() ) {
+		$crumbs[] = array( 'label' => post_type_archive_title( '', false ) );
+	} elseif ( is_category() ) {
+		$crumbs   = rf_breadcrumb_terms( get_queried_object(), false );
+		$crumbs[] = array( 'label' => single_cat_title( '', false ) );
+	} elseif ( is_tag() ) {
+		$crumbs[] = array( 'label' => __( 'Tag', 'rom' ) . ': ' . single_tag_title( '', false ) );
+	} elseif ( is_page() ) {
+		$page_id = get_queried_object_id();
+		foreach ( array_reverse( get_post_ancestors( $page_id ) ) as $ancestor ) {
+			$crumbs[] = array( 'label' => get_the_title( $ancestor ), 'url' => get_permalink( $ancestor ) );
+		}
+		$crumbs[] = array( 'label' => get_the_title( $page_id ) );
+	} elseif ( is_search() ) {
+		$crumbs[] = array( 'label' => __( 'Search results for', 'rom' ) . ': ' . get_search_query( false ) );
+	} elseif ( is_404() ) {
+		$crumbs[] = array( 'label' => __( 'Error 404', 'rom' ) );
+	} elseif ( get_query_var( 'paged' ) ) {
+		$crumbs[] = array( 'label' => __( 'Page', 'rom' ) . ' ' . (int) get_query_var( 'paged' ) );
+	}
+	// Author and date archives are not handled: both answer 404 on this site.
 
-    $post_type = get_post_type();
-    // Initialize custom taxonomy variable
-    $custom_taxonomy = get_custom_console_name( $post_type );
-
-    // Get the query & post information
-    global $post, $wp_query;
-    ?>
-
-    <ul id="<?php echo $breadcrums_id; ?>" class="pb-3 flex flex-wrap items-center text-sm [&_a:hover]:underline font-bold">
-        <li class="flex items-center">
-            <a href="<?php echo get_home_url(); ?>" title="<?php echo $home_title; ?>" class="text-rom-pink hover:underline inline-flex items-center">
-                <?php echo get_svg_icon('home').$home_title; ?>
-            </a>
-            <span class="mx-2 text-gray-400">/</span></li>
-
-        <?php
-        if (is_archive() && !is_tax() && !is_category() && !is_tag()) {
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo post_type_archive_title('', false); ?></span></li>
-            <?php
-        } else if (is_archive() && is_tax() && !is_category() && !is_tag()) {
-
-            if (is_tax('console')) {
-                $args = array(
-                    'post_type' => 'page',
-                    'posts_per_page' => 1,
-                    'no_found_rows' => true,
-                    'meta_key' => '_wp_page_template',
-                    'meta_value' => 'page-roms.php'
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        ?>
-                        <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                        <?php
-                    }
-                    wp_reset_postdata();
-                }
-            } elseif (is_tax('emulator_console')) {
-                $args = array(
-                    'post_type' => 'page',
-                    'posts_per_page' => 1,
-                    'no_found_rows' => true,
-                    'meta_key' => '_wp_page_template',
-                    'meta_value' => 'page-emulators.php'
-                );
-                $query = new WP_Query($args);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        ?>
-                        <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                        <?php
-                    }
-                    wp_reset_postdata();
-                }
-            }
-
-            // If post is a custom post type
-            $post_type = get_post_type();
-
-            $parent = get_queried_object()->parent;
-            $terms = array();
-            while ($parent) {
-                $term = get_term($parent);
-                $parent = $term->parent;
-                array_unshift($terms, $term);
-            }
-            foreach ($terms as $term) {
-	            $term_link = get_term_link($term);
-                ?>
-                <li class="flex items-center">
-                    <a href="<?php echo esc_url($term_link); ?>" class="text-gray-500 hover:underline"><?php echo esc_html($term->name); ?></a><span class="mx-2 text-gray-400">/</span>
-                </li>
-                <?php
-            }
-            $custom_tax_name = get_queried_object()->name;
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo $custom_tax_name; ?></span></li>
-            <?php
-        } else if (is_single() && empty($wp_query->query_vars['download'])) {
-
-            // If post is a custom post type
-            $post_type = get_post_type();
-
-            // Get post category info
-            $category = get_the_category();
-
-            if (!empty($category)) {
-
-                $last_category = end($category);
-
-                // Get parent any categories and create array
-                $get_cat_parents = rtrim(get_category_parents($last_category->term_id, true, ','), ',');
-                $cat_parents = explode(',', $get_cat_parents);
-
-                // Loop through parent categories and store in variable $cat_display
-                $cat_display = '';
-                foreach ($cat_parents as $parents) {
-                    $cat_display .= '<li class="text-gray-500">' . $parents . '<span class="mx-2 text-gray-500">/</span></li>';
-                }
-            }
-
-            // If it's a custom post type within a custom taxonomy
-            $taxonomy_exists = !empty($custom_taxonomy) ? taxonomy_exists($custom_taxonomy) : false;
-
-            if (empty($last_category) && !empty($custom_taxonomy) && $taxonomy_exists) {
-
-                if (is_singular('rom')) {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-roms.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                } elseif (is_singular('emulator')) {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-emulators.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                }
-
-                // Get terms for custom taxonomy
-                $taxonomy_terms = get_the_terms($post->ID, $custom_taxonomy);
-
-                if ($taxonomy_terms && !is_wp_error($taxonomy_terms)) {
-                    // Handle both array of terms and single term
-                    $term = is_array($taxonomy_terms) ? $taxonomy_terms[0] : $taxonomy_terms;
-                    
-                    $cat_id = $term->term_id;
-                    $cat_nicename = $term->slug;
-                    $cat_link = get_term_link($term->term_id, $custom_taxonomy);
-                    $cat_name = $term->name;
-                }
-
-            }
-
-            // Check if the post is in a category
-            if (!empty($last_category)) {
-                echo $cat_display;
-                ?>
-                <li class="flex items-center"><span class="text-gray-500">
-                    <?php
-                    if ($title = get_field('_app_name'))
-                        echo $title;
-                    else
-                        the_title();
-                    ?>
-                </span></li>
-                <?php
-
-                // Else if post is in a custom taxonomy
-            } else if (!empty($cat_id)) {
-                ?>
-                <li class="flex items-center"><a href="<?php echo $cat_link; ?>" title="<?php echo $cat_name; ?>" class="text-gray-500 hover:underline"><?php echo $cat_name; ?></a><span class="mx-2 text-gray-400">/</span></li>
-                <li class="flex items-center"><span class="text-gray-500"><?php echo get_the_title(); ?></span></li>
-                <?php
-            } else {
-                ?>
-                <li class="flex items-center"><span class="text-gray-500"><?php the_field('_app_name'); ?></span></li>
-                <?php
-            }
-        } else if (!empty($wp_query->query_vars['download'])) {
-            $post_id = get_queried_object_id();
-
-            // Get post type and corresponding taxonomy
-            $post = get_post($post_id);
-            $post_type = $post ? $post->post_type : '';
-            $taxonomy = get_custom_console_name($post_type);
-
-            // Get taxonomy terms
-            $taxonomy_terms = !empty($taxonomy) ? wp_get_post_terms($post_id, $taxonomy) : array();
-            
-            // Initialize variables
-            $cat_id = '';
-            $cat_link = '';
-            $cat_name = '';
-            
-            if (!empty($taxonomy_terms) && !is_wp_error($taxonomy_terms)) {
-                $term = is_array($taxonomy_terms) ? $taxonomy_terms[0] : $taxonomy_terms;
-                $cat_id = $term->term_id;
-                $cat_nicename = $term->slug;
-                $cat_link = get_term_link($term->term_id, $taxonomy);
-                $cat_name = $term->name;
-                
-                if ($taxonomy_terms[0]->taxonomy == 'console') {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-roms.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                } elseif ($taxonomy_terms[0]->taxonomy == 'emulator_console') {
-                    $args = array(
-                        'post_type' => 'page',
-                        'posts_per_page' => 1,
-                        'no_found_rows' => true,
-                        'meta_key' => '_wp_page_template',
-                        'meta_value' => 'page-emulators.php'
-                    );
-                    $query = new WP_Query($args);
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            ?>
-                            <li class="flex items-center"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="text-gray-500 hover:underline"><?php the_title(); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    }
-                }
-
-                if (!empty($cat_id)) {
-                    ?>
-                    <li class="flex items-center">
-                        <a href="<?php echo $cat_link; ?>" title="<?php echo $cat_name; ?>" class="text-gray-500 hover:underline"><?php echo $cat_name; ?></a><span class="mx-2 text-gray-400">/</span>
-                    </li>
-                <?php }
-            }
-            ?>
-
+	$home_title = __( 'Home', 'rom' );
+	$separator  = '<span class="mx-2 text-gray-400" aria-hidden="true">/</span>';
+	?>
+    <nav aria-label="<?php esc_attr_e( 'Breadcrumb', 'rom' ); ?>">
+        <ul id="breadcrumb" class="pb-3 flex flex-wrap items-center text-sm [&_a:hover]:underline font-bold">
             <li class="flex items-center">
-                <a href="<?php echo get_the_permalink($post_id); ?>" class="text-gray-500 hover:underline"><?php echo get_the_title($post_id); ?></a><span class="mx-2 text-gray-400">/</span>
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="text-rom-pink hover:underline inline-flex items-center">
+                    <?php echo get_svg_icon( 'home' ) . esc_html( $home_title ); ?>
+                </a>
+                <?php if ( $crumbs ) { echo $separator; } ?>
             </li>
-            <li class="flex items-center"><span class="text-gray-500"><?php _e('Download', 'rom'); ?></span></li>
-            <?php
-        } else if (is_category()) {
-            // Category page
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo single_cat_title('', false); ?></span></li>
-
-            <?php
-        } else if (is_page()) {
-
-            // Standard page
-            if ($post->post_parent) {
-
-                // If child page, get parents 
-                $anc = get_post_ancestors($post->ID);
-
-                // Get parents in the right order
-                $anc = array_reverse($anc);
-
-                // Parent page loop
-                foreach ($anc as $ancestor) {
-                    ?>
-                    <li class="flex items-center"><a href="<?php echo get_permalink($ancestor); ?>" title="<?php echo get_the_title($ancestor); ?>" class="text-gray-500 hover:underline"><?php echo get_the_title($ancestor); ?></a><span class="mx-2 text-gray-400">/</span></li>
-                    <?php
-                }
-
-                // Display parent pages
-                echo $parents;
-
-                // Current page
-                ?>
-                <li class="flex items-center"><span class="text-gray-500"><?php echo get_the_title(); ?></span></li>
-                <?php
-            } else {
-
-                // Just display current page if not parents
-                ?>
-                <li class="flex items-center"><span class="text-gray-500"><?php echo get_the_title(); ?></span></li>
-                <?php
-            }
-        } else if (is_tag()) {
-
-            // Tag page
-
-            // Get tag information
-            $term_id = get_query_var('tag_id');
-            $taxonomy = 'post_tag';
-            $args = 'include=' . $term_id;
-            $terms = get_terms($taxonomy, $args);
-            $get_term_id = $terms[0]->term_id;
-            $get_term_slug = $terms[0]->slug;
-            $get_term_name = $terms[0]->name;
-
-            // Display the tag name
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Tag', 'rom') . ': ' . $get_term_name; ?></span></li>
-            <?php
-        } elseif (is_day()) {
-
-            // Day archive
-            ?>
-            <li class="flex items-center"><a href="<?php echo get_year_link(get_the_time('Y')); ?>" title="<?php echo get_the_time('Y'); ?>" class="text-gray-500 hover:underline"><?php echo get_the_time('Y'); ?></a><span class="mx-2 text-gray-400">/</span></li>
-            <li class="flex items-center"><a href="<?php echo get_month_link(get_the_time('Y'), get_the_time('m')); ?>" title="<?php echo get_the_time('M'); ?>" class="text-gray-500 hover:underline"><?php echo get_the_time('M'); ?></a><span class="mx-2 text-gray-400">/</span></li>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo get_the_time('jS') . ' ' . get_the_time('M'); ?></span></li>
-            <?php
-        } else if (is_month()) {
-
-            // Month Archive
-            ?>
-            <li class="flex items-center"><a href="<?php echo get_year_link(get_the_time('Y')); ?>" title="<?php echo get_the_time('Y'); ?>" class="text-gray-500 hover:underline"><?php echo get_the_time('Y'); ?></a><span class="mx-2 text-gray-400">/</span></li>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo get_the_time('M'); ?></span></li>
-            <?php
-        } else if (is_year()) {
-            // Display year archive
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo get_the_time('Y'); ?></span></li>
-            <?php
-        } else if (is_author()) {
-
-            // Auhor archive
-
-            // Get the author information
-            global $author;
-            $userdata = get_userdata($author);
-
-            // Display author name
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Author', 'rom') . ': ' . $userdata->display_name; ?></span></li>
-            <?php
-        } else if (get_query_var('paged')) {
-
-            // Paginated archives
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Page', 'rom') . ' ' . get_query_var('paged'); ?></span></li>
-            <?php
-        } else if (is_search()) {
-
-            // Search results page
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php echo __('Search results for', 'rom') . ': ' . get_search_query(); ?></span></li>
-            <?php
-        } elseif (is_404()) {
-
-            // 404 page
-            ?>
-            <li class="flex items-center"><span class="text-gray-500"><?php _e('Error 404', 'rom'); ?></span></li>
-            <?php
-        }
-        ?>
-    </ul>
-    <?php
+			<?php foreach ( $crumbs as $i => $crumb ) :
+				$is_last = ( count( $crumbs ) - 1 === $i );
+				?>
+                <li class="flex items-center">
+					<?php if ( ! $is_last && ! empty( $crumb['url'] ) ) : ?>
+                        <a href="<?php echo esc_url( $crumb['url'] ); ?>" class="text-gray-500 hover:underline"><?php echo esc_html( $crumb['label'] ); ?></a>
+					<?php else : ?>
+                        <span class="text-gray-500"<?php echo $is_last ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $crumb['label'] ); ?></span>
+					<?php endif; ?>
+					<?php if ( ! $is_last ) { echo $separator; } ?>
+                </li>
+			<?php endforeach; ?>
+        </ul>
+    </nav>
+	<?php
 }
