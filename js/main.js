@@ -984,26 +984,6 @@ function showCopyMessage(buttonElement) {
     }
 })();
 // ---------------------------------------------------------------------------
-// Rating stars — display only (custom, no library; replaces RateYo). Fill each
-// `.rating` element from its data-rateyo-rating. Ratings are never editable here;
-// submitting happens in the member review section via rf/v1/rating.
-// ---------------------------------------------------------------------------
-(function () {
-  function renderStars(el) {
-    var v = parseFloat(el.getAttribute('data-rateyo-rating')) || 0;
-    if (v < 0) v = 0;
-    if (v > 5) v = 5;
-    el.innerHTML = '<span class="rf-stars" role="img" aria-label="' + v.toFixed(1) + ' / 5">'
-      + '<span class="rf-stars-fill" style="width:' + ((v / 5) * 100) + '%"></span></span>';
-  }
-  function init() {
-    var els = document.querySelectorAll('.rating');
-    for (var i = 0; i < els.length; i++) renderStars(els[i]);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
-// ---------------------------------------------------------------------------
 // Live search suggestions. The index is static JSON in uploads/search-index/
 // (inc/search-index.php, .docs/search-index-plan.md): a manifest of shard keys,
 // and one shard per leading letters of a title word. Focus loads the manifest,

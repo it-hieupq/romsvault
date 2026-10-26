@@ -37,8 +37,14 @@
     });
   }
   function toast(m, t) { if (window.showToast) window.showToast(m, t || 'error'); }
+  // Gold fill width in a .rf-stars bar, in percent. Mirrors rom_star_fill(): each
+  // star tile is 1.1em wide but the star only 1em, so a fraction fills the star, not the tile.
+  function starFill(score) {
+    var v = Math.min(5, Math.max(0, +score || 0)), whole = Math.floor(v);
+    return (whole * 1.1 + (v - whole)) / 5.5 * 100;
+  }
   function starsHtml(score) {
-    return '<span class="rf-stars" style="font-size:.9rem"><span class="rf-stars-fill" style="width:' + ((score / 5) * 100) + '%"></span></span>';
+    return '<span class="rf-stars" style="font-size:.9rem"><span class="rf-stars-fill" style="width:' + starFill(score) + '%"></span></span>';
   }
   function fmtDate(s) {
     if (!s) return '';
@@ -47,16 +53,15 @@
   }
   function setText(sel, v) { var e = sec.querySelector(sel); if (e) e.textContent = v; }
 
-  // Play-Store summary: left = avg + total (blended headline from post_meta, includes the
-  // legacy baseline — display-only), right = per-star bars built SOLELY from real member
-  // reviews (dist). Bar width is each star's share of the member-review total, so the bars
-  // always sum to 100% regardless of the legacy count.
+  // Play-Store summary: left = score + total (the post's rating cache, recounted from the
+  // visible reviews), right = one bar per star from the same reviews (dist). score is the
+  // server's one-decimal display value, so it matches the hero line exactly.
   function renderSummary(post, dist) {
     post = post || {}; dist = dist || {};
-    var avg = +post.avg || 0, total = +post.count || 0;
-    setText('[data-rf-avg]', avg.toFixed(1));
+    var score = (post.score !== undefined ? +post.score : +post.avg) || 0, total = +post.count || 0;
+    setText('[data-rf-avg]', score.toFixed(1));
     var fill = sec.querySelector('[data-rf-avg-fill]');
-    if (fill) fill.style.width = ((avg / 5) * 100) + '%';
+    if (fill) fill.style.width = starFill(score) + '%';
     setText('[data-rf-total]', total);
     var distTotal = 0;
     for (var s = 1; s <= 5; s++) { distTotal += +(dist[s] || dist[String(s)] || 0); }
@@ -160,6 +165,14 @@
           var mineReview = { member_name: disp.name, member_avatar: disp.avatar, score: j.mine.score, content: j.mine.content, date: j.mine.created_at };
           if (list) { list.insertAdjacentHTML('afterbegin', reviewRow(mineReview)); list.classList.remove('hidden'); }
           if (empty) empty.classList.add('hidden');
+          renderSummary(j.post, j.dist);
+          // Server-rendered hero/download lines (rom_rating_summary_html), so they match a reload.
+          if (j.summary) {
+            document.querySelectorAll('[data-rf-rating-summary]').forEach(function (el) {
+              var html = j.summary[el.getAttribute('data-rf-rating-summary')];
+              if (html) el.innerHTML = html;
+            });
+          }
         } else {
           toast((j && j.message) || 'Could not save your rating. Please try again.', 'error');
         }
@@ -168,6 +181,35 @@
         if (submitBtn) submitBtn.disabled = false;
         toast('Network error. Please try again.', 'error');
       });
+  });
+
+  // --- hero stars under the cover (rom_rating_summary_html 'hero') ---
+  // Delegated, because a vote swaps that markup out. Hover previews the score;
+  // a click scrolls to this section and picks that score in the form (guests get
+  // the sign-in modal; a member who already rated just lands on their rating).
+  function heroFill(btn, score) {
+    var bar = btn.closest('.rf-stars-rate'), fill = bar && bar.querySelector('.rf-stars-fill');
+    if (fill) fill.style.width = (score === null ? bar.getAttribute('data-rf-stars-fill') : starFill(score)) + '%';
+  }
+  document.addEventListener('mouseover', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-rf-rate-star]');
+    if (btn) heroFill(btn, parseInt(btn.getAttribute('data-rf-rate-star'), 10));
+  });
+  document.addEventListener('mouseout', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-rf-rate-star]');
+    if (btn) heroFill(btn, null);
+  });
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-rf-rate-star]');
+    if (!btn) return;
+    var v = parseInt(btn.getAttribute('data-rf-rate-star'), 10);
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!auth.getDisplay()) { auth.openLogin(); return; }
+    var pick = starWrap && starWrap.querySelector('[data-score="' + v + '"]');
+    if (pick && form && !form.classList.contains('hidden')) {
+      pick.click();
+      if (contentEl) contentEl.focus({ preventScroll: true });
+    }
   });
 
   // --- initial load ---

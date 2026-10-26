@@ -3,10 +3,11 @@
  * Member action — post ratings (Play Store style). A member rates a post ONCE:
  * a whole-star score 1..5 plus an optional short review. The review row lives in
  * `member_rating` (for the public reviews list + the profile "my ratings" and to
- * enforce one-per-post); the displayed star average stays the incremental
- * `rating_avg`/`rating_count` post_meta using the SAME running-average the legacy
- * `k_rating` used — the table never recomputes it (RATING_PLAN §3.2). Member-only
- * REST (never admin-ajax); ratings are immutable (a second attempt → 409).
+ * enforce one-per-post). `rating_avg`/`rating_count` post_meta cache the visible
+ * reviews' average and count so listings never aggregate the table: every write
+ * (a new rating here, hide/unhide/delete in auth/admin-ratings.php) recounts them
+ * with rf_rating_recount(). Member-only REST (never admin-ajax); ratings are
+ * immutable (a second attempt → 409).
  * Depends on member-core.php (origin guard, current member, throttle).
  */
 
@@ -111,27 +112,69 @@ function rf_rest_rating_submit( WP_REST_Request $request ) {
 		return rf_rating_error( 'already_rated', 409 );
 	}
 
-	// Fold the new score into the running average (unchanged legacy k_rating logic).
-	// Two ratings folding into the same post at once would each read the old
-	// count and one would be lost, so the read-modify-write runs under a per-post
-	// MySQL lock. If the lock times out the update still goes ahead.
-	$lock = 'rf_rating_' . $post_id;
-	$wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $lock ) );
-	wp_cache_delete( $post_id, 'post_meta' ); // re-read what the last holder wrote
-	$count     = (int) get_post_meta( $post_id, 'rating_count', true );
-	$avg       = (float) get_post_meta( $post_id, 'rating_avg', true );
-	$new_count = $count + 1;
-	$new_avg   = round( ( ( $avg * $count ) + $score ) / $new_count, 2 );
-	update_post_meta( $post_id, 'rating_count', $new_count );
-	update_post_meta( $post_id, 'rating_avg', $new_avg );
-	$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
+	$totals = rf_rating_recount( $post_id );
 
 	return new WP_REST_Response( array(
 		'ok'      => true,
 		'mine'    => array( 'score' => $score, 'content' => $content, 'created_at' => $now ),
-		'post'    => array( 'avg' => $new_avg, 'count' => $new_count ),
+		'post'    => array( 'avg' => $totals['avg'], 'count' => $totals['count'], 'score' => rom_rating( $post_id )['score'] ),
+		'dist'    => $totals['dist'],
+		// Server-rendered so the hero ratings on the page match a fresh load exactly.
+		'summary' => array(
+			'hero'    => rom_rating_summary_html( $post_id, 'hero' ),
+			'compact' => rom_rating_summary_html( $post_id, 'compact' ),
+		),
 		'message' => __( 'Thank you for your rating!', 'rom' ),
 	), 200 );
+}
+
+/**
+ * Recount a post's rating from its visible reviews and store it in the
+ * rating_avg / rating_count post_meta the templates read. Recounting (rather
+ * than folding one score into a running average) keeps the cache exact after
+ * hides and deletes too. Read and write run under a per-post MySQL lock: without
+ * it a recount that read before another vote committed could write its stale
+ * total last. A post with no visible review loses both meta rows: missing reads as 0.
+ *
+ * @return array{count:int, avg:float, dist:array<string,int>}
+ */
+function rf_rating_recount( $post_id ) {
+	global $wpdb;
+	$post_id = (int) $post_id;
+	$table   = rf_member_rating_table();
+	$lock    = 'rf_rating_' . $post_id;
+
+	// If the lock times out the recount still runs; the next write corrects it.
+	$wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $lock ) );
+	$rows = $wpdb->get_results( $wpdb->prepare(
+		"SELECT score, COUNT(*) AS c FROM `{$table}` WHERE post_id = %d AND status = 1 GROUP BY score",
+		$post_id
+	), ARRAY_A );
+
+	$dist  = array( '1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0 );
+	$count = 0;
+	$sum   = 0;
+	foreach ( (array) $rows as $row ) {
+		$star = (int) $row['score'];
+		$c    = (int) $row['c'];
+		if ( $star >= 1 && $star <= 5 ) {
+			$dist[ (string) $star ] = $c;
+			$count += $c;
+			$sum   += $star * $c;
+		}
+	}
+
+	$avg = $count ? round( $sum / $count, 2 ) : 0.0;
+	if ( $count ) {
+		update_post_meta( $post_id, 'rating_count', $count );
+		update_post_meta( $post_id, 'rating_avg', $avg );
+	} else {
+		delete_post_meta( $post_id, 'rating_count' );
+		delete_post_meta( $post_id, 'rating_avg' );
+	}
+	$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
+
+	return array( 'count' => $count, 'avg' => $avg, 'dist' => $dist );
 }
 
 /**
@@ -206,6 +249,7 @@ function rf_rest_ratings_list( WP_REST_Request $request ) {
 		'post'     => array(
 			'avg'   => (float) get_post_meta( $post_id, 'rating_avg', true ),
 			'count' => (int) get_post_meta( $post_id, 'rating_count', true ),
+			'score' => rom_rating( $post_id )['score'], // rounded for display, as the templates show it
 		),
 	);
 

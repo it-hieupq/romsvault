@@ -37,31 +37,12 @@
 
 	<?php
 	if ( is_singular() && valid_post_type(get_post_type()) ) :
-		$count = (int) get_post_meta($post->ID, 'rating_count', true);
-		$score = (float) get_post_meta($post->ID, 'rating_avg', true);
-		?>
-        <script type="application/ld+json">
-            {
-				"@context": "http://schema.org/",
-				"@type": "SoftwareApplication",
-				"name": "<?php the_title(); ?>",
-	    "applicationCategory": "GameApplication",
-	    "operatingSystem": "",
-	    "softwareVersion": "",
-	    "offers": {
-	        "@type": "Offer",
-	        "price": "0",
-	        "priceCurrency": "USD"
-	    } <?php if ( $count > 0 ) : ?>,
-	    "aggregateRating": {
-	        "@type": "AggregateRating",
-	        "bestRating": 5,
-	        "worstRating": 1,
-	        "ratingCount": "<?php echo $count; ?>",
-	        "ratingValue": "<?php echo $score; ?>"
-	    }<?php endif; ?>
-	}
-        </script>
+		// The SoftwareApplication node normally joins Yoast's graph (inc/utility.php).
+		// Only when Yoast isn't active is it printed on its own here, so it never doubles up.
+		if ( ! defined( 'WPSEO_VERSION' ) && ! get_query_var( 'download' ) ) :
+			?>
+        <script type="application/ld+json"><?php echo wp_json_encode( array( '@context' => 'https://schema.org' ) + rom_software_schema( $post ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ); ?></script>
+		<?php endif; ?>
 
         <?php if ( isset( $_GET['fast'] ) || isset( $_GET['slow'] ) ) : ?>
         <link rel="canonical" href="<?php the_permalink(); ?>">

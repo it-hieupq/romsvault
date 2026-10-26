@@ -76,8 +76,6 @@ tiền tố `field_` kiểu ACF UI — key thường trùng luôn với name.
 | `file_size` | text | — | — | |
 | `views` | number | `0` | — | ghi bởi `tracking/flush.php` |
 | `downloads` | number | `0` | — | ghi bởi `tracking/flush.php` |
-| `rating_count` | number | `0` | — | cộng dồn bởi `POST rf/v1/rating` |
-| `rating_avg` | number | `0` | — | cộng dồn bởi `POST rf/v1/rating` |
 | `youtube_url` | url | — | — | nhận watch / `youtu.be` / shorts / embed / live; `single-rom.php` tách video id và render tile preview ở đầu section Screenshots |
 | `released` | textarea | — | — | |
 | `internal_note` | textarea | — | — | |
@@ -213,7 +211,7 @@ options page `options`, không ở đây.
 |---|---|---|
 | `views` | `rom`, `emulator`, `post` | `tracking/flush.php` (+ legacy `k_update_post_views`) |
 | `downloads` | `rom`, `emulator` | `tracking/flush.php` |
-| `rating_count`, `rating_avg` | `rom`, `emulator` | `POST rf/v1/rating` (cộng dồn) |
+| `rating_count`, `rating_avg` | `rom`, `emulator` | cache số review hiển thị + avg (2 chữ số), `rf_rating_recount()` tính lại từ `member_rating` (`status=1`) sau mỗi `POST rf/v1/rating` và mỗi lần admin hide/unhide/delete; không còn review thì xoá meta (đọc = 0). Không còn là field ACF. |
 | `hide` | `rom`, `emulator` | admin toggle / bulk action / `inc/utility.php` |
 | `_wp_page_template` | `page` | WP core — breadcrumb & nav-walker query theo meta này |
 | `_menu_item_icon` | `nav_menu_item` | Appearance → Menus (`inc/menu-icons.php:rom_menu_item_icon_save`). Giá trị là key trong `rom_menu_icons()` (vd `gamepad`); key lạ → xoá meta. Menu `primary` (desktop + mobile) render icon qua `rom_menu_icon_svg()` |

@@ -952,6 +952,7 @@ function svg_icons() {
             'time'       => '<svg class="inline mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="currentColor"><path d="M480-144q-70 0-131.13-26.6-61.14-26.6-106.4-71.87-45.27-45.26-71.87-106.4Q144-410 144-480t26.6-131.13q26.6-61.14 71.87-106.4 45.26-45.27 106.4-71.87Q410-816 480-816q81 0 149.5 35T744-686v-130h72v240H576v-72h107q-35.91-44.8-88.45-70.4Q542-744 480-744q-109 0-186.5 77.5T216-480q0 109 77.5 186.5T480-216q109 0 186.5-77.5T744-480h72q0 140-98 238t-238 98Zm100-200L444-480v-192h72v162l115 115-51 51Z"/></svg>',
             'joystick'   => '<svg class="inline mr-1 text-rom-pink" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="currentColor"><path d="m251-444 229 132 230-132-194-111v147h-72v-147L251-444Zm193-195v-14q-42.24-12.32-69.12-46.92-26.88-34.6-26.88-80.1 0-54.98 38.72-93.48 38.72-38.5 93.5-38.5t93.28 38.6q38.5 38.6 38.5 93.21 0 45.19-26.88 79.99T516-653v14l264 153q17.1 9.62 26.55 25.81Q816-444 816-424v104q0 20-9.45 36.19Q797.1-267.63 780-258L516-105q-17.13 10-36.07 10Q461-95 444-105L180-258q-17.1-9.63-26.55-25.81Q144-300 144-320v-104q0-20 9.45-36.19Q162.9-476.38 180-486l264-153Zm0 389L216-382v62l264 152 264-152v-62L516-250q-17.13 10-36.07 10Q461-240 444-250Zm36-470q25 0 42.5-17.5T540-780q0-25-17.5-42.5T480-840q-25 0-42.5 17.5T420-780q0 25 17.5 42.5T480-720Zm0 552Z"/></svg>',
             'publisher'  => '<svg class="inline mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></svg>',
+            'platform'   => '<svg class="inline mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 16H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2"/><path d="M6 20h9"/><path d="M10 16v4"/><rect x="15" y="10" width="7" height="11" rx="1.5"/><path d="M18.5 18h.01"/></svg>',
             'gamepad'    => '<svg class="inline mr-1 text-rom-pink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4m-2-2v4"/><path d="M15 11h.01M18 13h.01"/></svg>',
             'reload'     => '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="18px" height="18px" fill="#6b7280"><path d="M480-192q-120 0-204-84t-84-204q0-120 84-204t204-84q65 0 120.5 27t95.5 72v-99h72v240H528v-72h131q-29-44-76-70t-103-26q-90 0-153 63t-63 153q0 90 63 153t153 63q84 0 144-55.5T693-456h74q-9 112-91 188t-196 76Z"/></svg>',
             'save'       => '<svg class="inline w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path> 							</svg>',
@@ -1149,5 +1150,153 @@ add_filter( 'wpseo_schema_graph', function ( $graph, $context ) {
 		'mainEntity'       => $questions,
 	);
 
+	return $graph;
+}, 10, 2 );
+
+/**
+ * A post's rating as the templates show it, from the rating_avg / rating_count
+ * cache (rf_rating_recount() keeps it in step with the reviews). The score is
+ * rounded half-up to one decimal, the same as toFixed(1) in js/rating.js.
+ *
+ * @return array{count:int, score:float} score is 0 when there are no reviews.
+ */
+function rom_rating( $post_id ) {
+	$count = max( 0, (int) get_post_meta( $post_id, 'rating_count', true ) );
+	$score = $count ? round( (float) get_post_meta( $post_id, 'rating_avg', true ), 1 ) : 0.0;
+
+	return array( 'count' => $count, 'score' => min( 5.0, max( 0.0, $score ) ) );
+}
+
+/**
+ * Width of the gold fill in a .rf-stars bar, in percent. Each star tile is
+ * 1.1em wide but the star inside it only 1em, so a plain score / 5 overfills
+ * partial stars; whole stars count their full tile, the fraction only the star.
+ */
+function rom_star_fill( $score ) {
+	$score = min( 5, max( 0, (float) $score ) );
+	$whole = floor( $score );
+
+	return round( ( $whole * 1.1 + ( $score - $whole ) ) / 5.5 * 100, 2 );
+}
+
+/**
+ * The stars + score + review count line under a rom or emulator title. The five
+ * stars always show: filled to the score, or empty with "No reviews yet". 'hero'
+ * is the large single-page version, whose stars are buttons that take the reader
+ * to the review form with that score picked (js/rating.js); 'compact' is the
+ * download page's, display only. The REST rating endpoint returns both so the
+ * page can swap them in after a vote.
+ */
+function rom_rating_summary_html( $post_id, $variant = 'hero' ) {
+	$rating = rom_rating( $post_id );
+	$hero   = 'hero' === $variant;
+	$label  = $rating['count']
+		? sprintf( __( 'Rated %s out of 5', 'rom' ), number_format_i18n( $rating['score'], 1 ) )
+		: __( 'Not rated yet', 'rom' );
+
+	$stars = '<span class="rf-stars' . ( $hero ? ' rf-stars-rate' : '' ) . '"' . ( $hero ? ' style="font-size:1.6rem"' : '' )
+		. ' data-rf-stars-fill="' . esc_attr( rom_star_fill( $rating['score'] ) ) . '">'
+		. '<span class="rf-stars-fill" style="width:' . esc_attr( rom_star_fill( $rating['score'] ) ) . '%"></span>'
+		. '<span class="sr-only">' . esc_html( $label ) . '</span>';
+	if ( $hero ) {
+		for ( $i = 1; $i <= 5; $i++ ) {
+			$stars .= '<button type="button" data-rf-rate-star="' . $i . '" style="left:' . ( ( $i - 1 ) * 1.1 ) . 'em" aria-label="'
+				. esc_attr( sprintf( _n( 'Rate %d star', 'Rate %d stars', $i, 'rom' ), $i ) ) . '"></button>';
+		}
+	}
+	$stars .= '</span>';
+
+	if ( ! $rating['count'] ) {
+		return $stars . '<span class="' . ( $hero ? 'text-meta' : 'text-caption' ) . ' text-slate-400">' . esc_html__( 'No reviews yet', 'rom' ) . '</span>';
+	}
+
+	return $stars
+		. '<span class="' . ( $hero ? 'text-slate-900 font-extrabold text-lg' : 'font-bold text-slate-700' ) . '">' . esc_html( number_format_i18n( $rating['score'], 1 ) ) . '</span>'
+		. '<span class="' . ( $hero ? 'text-slate-400 font-normal text-caption' : 'text-caption text-slate-400' ) . '">('
+		. esc_html( sprintf( _n( '%s review', '%s reviews', $rating['count'], 'rom' ), number_format_i18n( $rating['count'] ) ) )
+		. ')</span>';
+}
+
+/**
+ * The SoftwareApplication node for a single rom or emulator page.
+ *
+ * Roms are games (GameApplication, played on their console); emulators are tools
+ * (UtilitiesApplication, run on the listed operating systems). Empty values are
+ * left out rather than sent as "" (Google flags those), and aggregateRating only
+ * appears once there is a visible review, from the same cache the page shows.
+ *
+ * @return array Schema node without @id / page links; callers add those.
+ */
+function rom_software_schema( $post ) {
+	$post        = get_post( $post );
+	$is_emulator = 'emulator' === $post->post_type;
+
+	$node = array(
+		'@type'               => 'SoftwareApplication',
+		// get_the_title() is texturized HTML (&#8217; ...); schema wants the plain text.
+		'name'                => html_entity_decode( wp_strip_all_tags( get_the_title( $post ) ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+		'applicationCategory' => $is_emulator ? 'UtilitiesApplication' : 'GameApplication',
+		'offers'              => array(
+			'@type'         => 'Offer',
+			'price'         => '0',
+			'priceCurrency' => 'USD',
+		),
+	);
+
+	$platforms = get_the_terms( $post, $is_emulator ? 'os' : 'console' );
+	if ( $platforms && ! is_wp_error( $platforms ) ) {
+		$node['operatingSystem'] = implode( ', ', wp_list_pluck( $platforms, 'name' ) );
+	}
+
+	$rating = rom_rating( $post->ID );
+	if ( $rating['count'] ) {
+		$node['aggregateRating'] = array(
+			'@type'       => 'AggregateRating',
+			'ratingValue' => $rating['score'],
+			'ratingCount' => $rating['count'],
+			'bestRating'  => 5,
+			'worstRating' => 1,
+		);
+	}
+
+	return $node;
+}
+
+/**
+ * Put the SoftwareApplication node into Yoast's graph on single rom / emulator
+ * pages (not the noindexed download pages, which share the post).
+ *
+ * The page and image are linked by the @ids Yoast actually emitted, looked up in
+ * the graph rather than rebuilt: Yoast derives them from its stored permalink,
+ * which can differ from the live URL. No WebPage node, no page link; no featured
+ * image (Yoast's #primaryimage, the og:image source), no image.
+ */
+add_filter( 'wpseo_schema_graph', function ( $graph, $context ) {
+	if ( ! is_singular( array( 'rom', 'emulator' ) ) || get_query_var( 'download' ) ) {
+		return $graph;
+	}
+
+	$page_id  = '';
+	$image_id = '';
+	foreach ( $graph as $piece ) {
+		$types = isset( $piece['@type'] ) ? (array) $piece['@type'] : array();
+		$id    = isset( $piece['@id'] ) ? (string) $piece['@id'] : '';
+		if ( ! $page_id && in_array( 'WebPage', $types, true ) ) {
+			$page_id = $id;
+		}
+		if ( ! $image_id && in_array( 'ImageObject', $types, true ) && '#primaryimage' === substr( $id, -13 ) ) {
+			$image_id = $id;
+		}
+	}
+
+	$node = array( '@id' => ( $page_id ? strtok( $page_id, '#' ) : get_permalink() ) . '#software' ) + rom_software_schema( get_queried_object() );
+	if ( $page_id ) {
+		$node['mainEntityOfPage'] = array( '@id' => $page_id );
+	}
+	if ( $image_id ) {
+		$node['image'] = array( '@id' => $image_id );
+	}
+
+	$graph[] = $node;
 	return $graph;
 }, 10, 2 );

@@ -834,7 +834,8 @@ html.rf-blocked .rf-inactive-only { display: revert; }
 body.rf-webview .rf-webview-banner { display: block; }
 body.rf-webview .rf-gsi-slot { display: none; }
 
-/* Display-only rating stars (custom, replaces RateYo). JS fills .rating with these. */
+/* Display-only rating stars, rendered by rom_rating_summary_html() (inc/utility.php) and
+   js/rating.js; the fill width comes from rom_star_fill() / starFill(). */
 /* Stars are drawn as SVG tiles, not U+2605 text: the glyph is absent from the
    body webfont subset and each OS substitutes a different shape, which showed up
    as the grey track and the gold fill rendering as two different stars. One tile
@@ -862,6 +863,21 @@ body.rf-webview .rf-gsi-slot { display: none; }
   background-size: 1.1em 1em;
   background-repeat: repeat-x;
 }
+
+/* The hero stars under the cover (rom_rating_summary_html 'hero'): one invisible
+   button over each 1.1em star tile; js/rating.js previews on hover and jumps to the
+   review form on click. */
+.rf-stars-rate button {
+  position: absolute;
+  top: 0;
+  width: 1.1em;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.rf-stars-rate button:focus-visible { outline: 2px solid #d81b60; outline-offset: 1px; border-radius: 3px; }
 
 /* Rating input (member review form) — clickable stars, no library. */
 .rf-star-input { display: inline-flex; gap: .15rem; }

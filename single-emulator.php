@@ -13,15 +13,6 @@ while ( have_posts() ) : the_post();
 
 	$views = (int) get_field( 'views', $post->ID );
 
-	$rating = false;
-	if ( isset( $_COOKIE['ratings'] ) ) {
-		$ratings = json_decode( stripslashes( $_COOKIE['ratings'] ), true );
-		if ( is_array( $ratings ) && in_array( $post->ID, $ratings ) ) {
-			$rating = true;
-		}
-	}
-	$count = max( 0, (int) get_post_meta( $post->ID, 'rating_count', true ) );
-	$score = round( (float) get_post_meta( $post->ID, 'rating_avg', true ), 1, PHP_ROUND_HALF_DOWN );
 
 	$downloads = (int) get_field( 'downloads', $post->ID );
 	$file_size = get_field( 'file_size', $post->ID );
@@ -53,7 +44,7 @@ while ( have_posts() ) : the_post();
 			);
 		}
 		$specs[] = array(
-			'icon'  => 'emulator',
+			'icon'  => 'platform',
 			'label' => __( 'Platform', 'rom' ),
 			'value' => implode( ', ', $os_links ),
 		);
@@ -101,12 +92,9 @@ while ( have_posts() ) : the_post();
                                 </div>
                             </div>
 						<?php endif; ?>
-                        <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-2">
-                            <div class="rating [&_.rf-stars]:text-[1.6rem]" data-post_id="<?php echo esc_attr( $post->ID ); ?>"
-                                 data-rateyo-rating="<?php echo esc_attr( $score ); ?>"
-								<?php if ( $rating ) : ?>data-rateyo-read-only="true"<?php endif; ?>></div>
-                            <span class="text-slate-900 font-extrabold text-lg"><?php echo esc_html( $score ); ?></span>
-                            <span class="text-slate-400 font-normal text-caption">(<?php echo esc_html( $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ) ); ?>)</span>
+                        <?php // Stars are rendered here, not by JS; js/rating.js swaps this after a vote. ?>
+                        <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-2" data-rf-rating-summary="hero">
+							<?php echo rom_rating_summary_html( $post->ID, 'hero' ); ?>
                         </div>
                     </div>
 
@@ -155,8 +143,8 @@ while ( have_posts() ) : the_post();
 
                         <!-- Specs grid -->
 						<?php if ( $specs ) : ?>
-                            <?php // Two per row at every width: an emulator rarely has more than a few specs. ?>
-                            <div class="grid grid-cols-2 gap-3 md:gap-4 my-1">
+                            <?php // Same cards as the rom facts: two per row, an odd last one takes the whole row. ?>
+                            <div class="grid grid-cols-2 gap-3 md:gap-4 my-1 [&>:last-child:nth-child(odd)]:col-span-2">
 								<?php foreach ( $specs as $spec ) : ?>
                                     <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-start gap-2.5">
                                         <div class="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100/80 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0">
@@ -164,7 +152,7 @@ while ( have_posts() ) : the_post();
                                         </div>
                                         <div class="min-w-0 flex-1">
                                             <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400"><?php echo esc_html( $spec['label'] ); ?></span>
-                                            <span class="font-bold text-[13px] text-slate-800 mt-0.5 block truncate"><?php echo $spec['value']; ?></span>
+                                            <span class="font-bold text-[13px] text-slate-800 mt-0.5 block leading-snug break-words"><?php echo $spec['value']; ?></span>
                                         </div>
                                     </div>
 								<?php endforeach; ?>

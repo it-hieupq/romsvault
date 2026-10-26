@@ -63,18 +63,6 @@ else :
     rf_force_404();
 endif;
 
-// Check if user has already rated
-$has_rated         = false;
-if ( isset( $_COOKIE['ratings'] ) ) {
-    $rated_posts = json_decode( stripslashes( $_COOKIE['ratings'] ), true );
-    if ( is_array( $rated_posts ) && in_array( $post_id, $rated_posts, true ) ) {
-        $has_rated = true;
-    }
-}
-$count = (int)get_post_meta($post->ID, 'rating_count', true);
-$count = max(0, $count);
-$score = (float)get_post_meta($post->ID, 'rating_avg', true);
-$score = round($score, 1, PHP_ROUND_HALF_DOWN);
 
 $is_emulator  = ( 'emulator' === $post->post_type );
 $normal_count = is_array( $normal_downloads ) ? count( $normal_downloads ) : 0;
@@ -185,13 +173,8 @@ $note       = get_field( 'download_note', $post_id );
                                 <a href="<?php echo esc_url( get_term_link( $console ) ); ?>"
                                    class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-rose-50 text-primary text-caption font-bold border border-rose-200/60 hover:bg-rose-100 transition-colors [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0"><?php echo get_svg_icon( 'joystick' ) . esc_html( $console->name ); ?></a>
                             <?php endif; ?>
-                            <span class="inline-flex items-center gap-1.5">
-                                <span class="rating"
-                                      data-post_id="<?php echo esc_attr( $post_id ); ?>"
-                                      data-rateyo-rating="<?php echo esc_attr( $score ); ?>"
-                                      <?php if ( $has_rated ) : ?>data-rateyo-read-only="true"<?php endif; ?>></span>
-                                <span class="font-bold text-slate-700"><?php echo esc_html( $score ); ?></span>
-                                <span class="text-caption text-slate-400">(<?php echo esc_html( $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ) ); ?>)</span>
+                            <span class="inline-flex items-center gap-1.5" data-rf-rating-summary="compact">
+                                <?php echo rom_rating_summary_html( $post_id, 'compact' ); ?>
                             </span>
                             <span class="text-slate-300">&bull;</span>
                             <span><?php echo esc_html( sprintf( _n( '%s file', '%s files', $file_total, 'rom' ), number_format_i18n( $file_total ) ) ); ?></span>

@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $post_id = get_the_ID();
 ?>
-<section class="rf-rating-section bg-white rounded-2xl shadow-md p-6 my-6" data-rf-rating="<?php echo esc_attr( $post_id ); ?>">
+<section id="rating" class="rf-rating-section bg-white rounded-2xl shadow-md p-6 my-6 scroll-mt-24" data-rf-rating="<?php echo esc_attr( $post_id ); ?>">
     <h3 class="text-xl font-bold text-gray-900 mb-4"><?php esc_html_e( 'Ratings & reviews', 'rom' ); ?></h3>
 
     <!-- Summary (Play Store style): left = score + total, right = per-star analysis

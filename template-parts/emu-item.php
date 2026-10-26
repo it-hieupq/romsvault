@@ -14,9 +14,8 @@ $card_color_term = $card_console ? get_term_by( 'slug', $card_console->slug, 'co
 $card_os       = get_the_terms( $card_id, 'os' );
 $card_os_names = ( ! is_wp_error( $card_os ) && ! empty( $card_os ) ) ? wp_list_pluck( $card_os, 'name' ) : array();
 
-$card_count = (int) get_post_meta( $card_id, 'rating_count', true );
-// Same display rule as the rom card: no votes yet shows a full 5.
-$card_score = $card_count > 0 ? (float) get_post_meta( $card_id, 'rating_avg', true ) : 5;
+// Same rule as the rom card: the star badge only shows once there is a review.
+$card_rating = rom_rating( $card_id );
 
 $card_size     = get_post_meta( $card_id, 'file_size', true );
 $card_thumb_id = get_post_thumbnail_id( $card_id );
@@ -44,14 +43,16 @@ $card_thumb_id = get_post_thumbnail_id( $card_id );
                 <span></span>
 			<?php endif; ?>
             <span class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 flex-shrink-0">
+				<?php if ( $card_rating['count'] ) : ?>
                 <span class="inline-flex items-center gap-0.5 text-slate-700">
                     <svg class="w-3 h-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path d="M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z"/>
                     </svg>
-                    <?php echo esc_html( round( $card_score, 1 ) ); ?>
+                    <?php echo esc_html( number_format_i18n( $card_rating['score'], 1 ) ); ?>
                 </span>
+				<?php endif; ?>
 				<?php if ( ! empty( $card_size ) ) : ?>
-                    <span class="text-slate-300" aria-hidden="true">&middot;</span>
+					<?php if ( $card_rating['count'] ) : ?><span class="text-slate-300" aria-hidden="true">&middot;</span><?php endif; ?>
                     <span><?php echo esc_html( $card_size ); ?></span>
 				<?php endif; ?>
             </span>

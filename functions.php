@@ -145,8 +145,6 @@ function rom_enqueue_scripts() {
 	$site_js_deps = array('jquery', 'rf-toast');
 	
 	$is_download_page = ! empty( $wp_query->query_vars['download'] );
-	
-	// RateYo removed: rating stars are display-only (custom renderer in js/main.js).
 
     wp_enqueue_script(
         'main-js',
@@ -168,7 +166,7 @@ function rom_enqueue_scripts() {
 	$enable_dynamic_nonce = should_load_dynamic_nonce();
 	$localize_data['enable_dynamic_nonce'] = $enable_dynamic_nonce;
 	
-	// Rating is member-only now (POST rf/v1/rating) — no k_rating nonce needed.
+	// Rating is member-only (POST rf/v1/rating).
 
 	wp_localize_script( 'main-js', 'ajax', $localize_data );
 

@@ -15,15 +15,6 @@ while ( have_posts() ) : the_post();
 
 	$views = (int) get_field( 'views' );
 
-	$rating = false;
-	if ( isset( $_COOKIE['ratings'] ) ) {
-		$ratings = json_decode( stripslashes( $_COOKIE['ratings'] ), true );
-		if ( is_array( $ratings ) && in_array( $post->ID, $ratings ) ) {
-			$rating = true;
-		}
-	}
-	$count = max( 0, (int) get_post_meta( $post->ID, 'rating_count', true ) );
-	$score = round( (float) get_post_meta( $post->ID, 'rating_avg', true ), 1, PHP_ROUND_HALF_DOWN );
 
 	$downloads = (int) get_field( 'downloads', $post->ID );
 
@@ -138,12 +129,9 @@ while ( have_posts() ) : the_post();
                             <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400"><?php echo esc_html( $console->name ); ?></span>
                         </div>
 						<?php endif; ?>
-                        <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-2">
-                            <div class="rating [&_.rf-stars]:text-[1.6rem]" data-post_id="<?php echo esc_attr( $post->ID ); ?>"
-                                 data-rateyo-rating="<?php echo esc_attr( $score ); ?>"
-                        			<?php if ( $rating ) : ?>data-rateyo-read-only="true"<?php endif; ?>></div>
-                            <span class="text-slate-900 font-extrabold text-lg"><?php echo esc_html( $score ); ?></span>
-                            <span class="text-slate-400 font-normal text-caption">(<?php echo esc_html( $count . ' ' . _n( 'review', 'reviews', $count, 'rom' ) ); ?>)</span>
+                        <?php // Stars are rendered here, not by JS; js/rating.js swaps this after a vote. ?>
+                        <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-2" data-rf-rating-summary="hero">
+							<?php echo rom_rating_summary_html( $post->ID, 'hero' ); ?>
                         </div>
                     </div>
 
@@ -192,11 +180,14 @@ while ( have_posts() ) : the_post();
                             <?php // Two columns; an odd last fact takes the whole row instead of sitting alone. ?>
                             <dl class="grid grid-cols-2 gap-3 md:gap-4 [&>:last-child:nth-child(odd)]:col-span-2">
 								<?php foreach ( $facts as $fact ) : ?>
-                                    <div class="rounded-xl bg-slate-50 border border-slate-200/60 px-3.5 py-3">
-                                        <dt class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0 [&_svg]:text-primary [&_svg]:flex-shrink-0">
-											<?php echo get_svg_icon( $fact['icon'] ) . esc_html( $fact['label'] ); ?>
-                                        </dt>
-                                        <dd class="mt-1 text-[13px] font-bold text-slate-800 leading-snug break-words"><?php echo $fact['value']; ?></dd>
+                                    <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-start gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100/80 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0" aria-hidden="true">
+											<?php echo get_svg_icon( $fact['icon'] ); ?>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-400"><?php echo esc_html( $fact['label'] ); ?></dt>
+                                            <dd class="mt-0.5 text-[13px] font-bold text-slate-800 leading-snug break-words"><?php echo $fact['value']; ?></dd>
+                                        </div>
                                     </div>
 								<?php endforeach; ?>
                             </dl>

@@ -295,30 +295,6 @@ function k_init_rom() {
 			),
 
 			array (
-				'label' 		=> __( 'Rating Count', 'rom' ),
-				'key'   		=> 'rating_count',
-				'name'  		=> 'rating_count',
-				'type' 		    => 'number',
-				'translations'  => 'ignore',
-				'default_value' => 0,
-				'wrapper'    	=> array(
-					'width'  	=> '25',
-				),
-			),
-
-			array (
-				'label' 		=> __( 'Rating Avg', 'rom' ),
-				'key'   		=> 'rating_avg',
-				'name'  		=> 'rating_avg',
-				'type' 		    => 'number',
-				'translations'  => 'ignore',
-				'default_value' => 0,
-				'wrapper'    	=> array(
-					'width'  	=> '25',
-				),
-			),
-
-			array (
 				'label'		    => __( 'Youtube URL', 'rom' ),
 				'key' 		    => 'youtube_url',
 				'name' 		    => 'youtube_url',

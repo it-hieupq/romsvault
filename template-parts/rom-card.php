@@ -28,10 +28,8 @@ if ( ! is_wp_error( $card_genres ) && ! empty( $card_genres ) ) {
 	}
 }
 
-$card_count = (int) get_post_meta( $card_id, 'rating_count', true );
-// No votes yet shows a full 5 instead of hiding the badge. Display only: the
-// stored rating_avg stays untouched.
-$card_score = $card_count > 0 ? (float) get_post_meta( $card_id, 'rating_avg', true ) : 5;
+// The star badge only shows once the rom has a review.
+$card_rating = rom_rating( $card_id );
 
 $card_size = get_post_meta( $card_id, 'file_size', true );
 if ( empty( $card_size ) ) {
@@ -82,16 +80,18 @@ $card_sizes = '(min-width: 1400px) 260px, (min-width: 1280px) 20vw, (min-width: 
                 <span></span>
 			<?php endif; ?>
             <span class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 flex-shrink-0">
+				<?php if ( $card_rating['count'] ) : ?>
                 <span class="inline-flex items-center gap-0.5 text-slate-700">
                     <?php // SVG, not a star glyph: the body webfont is a latin-only subset, so a
                           // literal U+2605 falls through to whatever the OS happens to provide. ?>
                     <svg class="w-3 h-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path d="M10 15.27 16.18 19l-1.64-7.03L20 7.24l-7.19-.62L10 0 7.19 6.62 0 7.24l5.46 4.73L3.82 19z"/>
                     </svg>
-                    <?php echo esc_html( round( $card_score, 1 ) ); ?>
+                    <?php echo esc_html( number_format_i18n( $card_rating['score'], 1 ) ); ?>
                 </span>
+				<?php endif; ?>
 				<?php if ( ! empty( $card_size ) ) : ?>
-                    <span class="text-slate-300" aria-hidden="true">&middot;</span>
+					<?php if ( $card_rating['count'] ) : ?><span class="text-slate-300" aria-hidden="true">&middot;</span><?php endif; ?>
                     <span><?php echo esc_html( $card_size ); ?></span>
 				<?php endif; ?>
             </span>

@@ -4,8 +4,8 @@
  * table and lets an admin moderate them: Hide/Unhide (status 1↔0 — hidden reviews
  * drop out of the public list AND the per-star histogram, which both filter status=1)
  * and Delete (removes the row; also frees uq_member_post so that member could rate
- * again). Ratings are otherwise immutable and the post's rating_avg/rating_count
- * post_meta (a running average incl. the legacy baseline) is NOT recomputed here.
+ * again). Every action recounts the post's rating_avg/rating_count post_meta
+ * (rf_rating_recount()), so the shown average always matches the visible reviews.
  *
  * Admin pages are never cached, so WP nonces are used normally for the actions.
  */
@@ -265,7 +265,8 @@ function rf_ratings_handle_action(): void {
 
 	if ( $review_id > 0 ) {
 		global $wpdb;
-		$table = rf_member_rating_table();
+		$table   = rf_member_rating_table();
+		$post_id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM `{$table}` WHERE id = %d", $review_id ) );
 		if ( $action === 'delete' ) {
 			$wpdb->delete( $table, array( 'id' => $review_id ), array( '%d' ) );
 		} else {
@@ -276,6 +277,9 @@ function rf_ratings_handle_action(): void {
 				array( '%d' ),
 				array( '%d' )
 			);
+		}
+		if ( $post_id ) {
+			rf_rating_recount( $post_id );
 		}
 	}
 

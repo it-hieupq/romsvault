@@ -189,8 +189,9 @@ không phải cột trái nhất). Cap 30 ở endpoint, **không** ở schema.
 `status` TINYINT(1)=1 (1 hiện / 0 admin ẩn) · `created_at` · `updated_at`
 · `UNIQUE uq_member_post` · `idx_post_status_created` · `idx_member_created`
 
-**Chỉ lưu trữ review.** Sao trung bình vẫn là post_meta `rating_avg`/`rating_count`
-tính tăng dần — bảng này không tính average.
+**Nguồn sự thật của rating.** post_meta `rating_avg`/`rating_count` chỉ là cache, được
+`rf_rating_recount()` tính lại từ các dòng `status=1` sau mỗi lần thêm rating và mỗi lần
+admin hide/unhide/delete; template đọc qua `rom_rating()` (`inc/utility.php`).
 
 ### `{prefix}member_ticket`
 `id` PK · `member_id` · `request_type` TINYINT · `game_title` VARCHAR(255) ·
