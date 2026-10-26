@@ -15,7 +15,7 @@ global $wp_query;
             <div class="flex items-end justify-between gap-4 py-8">
                 <h2 class="text-xl font-semibold">
                     <span class="block text-xs font-semibold uppercase tracking-wider text-brand"><?php esc_html_e( 'Latest articles', 'rom' ); ?></span>
-					<?php echo esc_html( get_queried_object()->name ?? get_the_archive_title() ); ?>
+					<?php echo esc_html( is_home() ? single_post_title( '', false ) : ( get_queried_object()->name ?? get_the_archive_title() ) ); ?>
                 </h2>
 				<?php if ( $wp_query->found_posts ) : ?>
                     <span class="text-meta font-semibold text-slate-500 flex-shrink-0">

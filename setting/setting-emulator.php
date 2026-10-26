@@ -81,7 +81,7 @@ function k_init_emulator() {
 			'hierarchical'      	=> true,
 			'public'            	=> true,
 			'show_admin_column' 	=> true,
-            'rewrite' 				=> array('hierarchical' => true),
+            'rewrite' 				=> array('hierarchical' => true, 'with_front' => false),
 		) 
 	);
 

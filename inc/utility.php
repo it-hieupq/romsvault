@@ -168,6 +168,19 @@ add_filter( 'query_vars', function ( $vars ) {
 } );
 
 /**
+ * Pagination for the posts page (/blog/page/N). Post permalinks are
+ * /blog/%category%/%postname%/, so without this rule "page/2" would be read
+ * as category "page", post "2".
+ */
+add_action( 'init', function () {
+    $posts_page = (int) get_option( 'page_for_posts' );
+    if ( $posts_page ) {
+        $uri = get_page_uri( $posts_page );
+        add_rewrite_rule( '^' . preg_quote( $uri, '#' ) . '/page/([0-9]{1,})/?$', 'index.php?pagename=' . $uri . '&paged=$matches[1]', 'top' );
+    }
+} );
+
+/**
  * Download page URL, without a trailing slash: {permalink}download for the file
  * list, {permalink}download/{n} for one file (1-based). Every link to the endpoint
  * goes through here so the two forms never drift apart.

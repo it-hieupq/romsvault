@@ -12,6 +12,8 @@
                 <?php
 				 if (is_search()) :
 					$title = __('Search Results for: ', 'rom') . get_search_query();
+				elseif (is_home()) :
+					$title = single_post_title('', false);
 				elseif(is_page() || is_singular('post')) :
 					$title = get_the_title();
 				elseif (is_tax() || is_category() || is_tag()) :

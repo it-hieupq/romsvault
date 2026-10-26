@@ -101,8 +101,10 @@ function rf_breadcrumb_post_trail( $post_id ) {
 	$post_type = get_post_type( $post_id );
 
 	if ( 'post' === $post_type ) {
+		$posts_page = (int) get_option( 'page_for_posts' );
+		$crumbs     = $posts_page ? array( array( 'label' => get_the_title( $posts_page ), 'url' => get_permalink( $posts_page ) ) ) : array();
 		$categories = get_the_category( $post_id );
-		return $categories ? rf_breadcrumb_terms( end( $categories ) ) : array();
+		return $categories ? array_merge( $crumbs, rf_breadcrumb_terms( end( $categories ) ) ) : $crumbs;
 	}
 
 	$crumbs   = rf_breadcrumb_section( $post_type );
@@ -139,10 +141,17 @@ function rf_breadcrumb_trail() {
 		$crumbs   = rf_breadcrumb_section( $tax ? (string) reset( $tax->object_type ) : '', $term->taxonomy );
 		$crumbs   = array_merge( $crumbs, rf_breadcrumb_terms( $term, false ) );
 		$crumbs[] = array( 'label' => $term->name );
+	} elseif ( is_home() && ! is_front_page() ) {
+		// The posts page (/blog).
+		$crumbs[] = array( 'label' => single_post_title( '', false ) );
 	} elseif ( is_post_type_archive() ) {
 		$crumbs[] = array( 'label' => post_type_archive_title( '', false ) );
 	} elseif ( is_category() ) {
-		$crumbs   = rf_breadcrumb_terms( get_queried_object(), false );
+		$posts_page = (int) get_option( 'page_for_posts' );
+		if ( $posts_page ) {
+			$crumbs[] = array( 'label' => get_the_title( $posts_page ), 'url' => get_permalink( $posts_page ) );
+		}
+		$crumbs   = array_merge( $crumbs, rf_breadcrumb_terms( get_queried_object(), false ) );
 		$crumbs[] = array( 'label' => single_cat_title( '', false ) );
 	} elseif ( is_tag() ) {
 		$crumbs[] = array( 'label' => __( 'Tag', 'rom' ) . ': ' . single_tag_title( '', false ) );
