@@ -458,7 +458,7 @@ while ( have_posts() ) : the_post();
                                 </h2>
                             </div>
                             <a href="<?php echo esc_url( get_term_link( $emu_term->term_id ) ); ?>"
-                               class="text-caption font-bold text-primary hover:text-primary-hover w-fit"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                               class="text-caption font-bold text-primary underline underline-offset-4 hover:text-primary-hover w-fit"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
@@ -539,7 +539,7 @@ while ( have_posts() ) : the_post();
                             </h2>
                         </div>
                         <a href="<?php echo esc_url( get_term_link( $primary_collection->term_id ) ); ?>"
-                           class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                           class="text-caption sm:text-meta font-bold text-primary underline underline-offset-4 hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                     </div>
                     <div class="horizontal-scroll-container">
                         <div class="horizontal-scroll-wrapper">
@@ -569,7 +569,7 @@ while ( have_posts() ) : the_post();
                         <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'You Might Also Like', 'rom' ); ?></h2>
                     </div>
                     <a href="<?php echo esc_url( $console_link ); ?>"
-                       class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                       class="text-caption sm:text-meta font-bold text-primary underline underline-offset-4 hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
                 <div class="horizontal-scroll-container">
                     <div class="horizontal-scroll-wrapper">

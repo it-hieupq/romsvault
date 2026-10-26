@@ -393,7 +393,7 @@ while ( have_posts() ) : the_post();
                         <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Related Emulators', 'rom' ); ?></h2>
                     </div>
                     <a href="<?php echo esc_url( $console_link ); ?>"
-                       class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                       class="text-caption sm:text-meta font-bold text-primary underline underline-offset-4 hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
                 <div class="horizontal-scroll-container">
                     <div class="horizontal-scroll-wrapper">

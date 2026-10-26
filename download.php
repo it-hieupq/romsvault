@@ -411,7 +411,7 @@ if ( $console && isset( $console->term_id ) ) :
                         <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Recommended for you', 'rom' ); ?></h2>
                     </div>
                     <a href="<?php echo esc_url( get_term_link( $console ) ); ?>"
-                       class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                       class="text-caption sm:text-meta font-bold text-primary underline underline-offset-4 hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
                 <div class="horizontal-scroll-container">
                     <div class="horizontal-scroll-wrapper">

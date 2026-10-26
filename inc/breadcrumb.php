@@ -115,7 +115,12 @@ function rf_breadcrumb_post_trail( $post_id ) {
 	return $crumbs;
 }
 
-function k_breadcrumb() {
+/**
+ * The trail between Home and the current page, as label/url pairs; the last
+ * one is the current page. Shared by the visible breadcrumb and Yoast's
+ * BreadcrumbList schema so the two never disagree.
+ */
+function rf_breadcrumb_trail() {
 	$crumbs = array();
 
 	if ( get_query_var( 'download' ) ) {
@@ -148,38 +153,68 @@ function k_breadcrumb() {
 		}
 		$crumbs[] = array( 'label' => get_the_title( $page_id ) );
 	} elseif ( is_search() ) {
-		$crumbs[] = array( 'label' => __( 'Search results for', 'rom' ) . ': ' . get_search_query( false ) );
+		$search   = get_search_query( false );
+		$crumbs[] = array( 'label' => '' !== $search ? __( 'Search results for', 'rom' ) . ': ' . $search : __( 'Search', 'rom' ) );
 	} elseif ( is_404() ) {
 		$crumbs[] = array( 'label' => __( 'Error 404', 'rom' ) );
-	} elseif ( get_query_var( 'paged' ) ) {
-		$crumbs[] = array( 'label' => __( 'Page', 'rom' ) . ' ' . (int) get_query_var( 'paged' ) );
 	}
 	// Author and date archives are not handled: both answer 404 on this site.
 
+	// Page 2+ of a listing: its own crumb links back to page 1, then "Page N".
+	// Singles are skipped: their 'page' var is post pagination, not a listing.
+	$paged = (int) get_query_var( 'paged' );
+	if ( $paged > 1 && ! is_singular() && ! get_query_var( 'download' ) ) {
+		if ( $crumbs ) {
+			$crumbs[ count( $crumbs ) - 1 ]['url'] = get_pagenum_link( 1 );
+		}
+		$crumbs[] = array( 'label' => sprintf( __( 'Page %s', 'rom' ), number_format_i18n( $paged ) ) );
+	}
+
+	return $crumbs;
+}
+
+/**
+ * Yoast builds its BreadcrumbList schema from its own trail, which only knows
+ * Home > post. Hand it ours instead.
+ */
+add_filter( 'wpseo_breadcrumb_links', function () {
+	$links = array( array( 'url' => home_url( '/' ), 'text' => __( 'Home', 'rom' ) ) );
+	foreach ( rf_breadcrumb_trail() as $crumb ) {
+		$links[] = array( 'url' => $crumb['url'] ?? '', 'text' => $crumb['label'] );
+	}
+	return $links;
+} );
+
+function k_breadcrumb() {
+	$crumbs = rf_breadcrumb_trail();
+
 	$home_title = __( 'Home', 'rom' );
-	$separator  = '<span class="mx-2 text-slate-300" aria-hidden="true">/</span>';
+	$separator  = '<svg class="w-3.5 h-3.5 mx-1 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
 	?>
-    <nav aria-label="<?php esc_attr_e( 'Breadcrumb', 'rom' ); ?>">
-        <ul id="breadcrumb" class="pb-3 flex flex-wrap items-center text-meta font-medium [&_a:hover]:underline">
-            <li class="flex items-center">
-                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="text-rom-pink hover:underline inline-flex items-center">
-                    <?php echo get_svg_icon( 'home' ) . esc_html( $home_title ); ?>
+    <?php // One line: each label is capped and truncates (full text in its title), so a long
+          // game name in the middle gives way before the current page is pushed off screen. ?>
+    <nav aria-label="<?php esc_attr_e( 'Breadcrumb', 'rom' ); ?>" class="min-w-0 max-w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ol id="breadcrumb" class="flex items-center whitespace-nowrap text-caption sm:text-meta font-medium text-slate-500">
+            <li class="flex items-center flex-shrink-0">
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="inline-flex items-center gap-1 text-primary hover:text-primary-hover transition-colors [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0">
+                    <?php // Icon-only on phones; the label stays for screen readers. ?>
+                    <?php echo get_svg_icon( 'home' ); ?><span class="sr-only sm:not-sr-only"><?php echo esc_html( $home_title ); ?></span>
                 </a>
                 <?php if ( $crumbs ) { echo $separator; } ?>
             </li>
 			<?php foreach ( $crumbs as $i => $crumb ) :
 				$is_last = ( count( $crumbs ) - 1 === $i );
 				?>
-                <li class="flex items-center">
+                <li class="flex items-center flex-shrink-0">
 					<?php if ( ! $is_last && ! empty( $crumb['url'] ) ) : ?>
-                        <a href="<?php echo esc_url( $crumb['url'] ); ?>" class="text-slate-500 hover:underline"><?php echo esc_html( $crumb['label'] ); ?></a>
+                        <a href="<?php echo esc_url( $crumb['url'] ); ?>" title="<?php echo esc_attr( $crumb['label'] ); ?>" class="block truncate max-w-[7rem] sm:max-w-xs hover:text-primary transition-colors"><?php echo esc_html( $crumb['label'] ); ?></a>
 					<?php else : ?>
-                        <span class="<?php echo $is_last ? 'text-slate-700 font-semibold' : 'text-slate-500'; ?>"<?php echo $is_last ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $crumb['label'] ); ?></span>
+                        <span class="block truncate <?php echo $is_last ? 'max-w-[11rem] sm:max-w-md text-slate-800 font-semibold' : 'max-w-[7rem] sm:max-w-xs'; ?>" title="<?php echo esc_attr( $crumb['label'] ); ?>"<?php echo $is_last ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $crumb['label'] ); ?></span>
 					<?php endif; ?>
 					<?php if ( ! $is_last ) { echo $separator; } ?>
                 </li>
 			<?php endforeach; ?>
-        </ul>
+        </ol>
     </nav>
 	<?php
 }
