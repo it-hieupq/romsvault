@@ -40,7 +40,7 @@ while ( have_posts() ) : the_post();
                         <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'About', 'rom' ); ?></span>
                         <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'ROM collections by game series', 'rom' ); ?></h2>
                     </div>
-                    <div class="revert page-content text-slate-700 text-body max-w-content">
+                    <div class="rich-text max-w-content">
                         <?php the_content(); ?>
                     </div>
                 </div>

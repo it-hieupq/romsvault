@@ -15,7 +15,7 @@ while ( have_posts() ) : the_post();
     <section class="py-6 text-gray-900">
         <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
             <article class="pb-8">
-                <div class="prose max-w-none bg-white p-6 lg:p-8 rounded-2xl shadow-md revert">
+                <div class="bg-white p-6 lg:p-8 rounded-2xl shadow-md">
 					<?php the_content(); ?>
                 </div>
             </article>

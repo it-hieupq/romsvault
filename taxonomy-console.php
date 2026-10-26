@@ -177,7 +177,7 @@ $filter_data = array(
                     <div class="px-6 py-4 mt-12 rounded-xl bg-white">
                         <h2 class="text-xl mb-4 font-semibold text-gray-800"><?php _e('Information', 'rom') ?></h2>
                         <?php // Term descriptions are saved as plain text with blank lines between paragraphs. ?>
-                        <div class="revert page-content text-gray-700"><?php echo wpautop( $desc ); ?></div>
+                        <div class="rich-text"><?php echo wpautop( $desc ); ?></div>
                     </div>
                 </div>
             </section>

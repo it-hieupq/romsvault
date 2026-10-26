@@ -64,89 +64,12 @@ else :
 endif;
 
 
-$is_emulator  = ( 'emulator' === $post->post_type );
-$normal_count = is_array( $normal_downloads ) ? count( $normal_downloads ) : 0;
-
-/**
- * Files grouped as the endpoint numbers them: direct links first, then the
- * affiliate mirrors, 1-based across both (inc/ajax.php, inc/download-token.php).
- */
-$file_groups = array(
-    array( 'label' => __( 'Direct downloads', 'rom' ), 'items' => array() ),
-    array( 'label' => __( 'Mirror links', 'rom' ), 'items' => array() ),
-);
-foreach ( array( 0 => $normal_downloads, 1 => $aff_downloads ) as $group_key => $group_files ) {
-    if ( ! is_array( $group_files ) ) {
-        continue;
-    }
-    foreach ( $group_files as $key => $value ) {
-        if ( empty( $value['name'] ) || empty( $value['url'] ) ) {
-            continue;
-        }
-        $file_groups[ $group_key ]['items'][] = array(
-            'n'    => $key + 1 + ( $group_key ? $normal_count : 0 ),
-            'file' => $value,
-        );
-    }
-}
-
-// Archive extension read off the link (zip, 7z, iso...), as on the single page.
-$file_ext = function ( $url ) {
-    $ext = strtolower( pathinfo( (string) wp_parse_url( (string) $url, PHP_URL_PATH ), PATHINFO_EXTENSION ) );
-    return preg_match( '/^[a-z0-9]{1,5}$/', $ext ) ? $ext : '';
-};
-
-// One card per group of files; $skip is the file number already open on the page.
-$render_file_groups = function ( $skip = 0 ) use ( $file_groups, $file_ext, $post_id ) {
-    foreach ( $file_groups as $group ) {
-        $items = array_filter( $group['items'], function ( $item ) use ( $skip ) {
-            return $item['n'] !== $skip;
-        } );
-        if ( ! $items ) {
-            continue;
-        }
-        ?>
-        <div>
-            <h3 class="flex items-center gap-2 text-caption font-bold uppercase tracking-widest text-slate-400 mb-2.5">
-                <?php echo esc_html( $group['label'] ); ?>
-                <span class="px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500 tracking-normal"><?php echo esc_html( count( $items ) ); ?></span>
-            </h3>
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-card divide-y divide-slate-100 overflow-hidden">
-                <?php foreach ( $items as $item ) :
-                    $f   = $item['file'];
-                    $ext = $file_ext( $f['url'] );
-                    ?>
-                    <a href="<?php echo esc_url( rom_download_url( $post_id, $item['n'] ) ); ?>" target="_blank" rel="nofollow"
-                       class="group flex items-center gap-3 sm:gap-4 p-4 sm:px-5 hover:bg-rose-50/40 transition-colors">
-                        <span class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption uppercase flex-shrink-0">
-                            <?php echo esc_html( $ext ? $ext : '#' . $item['n'] ); ?>
-                        </span>
-                        <span class="min-w-0 flex-1">
-                            <span class="block font-bold text-meta sm:text-body text-slate-900 group-hover:text-primary transition-colors break-words"><?php echo esc_html( $f['name'] ); ?></span>
-                            <span class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-caption text-slate-500 mt-0.5">
-                                <?php if ( ! empty( $f['file_type'] ) ) : ?>
-                                    <span><?php esc_html_e( 'Format:', 'rom' ); ?> <strong class="text-slate-700"><?php echo esc_html( $f['file_type'] ); ?></strong></span>
-                                <?php endif; ?>
-                                <?php if ( ! empty( $f['file_size'] ) ) : ?>
-                                    <span><?php esc_html_e( 'Size:', 'rom' ); ?> <strong class="text-slate-700"><?php echo esc_html( $f['file_size'] ); ?></strong></span>
-                                <?php endif; ?>
-                            </span>
-                        </span>
-                        <span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 shadow-sm shadow-primary/25 group-hover:bg-primary-hover transition-colors" aria-hidden="true">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
-                        </span>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php
-    }
-};
-
-$file_total = count( $file_groups[0]['items'] ) + count( $file_groups[1]['items'] );
-$thumb_url  = get_the_post_thumbnail_url( $post_id, 'thumbnail' );
-$guide      = $console ? get_field( 'console_guide', 'term_' . $console->term_id ) : '';
-$note       = get_field( 'download_note', $post_id );
+$is_emulator = ( 'emulator' === $post->post_type );
+$file_groups = rom_download_groups( $post_id );
+$file_total  = count( $file_groups[0]['items'] ) + count( $file_groups[1]['items'] );
+$thumb_url   = get_the_post_thumbnail_url( $post_id, 'thumbnail' );
+$guide       = $console ? get_field( 'console_guide', 'term_' . $console->term_id ) : '';
+$note        = get_field( 'download_note', $post_id );
 ?>
 
     <!-- Breadcrumbs bar -->
@@ -204,7 +127,7 @@ $note       = get_field( 'download_note', $post_id );
                                     <span class="inline-flex items-center gap-2 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0 [&_svg]:text-primary"><?php echo get_svg_icon( 'noti' ) . esc_html( sprintf( __( '%s setup guide', 'rom' ), $console->name ) ); ?></span>
                                     <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                                 </summary>
-                                <div class="revert page-content px-4 pb-4 text-meta text-slate-700"><?php echo wp_kses_post( $guide ); ?></div>
+                                <div class="rich-text px-4 pb-4"><?php echo wp_kses_post( $guide ); ?></div>
                             </details>
                         <?php endif; ?>
                     </div>
@@ -219,7 +142,7 @@ if ( ! $file_number ) :
     ?>
     <section class="py-6 sm:py-8">
         <div class="max-w-content mx-auto px-4 sm:px-6 space-y-6">
-            <?php $render_file_groups(); ?>
+            <?php get_template_part( 'template-parts/download-files', null, array( 'post_id' => $post_id, 'groups' => $file_groups ) ); ?>
         </div>
     </section>
 <?php
@@ -249,7 +172,7 @@ elseif ( $file_missing ) :
             </div>
             <?php if ( $file_total ) : ?>
                 <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight"><?php esc_html_e( 'Available files', 'rom' ); ?></h2>
-                <?php $render_file_groups(); ?>
+                <?php get_template_part( 'template-parts/download-files', null, array( 'post_id' => $post_id, 'groups' => $file_groups ) ); ?>
             <?php endif; ?>
         </div>
     </section>
@@ -268,7 +191,7 @@ else :
     $file_name    = $link['name'];
     $file_type    = isset( $link['file_type'] ) ? $link['file_type'] : '';
     $file_size    = isset( $link['file_size'] ) ? $link['file_size'] : '';
-    $current_ext  = $file_ext( $link['url'] );
+    $current_ext  = rom_file_ext( $link['url'] );
     ?>
     <section class="py-6 sm:py-8">
         <div class="max-w-content mx-auto px-4 sm:px-6">
@@ -346,7 +269,7 @@ else :
         <section class="pb-6 sm:pb-8">
             <div class="max-w-content mx-auto px-4 sm:px-6 space-y-6">
                 <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight"><?php esc_html_e( 'Other files', 'rom' ); ?></h2>
-                <?php $render_file_groups( $file_number ); ?>
+                <?php get_template_part( 'template-parts/download-files', null, array( 'post_id' => $post_id, 'groups' => $file_groups, 'skip' => $file_number ) ); ?>
             </div>
         </section>
     <?php endif;

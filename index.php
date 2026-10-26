@@ -120,7 +120,7 @@ get_header();
                         <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Announcement', 'rom') ?></p>
                         <?php echo $post->post_title; ?>
                     </h2>
-                    <div class="text-gray-700 revert">
+                    <div class="rich-text">
                         <?php echo $post->post_content; ?>
                     </div>
                 </div>

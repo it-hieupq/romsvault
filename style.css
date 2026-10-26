@@ -465,27 +465,6 @@ body {
     }
 }
 
-/* Scrollbar styling for dropdown */
-.revert * {
-    all: revert;
-    max-width: 100%;
-}
-
-/* `all: revert` above drops the author colour from every descendant, so links in
-   post/rom/emulator content need a rule that outranks `.revert *` (0,1,1) rather
-   than one that merely loads later. */
-.revert.page-content a,
-.page-content a {
-    color: #d81b60;
-    text-decoration: none;
-}
-
-.revert.page-content a:hover,
-.page-content a:hover {
-    color: #ad1457;
-    text-decoration: underline;
-}
-
 /* Toast Notification Styles */
 .toast-container {
     position: fixed;

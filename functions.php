@@ -570,7 +570,7 @@ add_filter('the_content', function ($content) {
 	) {
 		return $content;
 	}
-	$content = '<div class="revert page-content">' . $content . '</div>';
+	$content = '<div class="rich-text">' . $content . '</div>';
 	ob_start();
 	get_template_part('template-parts/sharing');
 	$sharing = ob_get_clean();

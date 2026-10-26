@@ -88,3 +88,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Editor-written HTML (post content, descriptions, guides). One class on the
+   wrapper styles every tag the editor can produce, so templates never style
+   content tag by tag. */
+@layer components {
+  .rich-text {
+    @apply text-body sm:text-[15px] sm:leading-7 text-slate-700 break-words;
+  }
+  .rich-text > * + * { @apply mt-4; }
+  .rich-text > :first-child { @apply mt-0; }
+  .rich-text h2 { @apply mt-8 text-lg sm:text-xl font-bold text-slate-900 tracking-tight; }
+  .rich-text h3 { @apply mt-7 text-base sm:text-[17px] font-bold text-slate-900 tracking-tight; }
+  .rich-text h4,
+  .rich-text h5,
+  .rich-text h6 { @apply mt-6 font-bold text-slate-900; }
+  .rich-text :is(h2, h3, h4, h5, h6) + * { @apply mt-2; }
+  .rich-text ul { @apply list-disc pl-5 space-y-1.5; }
+  .rich-text ol { @apply list-decimal pl-5 space-y-1.5; }
+  .rich-text li { @apply pl-1 marker:text-primary/60; }
+  .rich-text li > :is(ul, ol) { @apply mt-1.5; }
+  .rich-text a { @apply font-medium text-primary underline decoration-primary/30 underline-offset-2 hover:text-primary-hover hover:decoration-primary transition-colors; }
+  .rich-text strong,
+  .rich-text b { @apply font-semibold text-slate-900; }
+  .rich-text blockquote { @apply border-l-4 border-primary/30 bg-slate-50 rounded-r-xl px-4 py-3 text-slate-600; }
+  .rich-text img,
+  .rich-text video,
+  .rich-text iframe { @apply max-w-full h-auto rounded-xl; }
+  .rich-text figure { @apply my-6; }
+  .rich-text figcaption { @apply mt-2 text-meta text-slate-500 text-center; }
+  .rich-text table { @apply block w-full overflow-x-auto text-meta border-collapse; }
+  .rich-text th,
+  .rich-text td { @apply border border-slate-200 px-3 py-2 text-left align-top; }
+  .rich-text th { @apply bg-slate-50 font-semibold text-slate-900; }
+  .rich-text code { @apply rounded bg-slate-100 px-1 py-0.5 text-[0.9em] text-slate-800; }
+  .rich-text pre { @apply overflow-x-auto rounded-xl bg-slate-900 p-4 text-meta text-slate-100; }
+  .rich-text pre code { @apply bg-transparent p-0 text-inherit; }
+  .rich-text hr { @apply my-8 border-slate-200; }
+}

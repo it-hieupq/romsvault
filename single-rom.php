@@ -26,17 +26,9 @@ while ( have_posts() ) : the_post();
 	$download_url  = rom_download_url( $post );
 	$rf_restricted = rf_is_restricted( $post->ID );
 
-	/**
-	 * The download page indexes the two repeaters as one merged list and the file
-	 * index is 1-based (see inc/ajax.php and inc/download-token.php), so the rows
-	 * have to be merged in the same order here or the affiliate links would point
-	 * at the wrong file.
-	 */
-	$download_list_aff = get_field( 'download_list_aff', $post->ID );
-	$all_downloads     = array_merge(
-		is_array( $download_list ) ? $download_list : array(),
-		is_array( $download_list_aff ) ? $download_list_aff : array()
-	);
+	// Files as the download endpoint numbers them (rom_download_groups()).
+	$file_groups = rom_download_groups( $post->ID );
+	$file_total  = count( $file_groups[0]['items'] ) + count( $file_groups[1]['items'] );
 
 	// Specs, built from whatever the rom actually has; empty ones never render.
 	// No Platform cell: the console already leads the tag row and the h1.
@@ -165,7 +157,7 @@ while ( have_posts() ) : the_post();
                         <!-- Title + score -->
                         <div>
                             <div class="flex items-start justify-between gap-3">
-                                <h1 class="min-w-0 text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-snug">
+                                <h1 class="min-w-0 text-lg sm:text-[22px] font-bold text-slate-900 tracking-tight leading-snug">
 									<?php
 									/* translators: 1: game title, 2: console name. */
 									echo esc_html( sprintf( __( '%1$s %2$s ROM', 'rom' ), get_the_title(), $console->name ) );
@@ -174,10 +166,13 @@ while ( have_posts() ) : the_post();
                                 <div class="flex-shrink-0 [&_.rf-wish-btn]:m-0"><?php rf_render_wishlist_button( $post->ID ); ?></div>
                             </div>
                             <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-meta text-slate-500 mt-2">
-                                <span class="flex items-center gap-1 text-slate-600">
-									<?php echo esc_html( number_format( $downloads, 0, '', ',' ) . ' ' . __( 'downloads', 'rom' ) ); ?>
-                                </span>
-                                <span class="text-slate-300">&bull;</span>
+								<?php // A small count reads as "nobody uses this"; show it from 1,000 up. ?>
+								<?php if ( $downloads > 1000 ) : ?>
+                                    <span class="flex items-center gap-1 text-slate-600">
+										<?php echo esc_html( number_format( $downloads, 0, '', ',' ) . ' ' . __( 'downloads', 'rom' ) ); ?>
+                                    </span>
+                                    <span class="text-slate-300">&bull;</span>
+								<?php endif; ?>
                                 <span class="text-slate-500"><?php echo esc_html( sprintf( __( 'Updated: %s', 'rom' ), get_the_modified_date( 'M Y' ) ) ); ?></span>
                             </div>
                         </div>
@@ -225,7 +220,7 @@ while ( have_posts() ) : the_post();
 								rf_render_restricted_notice();
 							} ?>
                             <div class="flex flex-wrap items-center gap-3">
-								<?php if ( ! empty( $all_downloads ) ) : ?>
+								<?php if ( $file_total ) : ?>
                                     <?php // Display lives on the inner span: a flex utility here would override rf-authed-only's display:none. ?>
                                     <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
                                     <span class="flex flex-wrap items-center gap-3">
@@ -264,9 +259,8 @@ while ( have_posts() ) : the_post();
 							<?php echo esc_html( sprintf( __( 'About %1$s for %2$s', 'rom' ), get_the_title(), $console->name ) ); ?>
                         </h2>
                     </div>
-                    <div class="prose max-w-none text-slate-700 text-body">
-						<?php the_content(); ?>
-                    </div>
+					<?php // the_content filter (functions.php) wraps it in .rich-text. ?>
+					<?php the_content(); ?>
                 </div>
             </div>
         </section>
@@ -351,7 +345,7 @@ while ( have_posts() ) : the_post();
         </section>
 	<?php endif; ?>
 
-	<?php if ( ! empty( $all_downloads ) ) : ?>
+	<?php if ( $file_total ) : ?>
         <!-- Download matrix -->
         <section id="download" class="py-6 sm:py-8 scroll-mt-24">
             <div class="max-w-content mx-auto px-4 sm:px-6">
@@ -367,46 +361,8 @@ while ( have_posts() ) : the_post();
 				} ?>
 
                 <div class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
-                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-card divide-y divide-slate-100 overflow-hidden">
-						<?php foreach ( $all_downloads as $index => $file ) :
-							// 1-based, matching the /download/{n}/ endpoint.
-							$file_url  = rom_download_url( $post, $index + 1 );
-							$file_type = ! empty( $file['file_type'] ) ? $file['file_type'] : '';
-							// The badge shows the archive the link really serves (zip, 7z, iso...),
-							// read off the URL; the Format line keeps the editor's file_type.
-							$file_ext = strtolower( pathinfo( (string) wp_parse_url( $file['url'] ?? '', PHP_URL_PATH ), PATHINFO_EXTENSION ) );
-							if ( ! preg_match( '/^[a-z0-9]{1,5}$/', $file_ext ) ) {
-								$file_ext = '';
-							}
-							?>
-                            <div class="p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 hover:bg-rose-50/20 transition-colors">
-                                <div class="flex items-start gap-3.5 flex-1 min-w-0">
-                                    <div class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption flex-shrink-0 mt-0.5 uppercase">
-										<?php echo esc_html( $file_ext ? $file_ext : '#' . ( $index + 1 ) ); ?>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <span class="font-bold text-slate-900 text-meta sm:text-body block"><?php echo esc_html( $file['name'] ); ?></span>
-                                        <div class="flex flex-wrap items-center gap-2.5 text-caption text-slate-500 mt-1">
-											<?php if ( $file_type ) : ?>
-                                                <span><?php esc_html_e( 'Format:', 'rom' ); ?> <strong class="text-slate-700"><?php echo esc_html( $file_type ); ?></strong></span>
-											<?php endif; ?>
-											<?php if ( ! empty( $file['file_size'] ) ) : ?>
-												<?php if ( $file_type ) : ?><span>&bull;</span><?php endif; ?>
-                                                <span><?php esc_html_e( 'Size:', 'rom' ); ?> <strong class="text-slate-800 font-bold"><?php echo esc_html( $file['file_size'] ); ?></strong></span>
-											<?php endif; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2 flex-shrink-0">
-                                    <a href="<?php echo esc_url( $file_url ); ?>" rel="nofollow" aria-label="<?php esc_attr_e( 'Download', 'rom' ); ?>"
-                                       class="inline-flex items-center justify-center gap-1.5 w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1 rounded-full bg-primary text-white font-bold text-[10px] uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all">
-                                        <?php // Own icon: the shared 'download' one is painted pink and vanishes on this button. ?>
-                                        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
-										<span class="hidden sm:inline"><?php esc_html_e( 'Download', 'rom' ); ?></span>
-                                    </a>
-                                </div>
-                            </div>
-						<?php endforeach; ?>
+                    <div class="space-y-6">
+                        <?php get_template_part( 'template-parts/download-files', null, array( 'post_id' => $post->ID, 'groups' => $file_groups ) ); ?>
                     </div>
 
 					<?php if ( $download_note = get_field( 'download_note', $post->ID ) ) : ?>
@@ -503,7 +459,7 @@ while ( have_posts() ) : the_post();
 							<?php echo esc_html( sprintf( __( '%s Setup Guide', 'rom' ), $console->name ) ); ?>
                         </h2>
                     </div>
-                    <div class="revert page-content max-w-none text-slate-700 text-body"><?php echo wpautop( $console_guide ); ?></div>
+                    <div class="rich-text"><?php echo wpautop( $console_guide ); ?></div>
                 </div>
             </div>
         </section>

@@ -82,7 +82,7 @@ while ( have_posts() ) :
                                 <p class="text-xs font-semibold uppercase tracking-wider text-brand"><?php _e('Announcement', 'rom') ?></p>
                                 <?php echo $title; ?>
                             </h2>
-                            <div class="text-gray-700 revert">
+                            <div class="rich-text">
                                 <?php echo $desc; ?>
                             </div>
                         </div>

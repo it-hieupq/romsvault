@@ -191,6 +191,35 @@ function rom_download_url( $post, $file = 0 ) {
 }
 
 /**
+ * A post's files grouped as the download endpoint numbers them: direct links first,
+ * then the affiliate mirrors, 1-based across both (inc/ajax.php, inc/download-token.php).
+ * Rows without a name or URL are left out but keep their number.
+ */
+function rom_download_groups( $post_id ) {
+    $normal = get_field( 'download_list', $post_id );
+    $aff    = get_field( 'download_list_aff', $post_id );
+    $offset = is_array( $normal ) ? count( $normal ) : 0;
+    $groups = array(
+        array( 'label' => __( 'Direct downloads', 'rom' ), 'items' => array() ),
+        array( 'label' => __( 'Mirror links', 'rom' ), 'items' => array() ),
+    );
+    foreach ( array( $normal, $aff ) as $g => $files ) {
+        foreach ( is_array( $files ) ? $files : array() as $key => $file ) {
+            if ( ! empty( $file['name'] ) && ! empty( $file['url'] ) ) {
+                $groups[ $g ]['items'][] = array( 'n' => $key + 1 + ( $g ? $offset : 0 ), 'file' => $file );
+            }
+        }
+    }
+    return $groups;
+}
+
+// Archive extension read off a file URL (zip, 7z, iso...), or '' when there is none.
+function rom_file_ext( $url ) {
+    $ext = strtolower( pathinfo( (string) wp_parse_url( (string) $url, PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+    return preg_match( '/^[a-z0-9]{1,5}$/', $ext ) ? $ext : '';
+}
+
+/**
  * The download endpoint resolves to its own rom/emulator, so canonical redirection
  * would send /.../download/ back to the post permalink; the member pages are query-var
  * routes with no post behind them at all. Cancel it for those two only: everywhere else

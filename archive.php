@@ -25,7 +25,7 @@ global $wp_query;
             </div>
 
 			<?php if ( $paged == 1 && $desc = get_queried_object()->description ?? '' ) : ?>
-                <div class="pb-8 entry-content"><?php echo wp_kses_post( $desc ); ?></div>
+                <div class="pb-8 rich-text"><?php echo wp_kses_post( $desc ); ?></div>
 			<?php endif; ?>
 
 			<?php if ( have_posts() ) : ?>

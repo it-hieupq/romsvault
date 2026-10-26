@@ -22,7 +22,7 @@ $card_thumb_id = get_post_thumbnail_id( $card_id );
 ?>
 <a href="<?php the_permalink(); ?>" class="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-subtle hover:shadow-card-hover hover:border-primary/50 transition-all flex flex-col">
     <?php // Emulator art is a logo, so it sits small in the middle instead of filling the frame. ?>
-    <div class="relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center" style="padding:20%">
+    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center" style="padding:20%">
 		<?php if ( $card_thumb_id ) :
 			echo wp_get_attachment_image( $card_thumb_id, 'thumbnail', false, array(
 				'alt'     => the_title_attribute( array( 'echo' => false ) ),
