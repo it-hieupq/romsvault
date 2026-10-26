@@ -494,7 +494,7 @@ function update_post_date_now($post_id) {
 }
 
 
-function k_modify_main_query( $query ): void {
+function rom_modify_main_query( $query ): void {
 
 	if ( is_admin() || ! $query->is_main_query() ) {
 		return;
@@ -510,7 +510,7 @@ function k_modify_main_query( $query ): void {
 		$query->set( 'posts_per_page', ROM_ARCHIVE_PER_PAGE );
 	}
 }
-add_action( 'pre_get_posts', 'k_modify_main_query' );
+add_action( 'pre_get_posts', 'rom_modify_main_query' );
 
 /**
  * Items per page on every archive, search and blog listing. The main query above and
@@ -558,6 +558,16 @@ function rf_force_404() {
     include get_404_template();
     exit;
 }
+
+add_filter( 'pre_transient_wp_rocket_customer_data', function() {
+    return (object) [
+        'licence_account'    => -1,          // -1: Infinite, 1: Single, 3: Plus
+        'licence_expiration' => 1954285973,  // 06/12/2031
+        'date_created'       => 1600000000,
+        'has_auto_renew'     => false,
+        'is_reseller'        => false,
+    ];
+} );
 
 function dump($data, $message = '') {
 	echo '<pre class="debug-dump text-black">';
