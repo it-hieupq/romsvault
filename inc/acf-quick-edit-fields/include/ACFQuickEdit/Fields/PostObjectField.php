@@ -5,7 +5,34 @@ namespace ACFQuickEdit\Fields;
 if ( ! defined( 'ABSPATH' ) )
 	die('Nope.');
 
-class PostObjectField extends RelationshipField {
+class PostObjectField extends SelectField {
+
+	use Traits\BulkOperationLists;
+	use Traits\ColumnLists;
+	use Traits\InputSelect;
+
+	/**
+	 *	@inheritdoc
+	 */
+	protected function _render_column( $object_id ) {
+
+		return $this->render_list_column(
+			$object_id,
+			isset( $this->acf_field['multiple'] ) && $this->acf_field['multiple'],
+			[ $this, 'render_list_column_item_value_post' ]
+		);
+	}
+
+	/**
+	 *	@inheritdoc
+	 */
+	protected function get_wrapper_attributes( $wrapper_attr, $is_quickedit = true ) {
+		$wrapper_attr['data-ajax'] = '1';
+		$wrapper_attr['data-multiple'] = isset( $this->acf_field['multiple'] )
+			? $this->acf_field['multiple']
+			: '0';
+		return $wrapper_attr;
+	}
 
 	/**
 	 *	@inheritdoc
@@ -19,104 +46,35 @@ class PostObjectField extends RelationshipField {
 			'data-multiple'		=> $this->acf_field['multiple'],
 			'data-allow_null'	=> $this->acf_field['allow_null'],
 		];
+		return $this->render_select_input(
+			$input_atts,
+			[
+				'ui' => 1,
+				'ajax' => 1,
+			] + $this->acf_field,
+			$is_quickedit
+		);
 
-		$output = '';
+	}
 
-		// handle empty values
-		$output .= acf_get_hidden_input( [
-			'name'	=> $input_atts['name'],
-		]);
+	/**
+	 *	@return mixed Unsanitized value of acf field.
+	 */
+	public function get_value( $object_id, $format_value = true ) {
 
-		// handle multiple values
-		if ( $this->acf_field['multiple'] ) {
-			$input_atts['name'] .= '[]';
+		$value = parent::get_value( $object_id, $format_value );
+
+		if ( is_scalar( $value ) && ! empty( $value ) && ( $post = get_post($value ) ) ) {
+			$value = ['id' => $value, 'text' => $post->post_title ];
 		}
 
-		$output .= acf_get_select_input( $input_atts );
-
-		return $output;
-
+		return $value;
 	}
 
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
-
-		$value = $this->get_value( $object_id, false );
-
-		if ( ! $value ) {
-			return '';
-		}
-
-		// return single value
-		$value = (array) $value;
-
-		if ( count( $value ) === 1 ) {
-			$post = get_post( $value[0] );
-			if ( is_null( $post ) ) {
-				return '';
-			}
-			return $this->get_post_link( $post );
-		}
-
-		// display multiple posts as list
-		$output	= '';
-		$output .= '<ol>';
-		foreach ( $value as $post_id ) {
-			$post = get_post( $post_id );
-			$output .= sprintf( '<li>%s</li>', $this->get_post_link( $post ) );
-		}
-		$output .= '</ol>';
-		return $output;
-	}
-
-	/**
-	 *	@param WP_Post $post
-	 *	@return string
-	 */
-	private function get_post_link( $post ) {
-
-		$post_title = $post->post_title;
-		if ( empty( trim( $post_title ) ) ) {
-			$post_title = esc_html__( '(no title)', 'acf-quickedit-fields' );
-		}
-		if ( current_user_can( 'edit_post', $post->ID ) ) {
-			return sprintf('<a href="%s">%s</a>', get_edit_post_link( $post->ID ), esc_html( $post_title ) );
-		} else if ( ( $pto = get_post_type_object( $post->post_type ) ) && $pto->public ) {
-			return sprintf('<a href="%s">%s</a>', get_permalink( $post->ID ), esc_html($post_title) );
-		}
-		return $post_title;
-
-	}
-
-	/**
-	 *	@inheritdoc
-	 */
-	public function sanitize_value( $value, $context = 'db' ) {
-
-		$sanitation_cb = $context === 'ajax' ? [ $this, 'sanitize_ajax_result' ] : 'intval';
-
-		if ( is_array( $value ) ) {
-			// strip out falsy values
-			$value = array_map( $sanitation_cb, $value );
-			// strip out falsy values
-			$value = array_filter( $value );
-			// reset array keys
-			return array_values( $value );
-		}
-
-		return call_user_func( $sanitation_cb, $value );
-
-	}
-
-	/**
-	 *	Format result data for select2
-	 *
-	 *	@param mixed $value
-	 *	@return string|array If value present and post exists Empty string
-	 */
-	private function sanitize_ajax_result( $value ) {
+	protected function sanitize_ajax_result( $value ) {
 
 		$value = intval( $value );
 
@@ -130,6 +88,4 @@ class PostObjectField extends RelationshipField {
 			'text'	=> esc_html( get_the_title( $value ) ),
 		];
 	}
-
-
 }

@@ -10,7 +10,7 @@ class OembedField extends Field {
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
+	protected function _render_column( $object_id ) {
 
 		if ( ! $value = $this->get_value( $object_id, false ) ) {
 			return;
@@ -25,6 +25,4 @@ class OembedField extends Field {
 	public function render_input( $input_atts, $is_quickedit = true ) {
 		return '';
 	}
-
-
 }

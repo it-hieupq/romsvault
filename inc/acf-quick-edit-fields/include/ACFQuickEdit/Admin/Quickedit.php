@@ -32,21 +32,30 @@ class Quickedit extends EditFeature {
 	/**
 	 *	@inheritdoc
 	 */
+	public function load_field( $field ) {
+		return wp_parse_args( $field, [
+			'allow_quickedit'		=> false,
+		]);
+	}
+
+	/**
+	 *	@inheritdoc
+	 */
 	public function init_fields() {
 
-		parent::init_fields();
+		$is_active = parent::init_fields();
 
-		if ( $this->is_active() ) {
-
+		if ( $is_active ) {
 			add_action( 'quick_edit_custom_box',  [ $this, 'display_quick_edit' ], 10, 2 );
-
 		}
+
+		return $is_active;
 	}
 
 	/**
 	 *	@action quick_edit_custom_box
 	 */
-	function display_quick_edit( $wp_column_slug, $post_type ) {
+	public function display_quick_edit( $wp_column_slug, $post_type ) {
 
 		if ( $this->did_render ) {
 			return;
@@ -88,10 +97,15 @@ class Quickedit extends EditFeature {
 	/**
 	 *	@inheritdoc
 	 */
-	protected function get_save_data() {
+	protected function get_save_data( $post_id ) {
 		// fall back to $_POST['acf']
 		return null;
 	}
 
-
+	/**
+	 *	@inheritdoc
+	 */
+	protected function is_saving() {
+		return isset( $_POST['action'] ) && in_array( $_POST['action'], ['inline-save','inline-save-tax'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- no processing, just status check
+	}
 }

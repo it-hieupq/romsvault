@@ -39,6 +39,36 @@ class Admin extends Core\Singleton {
 	private $js_columns;
 
 	/**
+	 *	@var Columns
+	 */
+	private $columns = null;
+
+	/**
+	 *	@var Quickedit
+	 */
+	private $quickedit = null;
+
+	/**
+	 *	@var Bulkedit
+	 */
+	private $bulkedit = null;
+
+	/**
+	 *	@var Filters
+	 */
+	private $filters = null;
+
+	/**
+	 *	@var BackendSearch
+	 */
+	private $backendsearch = null;
+
+	/**
+	 *	@var Ajax\AjaxHandler
+	 */
+	private $ajax_handler = null;
+
+	/**
 	 *	@inheritdoc
 	 */
 	protected function __construct() {
@@ -54,15 +84,41 @@ class Admin extends Core\Singleton {
 		add_action( 'after_setup_theme', [ $this , 'setup' ] );
 
 		// init field group admin
-		add_action( 'acf/field_group/admin_head', [ 'ACFQuickEdit\Admin\FieldGroup', 'instance' ] );
+		add_action( 'acf/field_group/admin_head', [ $this, 'init_field_group' ] );
+		add_action( 'wp_ajax_acf/field_group/render_field_settings', [ $this, 'init_field_group' ], 1 );
 
+		add_filter('acf/load_field_group', [ $this, 'load_field_group' ] );
 	}
 
+	/**
+	 *	@action acf/load_field_group
+	 */
+	public function load_field_group( $field_group ) {
+		return wp_parse_args( $field_group, [
+			'qef_simple_location_rules' => false,
+		]);
+	}
+
+	/**
+	 *	@param string $what
+	 */
 	public function __get( $what ) {
 		switch( $what ) {
 			case 'js':
 			case 'css':
 				return $this->$what;
+		}
+	}
+
+	/**
+	 *	@action acf/field_group/admin_head
+	 *	@action wp_ajax_acf/field_group/render_field_settings
+	 */
+	public function init_field_group() {
+		if ( version_compare( acf()->version, '6.0.0', '>=' ) ) {
+			FieldGroup::instance();
+		} else {
+			LegacyFieldGroup::instance();
 		}
 	}
 
@@ -73,7 +129,7 @@ class Admin extends Core\Singleton {
 	 */
 	public function setup() {
 
-		// early return if conditions not met
+		// early return if no ACF
 		if ( ! function_exists('acf') || ! class_exists('acf') || version_compare( acf()->version, '5.7', '<' ) ) {
 			if ( current_user_can( 'activate_plugins' ) ) {
 				add_action( 'admin_notices', [ $this, 'print_no_acf_notice' ] );
@@ -81,33 +137,31 @@ class Admin extends Core\Singleton {
 			return;
 		}
 
-		$this->columns		= Columns::instance();
-		$this->quickedit	= Quickedit::instance();
-		$this->bulkedit		= Bulkedit::instance();
-		$this->ajax_handler = new Ajax\AjaxHandler( 'get_acf_post_meta', [
+		// Features
+		$this->columns			= Columns::instance();
+		$this->quickedit		= Quickedit::instance();
+		$this->bulkedit			= Bulkedit::instance();
+		$this->filters			= Filters::instance();
+		$this->backendsearch	= BackendSearch::instance();
+
+		$this->ajax_handler 	= new Ajax\AjaxHandler( 'get_acf_post_meta', [
 			'public'			=> false,
 			'use_nonce'			=> true,
-			'capability'		=> apply_filters( 'acf_qef_capability', 'edit_posts' ),
+			'capability'		=> false, // apply_filters( 'acf_qef_capability', 'edit_posts' ),
 			'callback'			=> [ $this, 'ajax_get_acf_post_meta' ],
-			'sanitize_callback'	=> [ $this, 'sanitize_ajax_get_acf_post_meta' ],
 		]);
 
-		//
 		add_action( 'load-edit.php', [ $this , 'enqueue_edit_assets' ] );
 		add_action( 'load-edit-tags.php', [ $this , 'enqueue_edit_assets' ] );
 		add_action( 'load-users.php', [ $this, 'enqueue_columns_assets' ] );
 		add_action( 'acf/field_group/admin_enqueue_scripts', [ $this, 'enqueue_fieldgroup_assets' ] );
-
 	}
-
-
 
 	/**
 	 * @action 'wp_ajax_get_acf_post_meta'
 	 */
 	public function ajax_get_acf_post_meta( $params ) {
 
-//		header('Content-Type: application/json');
 		$success = false;
 		$message = '';
 		$data = null;
@@ -126,7 +180,6 @@ class Admin extends Core\Singleton {
 
 			foreach ( $object_ids as $object_id ) {
 
-
 				foreach ( $field_keys as $key ) {
 
 					// ACF-Field must exists
@@ -135,11 +188,15 @@ class Admin extends Core\Singleton {
 					}
 
 					if ( $field_object = Fields\Field::getFieldObject( $field ) ) {
-						$value = $field_object->get_value( $object_id, false );
+						$value = $field_object->sanitize_value(
+							$field_object->get_value( $object_id, false ),
+							'ajax'
+						);
 						if ( ! isset( $data[ $key ] ) ) {
 							// first iteration - always set value
-							$val = $field_object->get_value( $object_id, false );
-							$data[ $key ] = $field_object->sanitize_value( $val, 'ajax' );
+							// $val = $field_object->get_value( $object_id, false );
+							$data[ $key ] = $value;
+
 						} else {
 							// multiple iterations - no value if values aren't equal
 							if ( $data[ $key ] != $value ) {
@@ -161,23 +218,23 @@ class Admin extends Core\Singleton {
 	/**
 	 *	Current user can edit
 	 *
-	 *	@param string $object_id
+	 *	@param string $object_id ACF Object ID
 	 *	@return boolean
 	 */
 	private function can_edit_object( $object_id ) {
 		if ( is_numeric( $object_id ) ) {
 			return current_user_can( 'edit_post', $object_id );
 		}
-		if ( preg_match('/^([\w\d-_]+)_(\d+)$/', $object_id, $matches ) ) {
+		if ( preg_match('/^([\w\d\-_]+)_(\d+)$/', $object_id, $matches ) ) {
 			list( $obj_id, $type, $term_id ) = $matches;
-			if ( $taxonomy === 'user' ) {
-				return false;
+			if ( $type === 'user' ) {
+				return current_user_can('edit_users');
 			}
 			if ( taxonomy_exists( $type ) ) {
 				return current_user_can( 'edit_term', $term_id );
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -234,8 +291,6 @@ class Admin extends Core\Singleton {
 		wp_register_script('acf-timepicker', acf_get_url( 'assets/inc/timepicker/jquery-ui-timepicker-addon.min.js' ), [ 'jquery-ui-datepicker' ], $acf_version );
 		wp_register_style('acf-timepicker', acf_get_url( 'assets/inc/timepicker/jquery-ui-timepicker-addon.min.css' ), [], $acf_version );
 
-
-
 		$this->css->enqueue();
 
 		$this->js
@@ -255,20 +310,26 @@ class Admin extends Core\Singleton {
 	}
 
 	/**
-	 * @action 'load-post.php'
+	 * @action acf/field_group/admin_enqueue_scripts
 	 */
 	public function enqueue_fieldgroup_assets() {
 
-		Asset\Asset::get( 'js/acf-qef-field-group.js' )
-			->deps( 'acf-field-group' )
-			->enqueue();
+		if ( version_compare( acf()->version, '6.0.0', '>=' ) ) {
+			Asset\Asset::get( 'css/acf-qef-field-group.css' )
+				->deps( 'acf-field-group' )
+				->enqueue();
+		} else {
+			LegacyFieldGroup::instance();
+			Asset\Asset::get( 'js/acf-qef-field-group-legacy.js' )
+				->deps( 'acf-field-group' )
+				->enqueue();
 
-		Asset\Asset::get( 'css/acf-qef-field-group.css' )
-			->deps( 'acf-field-group' )
-			->enqueue();
+			Asset\Asset::get( 'css/acf-qef-field-group-legacy.css' )
+				->deps( 'acf-field-group' )
+				->enqueue();
+		}
 
 	}
-
 
 	/**
 	 *	@param array $values
@@ -283,6 +344,4 @@ class Admin extends Core\Singleton {
 		}
 		return $ret;
 	}
-
-
 }

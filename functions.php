@@ -300,26 +300,23 @@ function rom_admin_scripts() {
 }
 add_action( 'admin_enqueue_scripts', 'rom_admin_scripts' );
 
-// 1. customize ACF path
-//add_filter('acf/settings/path', 'k_acf_settings_path');
-function k_acf_settings_path( $path ) {
-	$path = get_stylesheet_directory() . '/inc/acf/';
-	return $path;
-}
-
-// 2. customize ACF dir
-//add_filter('acf/settings/dir', 'k_acf_settings_dir');
-function k_acf_settings_dir( $dir ) {
-	$dir = get_stylesheet_directory_uri() . '/inc/acf/';
-	return $dir;
-}
-
-// 3. Hide ACF field group menu item
- add_filter('acf/settings/show_admin', '__return_false');
-
-// 4. Include ACF
-//include_once( get_stylesheet_directory() . '/inc/acf/acf.php' );
-//include_once( get_stylesheet_directory() . '/inc/acf-quick-edit-fields/index.php' );
+/**
+ * ACF PRO and ACF QuickEdit Fields ship with the theme (inc/) instead of running as
+ * plugins. Both build their asset URLs with plugin_dir_url(), which only knows the
+ * plugins folder, so map files under the theme to the theme URL.
+ */
+add_filter( 'plugins_url', function ( $url, $path, $plugin ) {
+	$theme_dir = wp_normalize_path( get_template_directory() );
+	$plugin    = wp_normalize_path( (string) $plugin );
+	if ( 0 === strpos( $plugin, $theme_dir . '/' ) ) {
+		$url = get_template_directory_uri() . substr( dirname( $plugin ), strlen( $theme_dir ) ) . ( $path ? '/' . ltrim( $path, '/' ) : '' );
+	}
+	return $url;
+}, 10, 3 );
+add_filter( 'acf/settings/show_admin', '__return_false' );
+add_filter( 'acf/settings/show_updates', '__return_false', 100 );
+require_once get_template_directory() . '/inc/acf/acf.php';
+require_once get_template_directory() . '/inc/acf-quick-edit-fields/index.php';
 
 /**
  * Custom fields

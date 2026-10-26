@@ -10,7 +10,7 @@ class LinkField extends Field {
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
+	protected function _render_column( $object_id ) {
 		$value = $this->get_value( $object_id );
 
 		if ( ! is_array( $value ) ) {
@@ -26,7 +26,6 @@ class LinkField extends Field {
 
 	}
 
-
 	/**
 	 *	Render Input element
 	 *
@@ -37,7 +36,6 @@ class LinkField extends Field {
 	 *	@return string
 	 */
 	protected function render_input( $input_atts, $is_quickedit = true ) {
-		// hidden
 
 		$input_atts += [
 			'class'					=> 'acf-quick-edit acf-quick-edit-'.$this->acf_field['type'],
@@ -78,21 +76,18 @@ class LinkField extends Field {
 			'<input type="hidden" value="%s" id="_ajax_linking_nonce" />',
 			esc_attr( wp_create_nonce( 'internal-linking' ) )
 		);
-
 	}
-
-
 
 	/**
 	 *	@param mixed $value
 	 */
 	public function sanitize_value( $value, $context = 'db' ) {
-		$value = (array) $value;
-		$default = [
+
+		$value = wp_parse_args( (array) $value, [
 			'title'		=> '',
 			'url'		=> '',
 			'target'	=> '',
-		];
+		] );
 		extract( $value );
 		$url = esc_url_raw( $url );
 		$title = sanitize_text_field( $title );

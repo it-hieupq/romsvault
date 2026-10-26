@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package ACF
+ * @author  WP Engine
+ *
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -26,7 +35,7 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 			add_action( 'acf/save_post', array( $this, 'save_files' ), 5, 1 );
 
 			// Hook into Media Upload to run additional logic.
-			add_filter( 'wp_handle_upload_prefilter', array( $this, 'handle_upload_prefilter' ), 10, 1 );
+			add_filter( 'wp_handle_upload_prefilter', array( $this, 'handle_upload_prefilter' ), 20, 1 );
 
 			// Hook into Media Modal Query to run additional logic.
 			add_action( 'wp_ajax_query-attachments', array( $this, 'wp_ajax_query_attachments' ), -1 );
@@ -70,11 +79,11 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 		 * @date    24/10/2014
 		 * @since   5.0.9
 		 *
-		 * @param   string|int $post_id The post ID being saved.
+		 * @param   string|integer $post_id The post ID being saved.
 		 * @return  void
 		 */
 		public function save_files( $post_id = 0 ) {
-			if ( isset( $_FILES['acf']['name'] ) ) {
+			if ( isset( $_FILES['acf']['name'] ) ) { // phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified upstream.
 				acf_upload_files();
 			}
 		}
@@ -139,15 +148,17 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 		private function get_source_field() {
 			$field = false;
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified elsewhere.
 			// Search for field key within available data.
 			// Case 1) Media modal query.
 			if ( isset( $_POST['query']['_acfuploader'] ) ) {
-				$field_key = (string) $_POST['query']['_acfuploader'];
+				$field_key = sanitize_text_field( $_POST['query']['_acfuploader'] );
 
 				// Case 2) Media modal upload.
 			} elseif ( isset( $_POST['_acfuploader'] ) ) {
-				$field_key = (string) $_POST['_acfuploader'];
+				$field_key = sanitize_text_field( $_POST['_acfuploader'] );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			// Attempt to load field.
 			// Note the `acf_get_field()` function will return false if not found.
@@ -181,9 +192,9 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 		 * @date    31/8/21
 		 * @since   5.10.2
 		 *
-		 * @param   array       $response Array of prepared attachment data.
+		 * @param   array       $response   Array of prepared attachment data.
 		 * @param   WP_Post     $attachment Attachment object.
-		 * @param   array|false $meta Array of attachment meta data, or false if there is none.
+		 * @param   array|false $meta       Array of attachment meta data, or false if there is none.
 		 * @return  array
 		 */
 		function clear_acf_errors_for_core_requests( $response, $attachment, $meta ) {
@@ -197,9 +208,9 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 		 * @date    21/5/21
 		 * @since   5.9.7
 		 *
-		 * @param   array       $response Array of prepared attachment data.
+		 * @param   array       $response   Array of prepared attachment data.
 		 * @param   WP_Post     $attachment Attachment object.
-		 * @param   array|false $meta Array of attachment meta data, or false if there is none.
+		 * @param   array|false $meta       Array of attachment meta data, or false if there is none.
 		 * @return  array
 		 */
 		function wp_prepare_attachment_for_js( $response, $attachment, $meta ) {
@@ -239,5 +250,4 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 
 	// Instantiate.
 	acf_new_instance( 'ACF_Media' );
-
 endif; // class_exists check

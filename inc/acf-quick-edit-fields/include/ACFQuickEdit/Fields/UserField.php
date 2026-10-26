@@ -7,31 +7,30 @@ if ( ! defined( 'ABSPATH' ) )
 
 class UserField extends SelectField {
 
+	use Traits\BulkOperationLists;
+	use Traits\InputSelect;
+	use Traits\ColumnLists;
+
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
+	protected function _render_column( $object_id ) {
+
 		if ( ! current_user_can( 'list_users' ) ) {
 			return '';
 		}
-		// check permissions!
-		if ( ( $user_id = $this->get_value( $object_id, false ) ) && ( $userdata = get_userdata( $user_id ) ) ) {
-
-			if ( current_user_can( 'edit_users' ) ) {
-				$link = get_edit_user_link( $user_id );
-			} else {
-				$link = get_author_posts_url( $user_id );
-			}
-			return sprintf( '<a href="%s">%s</a>', esc_url($link), esc_html( $userdata->display_name ) );
-		}
-
+		return $this->render_list_column(
+			$object_id,
+			isset( $this->acf_field['multiple'] ) && $this->acf_field['multiple'],
+			[ $this, 'render_list_column_item_value_user' ]
+		);
 	}
-
 
 	/**
 	 *	@inheritdoc
 	 */
 	public function render_input( $input_atts, $is_quickedit = true ) {
+
 		$get_users_args = [
 			'fields' => [ 'ID', 'user_nicename' ],
 		];
@@ -40,24 +39,37 @@ class UserField extends SelectField {
 			$get_users_args['role__in'] = $this->acf_field['role'];
 		}
 		$users = get_users($get_users_args);
-		$this->acf_field['ui'] = true;
-		$this->acf_field['choices'] = array_combine(
-			array_map( function($user) { return $user->ID; }, $users ),
-			array_map( function($user) { return $user->user_nicename; }, $users ),
-		);
-		return parent::render_input( $input_atts, $is_quickedit );
 
+		return $this->render_select_input(
+			$input_atts,
+			[
+				'ui' => 1,
+				'ajax' => 1,
+				'choices' => array_combine(
+					array_map( function($user) { return $user->ID; }, $users ),
+					array_map( function($user) { return $user->user_nicename; }, $users )
+				),
+			] + $this->acf_field,
+			$is_quickedit
+		);
 	}
 
 	/**
 	 *	@inheritdoc
 	 */
-	public function sanitize_value( $value, $context = 'db' ) {
-		if ( is_array( $value ) ) {
-			return array_map( 'intval', $value );
-		}
-		return intval( $value );
+	protected function sanitize_ajax_result( $value ) {
 
+		$value = intval( $value );
+
+		// bail if post doesn't exist
+		if ( ! $user = get_userdata( $value ) ) {
+			return '';
+		}
+
+		return [
+			'id'	=> $value,
+			'text'	=> $user->user_nicename,
+		];
 	}
 
 	/**
@@ -66,5 +78,4 @@ class UserField extends SelectField {
 	public function is_sortable() {
 		return 'unsigned';
 	}
-
 }

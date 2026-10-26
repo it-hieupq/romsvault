@@ -54,6 +54,16 @@ class Asset {
 	private $handle;
 
 	/**
+	 *	@var string
+	 */
+	private $varname;
+
+	/**
+	 *	@var boolean
+	 */
+	private $localized;
+
+	/**
 	 *	@var array|boolean Localization
 	 */
 	private $l10n = false;
@@ -68,10 +78,16 @@ class Asset {
 	 */
 	private $core = null;
 
+	/**
+	 *	@param string Asset path relative to plugin directory
+	 */
 	static function get( $asset ) {
 		return new self($asset);
 	}
 
+	/**
+	 *	@param string Asset path relative to plugin directory
+	 */
 	public function __construct( $asset ) {
 
 		$this->core = Core\Core::instance();
@@ -250,5 +266,4 @@ class Asset {
 				return array_values( $this->$var );
 		}
 	}
-
 }

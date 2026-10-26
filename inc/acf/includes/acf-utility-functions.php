@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package ACF
+ * @author  WP Engine
+ *
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 // Globals.
 global $acf_stores, $acf_instances;
@@ -24,15 +33,13 @@ function acf_new_instance( $class = '' ) {
 }
 
 /**
- * acf_get_instance
- *
  * Returns an instance for the given class.
  *
- * @date    9/1/19
- * @since   5.7.10
+ * @date  9/1/19
+ * @since 5.7.10
  *
- * @param   string $class The class name.
- * @return  object The instance.
+ * @param string $class The class name.
+ * @return object The instance.
  */
 function acf_get_instance( $class = '' ) {
 	global $acf_instances;
@@ -91,7 +98,7 @@ function acf_get_store( $name = '' ) {
  * @date    13/2/19
  * @since   5.7.11
  *
- * @param   int                           $site_id New blog ID.
+ * @param   integer                       $site_id New blog ID.
  * @param   int prev_blog_id Prev blog ID.
  * @return  void
  */
@@ -139,9 +146,7 @@ function acf_get_url( $filename = '' ) {
 	return ACF_URL . ltrim( $filename, '/' );
 }
 
-/*
- * acf_include
- *
+/**
  * Includes a file within the ACF plugin.
  *
  * @date    10/3/14

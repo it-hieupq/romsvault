@@ -10,28 +10,31 @@ if ( ! defined( 'ABSPATH' ) )
 
 abstract class EditFeature extends Feature {
 
-
+	/** @var array fieldgroup cache */
 	protected $fieldsets = [];
+
+	/** @var array taxonoomy cache */
+	protected $taxonomies = [];
 
 	/**
 	 *	@inheritdoc
 	 */
 	public function init_fields() {
 
-		$is_active = parent::init_fields();
-
-		if ( ! $is_active ) {
-			return;
-		}
-
 		$current_view = CurrentView::instance();
 		$object_kind = $current_view->get_object_kind();
 
+		if ( ! in_array( $object_kind, ['post','term'] ) ) {
+			return false;
+		}
 
-		if ( $object_kind === 'user' ) {
-			// no QE on user screen
-			return;
-		} else if ( $object_kind == 'term' ) {
+		$is_active = parent::init_fields();
+
+		if ( ! $is_active ) {
+			return false;
+		}
+
+		if ( $object_kind == 'term' ) {
 			// cb
 			$action = 'edit_term';
 			$callback = [ $this, 'save_acf_term_meta' ];
@@ -50,16 +53,12 @@ abstract class EditFeature extends Feature {
 			$this->admin->js->add_dep( 'inline-edit-post' );
 		}
 
-
 		// register quick/bulk save actions
-		if ( ! has_action( $action, $callback ) ) {
-
-			wp_enqueue_media();
-
+		if ( $this->is_saving() ) {
 			add_action( $action, $callback, 10, $count_args );
-
+		} else {
+			wp_enqueue_media();
 		}
-
 
 		foreach ( $this->fields as $field ) {
 			$acf_field = $field->get_acf_field();
@@ -73,7 +72,11 @@ abstract class EditFeature extends Feature {
 
 			$this->fieldsets[ $fieldgroup['key'] ][] = $field;
 
-			// deps should be property of field type!
+			if ( $acf_field['type'] === 'taxonomy' ) {
+				$this->taxonomies[] = $acf_field['taxonomy'];
+			}
+
+			// TODO: move deps-management to field type
 			if ( $acf_field['type'] === 'date_picker' || $acf_field['type'] === 'time_picker' || $acf_field['type'] === 'date_time_picker' ) {
 				$this->admin->js->add_dep( 'jquery-ui-datepicker' );
 				$this->admin->js->add_dep( 'acf-timepicker' );
@@ -89,12 +92,24 @@ abstract class EditFeature extends Feature {
 				$this->admin->js->add_dep('wp-color-picker');
 				$this->admin->css->add_dep('wp-color-picker');
 			}
-
 		}
 
+		$this->taxonomies = array_unique( $this->taxonomies );
+
+		if ( count( $this->taxonomies ) ) {
+			add_filter( 'quick_edit_show_taxonomy', [ $this, 'quick_edit_show_taxonomy' ], 10, 3 );
+		}
+		return true;
 	}
 
-
+	/**
+	 *	Hide WP default UI for taxonomy
+	 *
+	 *	@filter quick_edit_show_taxonomy
+	 */
+	public function quick_edit_show_taxonomy( $show, $taxonomy ) {
+		return $show && ! in_array( $taxonomy, $this->taxonomies );
+	}
 
 	/**
 	 *	@param string $key field Key
@@ -115,8 +130,6 @@ abstract class EditFeature extends Feature {
 		}
 	}
 
-
-
 	/**
 	 *	@param int $term_id
 	 *	@param int $tt_id
@@ -134,15 +147,13 @@ abstract class EditFeature extends Feature {
 		// avoid infinite loop
 		remove_action( 'edit_term', [ $this, 'save_acf_term_meta' ], 10 );
 
-		$ret = acf_save_post( $object_id, $this->get_save_data() );
+		$ret = acf_save_post( $object_id, $this->get_save_data( $object_id ) );
 
 		add_action( 'edit_term', [ $this, 'save_acf_term_meta' ], 10, 3 );
 
 		return $ret;
 
 	}
-
-
 
 	/**
 	 *	@param int $post_id
@@ -157,7 +168,7 @@ abstract class EditFeature extends Feature {
 		// avoid infinite loop
 		remove_action( 'save_post', [ $this, 'save_acf_post_meta' ], 10 );
 
-		$ret = acf_save_post( $post_id, $this->get_save_data() );
+		$ret = acf_save_post( $post_id, $this->get_save_data( $post_id ) );
 
 		add_action( 'save_post', [ $this, 'save_acf_post_meta' ], 10, 1 );
 
@@ -170,7 +181,12 @@ abstract class EditFeature extends Feature {
 	 *
 	 *	@return null|array
 	 */
-	abstract protected function get_save_data();
+	abstract protected function get_save_data( $post_id );
 
-
+	/**
+	 *	Whether current request will save values
+	 *
+	 *	@return boolean
+	 */
+	abstract protected function is_saving();
 }

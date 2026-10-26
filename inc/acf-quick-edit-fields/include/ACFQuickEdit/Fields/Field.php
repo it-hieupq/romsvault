@@ -16,15 +16,24 @@ abstract class Field {
 	private static $fields = [];
 
 	/**
+	 *	@var array associated acf field
+	 */
+	public $acf_field;
+
+	/**
 	 *	@var bool whether the field was already updated
 	 */
 	private $did_update = false;
 
+	/**
+	 *	@var Core\Core
+	 */
+	protected $core = null;
 
 	/**
-	 *	@var array ACF field
+	 *	@var string ACF field
 	 */
-	protected $acf_field;
+	private $_acf_field_key;
 
 	/**
 	 *	@var array ACF field
@@ -32,9 +41,9 @@ abstract class Field {
 	protected $acf_parent;
 
 	/**
-	 *	@var array ACFQuickEdit\Fields\Field
+	 *	@var ACFQuickEdit\Fields\Field
 	 */
-	protected $parent;
+	protected $parent = false;
 
 	/**
 	 *	@var string classname to be wrapped aroud input element
@@ -47,54 +56,55 @@ abstract class Field {
 	public static function get_types() {
 		$types = [
 			// basic
-			'text'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'textarea'			=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'number'			=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'email'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'url'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'password'			=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => false ],
-			'range'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
+			'text'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => true, ],
+			'textarea'			=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => true, ],
+			'number'			=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => true, ],
+			'email'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => true, ],
+			'url'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => true, ],
+			'password'			=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => false,	'filter' => false,	'backendsearch' => false, ],
+			'range'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => true, ],
 
 			// Content
-			'wysiwyg'			=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'oembed'			=> [ 'column' => true,		'quickedit' => false,	'bulkedit' => false ],
-			'image'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'file'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'gallery'			=> [ 'column' => true,		'quickedit' => false,	'bulkedit' => false ],
+			'wysiwyg'			=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false,	'filter' => false,	'backendsearch' => true,  ],
+			'oembed'			=> [ 'column' => true,	'quickedit' => false,	'bulkedit' => false,	'filter' => false,	'backendsearch' => false,  ],
+			'image'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false,  ],
+			'file'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false,  ],
+			'gallery'			=> [ 'column' => true,	'quickedit' => false,	'bulkedit' => false,	'filter' => false,	'backendsearch' => false,  ],
 
 			// Choice
-			'select'			=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'checkbox'			=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'radio'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'true_false'		=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'button_group'		=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
+			'select'			=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => true,	'backendsearch' => false,   ],
+			'checkbox'			=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => true,	'backendsearch' => false,   ],
+			'radio'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => true,	'backendsearch' => false,   ],
+			'true_false'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => true,	'backendsearch' => false,   ],
+			'button_group'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => true,	'backendsearch' => false,   ],
 
 			// relational
-			'post_object'		=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'page_link'			=> [ 'column' => true,		'quickedit' => false,	'bulkedit' => false ],
-			'link'				=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
-			'relationship'		=> [ 'column' => true,		'quickedit' => false,	'bulkedit' => false ],
-			'taxonomy'			=> [ 'column' => true,		'quickedit' => true,	'bulkedit' => true ],
+			'post_object'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false, ], // TODO: select post filter
+			'page_link'			=> [ 'column' => true,	'quickedit' => false,	'bulkedit' => false,	'filter' => false,	'backendsearch' => false, ],
+			'link'				=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false, ],
+			'relationship'		=> [ 'column' => true,	'quickedit' => false,	'bulkedit' => false,	'filter' => false,	'backendsearch' => false, ], // TODO: select post filter
+			'taxonomy'			=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => true,	'backendsearch' => false, ],
 			'user'				=> [
 				'column'	=> current_user_can('list_users'),
 				'quickedit'	=> current_user_can('list_users'),
-				'bulkedit'	=> current_user_can('list_users')
-			],
+				'bulkedit'	=> current_user_can('list_users'),
+				'filter'	=> false, // current_user_can('list_users'),
+			], // TODO: select user filter
 
 			// jQuery
-			'google_map'		=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'date_picker'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true ],
-			'date_time_picker'	=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true ],
-			'time_picker'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true ],
-			'color_picker'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true ],
+			'google_map'		=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false,	'filter' => false,	'backendsearch' => false,   ],
+			'date_picker'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false,   ], // TODO: select year/month/day
+			'date_time_picker'	=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false,   ], // TODO: select year/month/day
+			'time_picker'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false,   ],
+			'color_picker'		=> [ 'column' => true,	'quickedit' => true,	'bulkedit' => true,		'filter' => false,	'backendsearch' => false,   ],
 
 			// Layout (unsupported)
-			'message'			=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'tab'				=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'repeater'			=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'group'				=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'flexible_content'	=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
-			'clone'				=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false ],
+			'message'			=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false,	'backendsearch' => false,   ],
+			'tab'				=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false,	'backendsearch' => false,   ],
+			'repeater'			=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false,	'backendsearch' => false,   ],
+			'group'				=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false,	'backendsearch' => false,   ],
+			'flexible_content'	=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false,	'backendsearch' => false,   ],
+			'clone'				=> [ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false,	'backendsearch' => false,   ],
 		];
 
 		/**
@@ -104,25 +114,28 @@ abstract class Field {
 		 *							and an array of supported fetaures as values.
 		 *							Features are 'column', 'quickedit' and 'bulkedit'.
 		 */
-		return apply_filters( 'acf_quick_edit_fields_types', $types );
+		$types = apply_filters( 'acf_quick_edit_fields_types', $types );
+		return array_map( function ( $type ) {
+			return wp_parse_args(
+				$type,
+				[ 'column' => false,	'quickedit' => false,	'bulkedit' => false, 'filter' => false, 'backendsearch' => false  ]
+			);
+		}, $types );
 	}
 
 	/**
 	 *	Factory method
-	 *	@param array $acf_field
+	 *	@param string|array $acf_field Field Array or Field key
 	 *	@return ACFQuickEdit\Fields\Field
 	 */
 	public static function getFieldObject( $acf_field ) {
-		if ( ! $acf_field || is_null($acf_field) ) {
+		if ( is_string( $acf_field ) ) {
+			$acf_field = get_field_object( $acf_field );
+		}
+		if ( ! is_array( $acf_field ) ) {
 			return;
 		}
-		$acf_field = wp_parse_args( $acf_field, [
-			'allow_bulkedit'		=> false,
-			'allow_quickedit'		=> false,
-			'show_column'			=> false,
-			'show_column_weight'	=> 1000,
-			'show_column_sortable'	=> false,
-		]);
+
 		if ( ! isset( self::$fields[ $acf_field['key'] ] ) ) {
 			$field_class = preg_split( '/[-_]/', $acf_field['type'] );
 			$field_class = array_map( 'ucfirst', $field_class );
@@ -135,7 +148,6 @@ abstract class Field {
 		}
 
 		return self::$fields[ $acf_field['key'] ];
-
 	}
 
 	/**
@@ -145,23 +157,43 @@ abstract class Field {
 
 		$this->core = Core\Core::instance();
 
-		$this->acf_field = $acf_field;
+		$this->acf_field = wp_parse_args( $acf_field, [ 'wrapper' => [ ] ] );
 
 		$parent_key	= '';
 
-
-		if ( is_numeric( $this->acf_field['parent'] ) ) {
-			// int: field stored in DB
-			$parent = get_post( $this->acf_field['parent'] );
-			$parent_key = $parent->post_name;
-		} else {
-			// local json field
-			$parent_key = $this->acf_field['parent'];
+		if ( !empty( $this->acf_field['parent'] ) ) {
+			if ( is_numeric( $this->acf_field['parent'] ) ) {
+				// int: field stored in DB
+				$parent = get_post( $this->acf_field['parent'] );
+				$parent_key = $parent->post_name;
+			} else {
+				// local json field
+				$parent_key = $this->acf_field['parent'];
+			}
 		}
-		// 'field_*' local_json
+
 		if (  'field_' === substr( $parent_key, 0, 6 ) ) {
 			// local json
 			$this->parent = self::getFieldObject( get_field_object( $parent_key ) );
+		}
+	}
+
+	/**
+	 *	@param string $what
+	 */
+	public function __get( $what ) {
+		if ( 'acf_field' === $what ) {
+			return acf_get_store( 'fields' )->get( $this->_acf_field_key );
+		}
+	}
+
+	/**
+	 *	@param string $what
+	 *	@param string $value
+	 */
+	public function __set( $what, $value ) {
+		if ( 'acf_field' === $what ) {
+			$this->_acf_field_key = $value['key'];
 		}
 	}
 
@@ -185,10 +217,43 @@ abstract class Field {
 	 *	@param int|string $object_id
 	 *	@return string
 	 */
-	public function render_column( $object_id ) {
+	final public function render_column( $object_id ) {
 
+		$column_html = $this->_render_column( $object_id );
+
+		/**
+		 *	Column HTML Content
+		 *
+		 *	@param string $column_html
+		 *	@param string/int $object_id
+		 *	@param array $acf_field
+		 *
+		 *	@since ?
+		 */
+		return apply_filters( 'acf_qef_column_html_' . $this->acf_field['type'], $column_html, $object_id, $this->acf_field );
+
+	}
+
+	protected function _render_column( $object_id ) {
 		return $this->get_value( $object_id );
+	}
 
+	/**
+	 *	Render Filter
+	 *
+	 *	@param int|string $object_id
+	 *	@return string
+	 */
+	public function render_filter( $index, $selected = '' ) {
+	}
+
+	/**
+	 *	Bulk operations.
+	 *
+	 *	@return array
+	 */
+	public function get_bulk_operations() {
+		return [];
 	}
 
 	/**
@@ -197,7 +262,6 @@ abstract class Field {
 	public function is_sortable() {
 		return false;
 	}
-
 
 	/**
 	 *	Render Field Input
@@ -225,13 +289,20 @@ abstract class Field {
 		if ( ! apply_filters( 'acf_quick_edit_render_' . $this->acf_field['type'], true, $this->acf_field, $post_type ) ) {
 			return;
 		}
+		$field_wrapper = wp_parse_args( $this->acf_field['wrapper'], [ 'id' => '' ] );
 		$wrapper_attr = [
 			'class'				=> 'acf-field',
 			'data-key' 			=> $this->acf_field['key'],
-			'data-parent-key'	=> isset( $this->parent ) ? $this->parent->get_acf_field()['key'] : 'false',
 			'data-field-type'	=> $this->acf_field['type'],
 			'data-allow-null'	=> isset( $this->acf_field['allow_null'] ) ? $this->acf_field['allow_null'] : 0,
 		];
+
+		if ( $field_wrapper['id'] ) {
+			$wrapper_attr['data-id'] = $field_wrapper['id'];
+		}
+
+		$wrapper_attr = $this->get_wrapper_attributes( $wrapper_attr, $mode === 'quick' );
+
 		if ( isset( $this->acf_field['field_type'] ) ) {
 			$wrapper_attr['data-field-sub-type'] = $this->acf_field['field_type'];
 		}
@@ -241,11 +312,14 @@ abstract class Field {
 		?>
 			<div <?php echo acf_esc_attr( $wrapper_attr ) ?>>
 				<div class="inline-edit-group">
-					<label for="<?php echo esc_attr( $this->get_input_id( $mode === 'quick' ) ) ?>" class="title"><?php esc_html_e( $this->acf_field['label'] ); ?></label>
-					<span class="<?php echo implode(' ', $wrapper_class ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped  ?>">
+					<?php if ( $mode === 'bulk' ) {
+						$this->render_bulk_operations();
+					} ?>
+					<label for="<?php echo esc_attr( $this->get_input_id( $mode === 'quick' ) ) ?>" class="title"><?php echo esc_html( $this->acf_field['label'] ); ?></label>
+					<span class="<?php echo implode(' ', $wrapper_class ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already sanitized ?>">
 						<?php
 
-							do_action( 'acf_quick_edit_field_' . $this->acf_field['type'], $this->acf_field, $post_type  );
+							do_action( 'acf_quick_edit_field_' . $this->acf_field['type'], $this->acf_field, $post_type );
 							// sanitiation happens in render_input()
 							echo $this->render_input( $input_atts, $mode === 'quick' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
@@ -257,7 +331,14 @@ abstract class Field {
 				</div>
 			</div>
 		<?php
+	}
 
+	/**
+	 *	@param array $wrapper_attr Field input attributes
+	 *	@return array
+	 */
+	protected function get_wrapper_attributes( $wrapper_attr, $is_quickedit = true ) {
+		return $wrapper_attr;
 	}
 
 	/**
@@ -274,7 +355,8 @@ abstract class Field {
 				'value' 	=> $bulk->get_dont_change_value(),
 				'type'		=> 'checkbox',
 				'checked'	=> 'checked',
-				'data-is-do-not-change' => 'true'
+				'data-is-do-not-change' => 'true',
+				'autocomplete' => 'off',
 			] ) ?> />
 			<?php esc_html_e( 'Do not change', 'acf-quickedit-fields' ) ?>
 		</label>
@@ -285,7 +367,6 @@ abstract class Field {
 	 *	Render Input element
 	 *
 	 *	@param array $input_attr
-	 *	@param string $column
 	 *	@param bool $is_quickedit
 	 *
 	 *	@return string
@@ -303,15 +384,83 @@ abstract class Field {
 	}
 
 	/**
+	 *	Render Input element
+	 *
+	 *	@return string
+	 */
+	protected function render_bulk_operations() {
+
+		$bulk_operations = $this->get_bulk_operations();
+		if ( 0 === count( $bulk_operations ) ) {
+			return;
+		}
+
+		$bulk = Admin\Bulkedit::instance();
+
+		$input_attr = [
+			'name' => sprintf( 'acf[%s][%s]', $bulk->get_bulk_operation_key(), $this->acf_field['key'] ),
+			'autocomplete' => 'off',
+		];
+
+		?>
+		<label class="bulk-operations">
+			<?php
+
+			if ( 1 === count( $bulk_operations ) ) {
+				$op = array_key_first( $bulk_operations );
+					?>
+					<input <?php echo acf_esc_attr( $input_attr + [
+						'value' 	=> $op,
+						'type'		=> 'checkbox',
+					] ) ?> />
+					<?php echo esc_html( $bulk_operations[$op] ); ?>
+					<?php
+			} else {
+				?>
+				<select <?php echo acf_esc_attr( $input_attr ) ?>>
+					<option value="" selected><?php esc_html_e( '– Operation –', 'acf-quickedit-fields' ); ?></option>
+					<?php
+					foreach ( $bulk_operations as $operation => $label ) {
+						?>
+						<option <?php echo acf_esc_attr( [ 'value' => $operation ] ); ?>><?php echo esc_html($label); ?></option>
+						<?php
+					}
+					?>
+				</select>
+				<?php
+			}
+			?>
+		</label>
+		<?php
+	}
+
+	/**
+	 *	Perform a bulk operation
+	 *
+	 *	@param string $operation
+	 *	@param mixed $new_value
+	 *	@return mixed
+	 */
+	public function do_bulk_operation( $operation, $new_value, $object_id ) {
+		return $new_value;
+	}
+
+	/**
 	 *	@return	string
 	 */
 	protected function get_input_name() {
-		if ( isset( $this->parent ) ) {
-			$input_name = sprintf( 'acf[%s][%s]', $this->parent->get_acf_field()['key'], $this->acf_field['key'] );
-		} else {
-			$input_name = sprintf( 'acf[%s]', $this->acf_field['key'] );
+
+		$parts = [];
+		$current = $this;
+		while ( $current ) {
+			$parts[] = $current->acf_field['key'];
+			$current = $current->get_parent();
 		}
-		return $input_name;
+
+		return 'acf' . implode( '', array_map( function($k){
+			return "[{$k}]";
+		}, array_reverse( $parts ) ) );
+
 	}
 
 	/**
@@ -325,16 +474,26 @@ abstract class Field {
 	 *	@return string The Meta key
 	 */
 	final public function get_meta_key() {
-		if ( isset( $this->parent ) ) {
-			$name = $this->parent->get_meta_key() . '_' . $this->acf_field['name'];
-		} else {
-			$name = $this->acf_field['name'];
+
+		$parts = [];
+		$current = $this;
+		while ( $current ) {
+			$parts[] = $current->acf_field['name'];
+			$current = $current->get_parent();
 		}
-		return $name;
+
+		return implode( '_', array_reverse( $parts ) );
 	}
 
 	/**
-	 *	@return mixed value of acf field
+	 *	@return string No Value
+	 */
+	public function __no_value() {
+		return esc_html__( '(No value)', 'acf-quickedit-fields' );
+	}
+
+	/**
+	 *	@return mixed Unsanitized value of acf field.
 	 */
 	public function get_value( $object_id, $format_value = true ) {
 
@@ -343,18 +502,12 @@ abstract class Field {
 		$value = acf_get_value( $object_id, $dummy_field );
 
 		if ( $format_value ) {
-			// sanitation don in acf_format_value
+			// sanitation done in acf_format_value
 			$value = acf_format_value( $value, $object_id, $dummy_field );
-
-		} else {
-			$value = $this->sanitize_value( $value );
 		}
 
 		return $value;
-
-//		return get_field( $this->acf_field['key'], $post_id, false );
 	}
-
 
 	/**
 	 *	Sanitize field value before it is written into db
@@ -364,7 +517,20 @@ abstract class Field {
 	 *	@return mixed Sanitized $value
 	 */
 	public function sanitize_value( $value, $context = 'db' ) {
+		if ( 'ajax' === $context ) {
+			return $value;
+		}
 		return sanitize_text_field( $value );
+	}
+
+	/**
+	 *	Validate value for Bulk operation
+	 *	@param boolean $valid What ACF vaildation says
+	 *	@param mixed $new_value
+	 *	@param string $operation
+	 */
+	public function validate_bulk_operation_value( $valid, $new_value, $operation ) {
+		return $valid;
 	}
 
 	/**
@@ -378,7 +544,6 @@ abstract class Field {
 			array_map( [ $this, 'sanitize_string_or_leave_int' ], array_keys( $arr ) ),
 			array_map( 'sanitize_text_field', array_values( $arr ) )
 		);
-
 	}
 
 	/**
@@ -390,5 +555,4 @@ abstract class Field {
 		}
 		return sanitize_text_field( $value );
 	}
-
 }

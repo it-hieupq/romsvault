@@ -10,7 +10,7 @@ class PasswordField extends Field {
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
+	protected function _render_column( $object_id ) {
 
 		$output = '';
 
@@ -19,7 +19,7 @@ class PasswordField extends Field {
 		if ( $value ) {
 			$output .= '<code>********</code>';
 		} else {
-			$output .= esc_html__('(No value)', 'acf-quickedit-fields');
+			$output .= $this->__no_value();
 		}
 		return $output;
 	}
@@ -39,6 +39,4 @@ class PasswordField extends Field {
 		return '<input '. acf_esc_attr( $input_atts ) .' />';
 
 	}
-
-
 }

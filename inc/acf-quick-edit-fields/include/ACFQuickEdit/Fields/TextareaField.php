@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) )
 
 class TextareaField extends TextField {
 
+	use Traits\BulkOperationText;
 
 	/**
 	 *	@inheritdoc
@@ -27,12 +28,13 @@ class TextareaField extends TextField {
 		return false;
 	}
 
-
 	/**
 	 *	@param mixed $value
 	 */
 	public function sanitize_value( $value, $context = 'db' ) {
+		if ( 'ajax' === $context ) {
+			return $value;
+		}
 		return sanitize_textarea_field( $value );
 	}
-
 }

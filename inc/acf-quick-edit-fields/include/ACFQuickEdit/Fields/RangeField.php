@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) )
 
 class RangeField extends NumberField {
 
-
+	use Traits\BulkOperationNone;
 	/**
 	 *	@inheritdoc
 	 */
@@ -43,5 +43,4 @@ class RangeField extends NumberField {
 
 		return $output;
 	}
-
 }

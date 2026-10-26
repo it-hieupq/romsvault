@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package ACF
+ * @author  WP Engine
+ *
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 /**
  * acf_filter_attrs
@@ -70,27 +79,29 @@ function acf_esc_attrs( $attrs ) {
  *
  * This function emulates `wp_kses_post()` with a context of "acf" for extensibility.
  *
- * @date    16/4/21
- * @since   5.9.6
+ * @since  5.9.6
  *
- * @param   string $string
- * @return  string
+ * @param  string $string The string to be escaped
+ * @return string|false
  */
 function acf_esc_html( $string = '' ) {
+
+	if ( ! is_scalar( $string ) ) {
+		return false;
+	}
+
 	return wp_kses( (string) $string, 'acf' );
 }
 
 /**
  * Private callback for the "wp_kses_allowed_html" filter used to return allowed HTML for "acf" context.
  *
- * @date    16/4/21
  * @since   5.9.6
  *
- * @param   array  $tags An array of allowed tags.
- * @param   string $context The context name.
- * @return  array.
+ * @param  array  $tags    An array of allowed tags.
+ * @param  string $context The context name.
+ * @return array
  */
-
 function _acf_kses_allowed_html( $tags, $context ) {
 	global $allowedposttags;
 
@@ -129,7 +140,7 @@ add_filter( 'wp_kses_allowed_html', '_acf_kses_allowed_html', 0, 2 );
  * @return  string
  */
 function acf_hidden_input( $attrs = array() ) {
-	echo acf_get_hidden_input( $attrs );
+	echo acf_get_hidden_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -159,7 +170,7 @@ function acf_get_hidden_input( $attrs = array() ) {
  * @return  string
  */
 function acf_text_input( $attrs = array() ) {
-	echo acf_get_text_input( $attrs );
+	echo acf_get_text_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -198,7 +209,7 @@ function acf_get_text_input( $attrs = array() ) {
  * @return  string
  */
 function acf_file_input( $attrs = array() ) {
-	echo acf_get_file_input( $attrs );
+	echo acf_get_file_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -213,7 +224,42 @@ function acf_file_input( $attrs = array() ) {
  * @return  string
  */
 function acf_get_file_input( $attrs = array() ) {
-	return sprintf( '<input type="file" %s/>', acf_esc_attrs( $attrs ) );
+	$field_key   = isset( $attrs['key'] ) && is_string( $attrs['key'] ) ? $attrs['key'] : '';
+	$nonce_field = '';
+
+	/**
+	 * If we don't have a field key (most likely because this was called by a third-party field),
+	 * we have to try to guess the field key based on the field name.
+	 */
+	if ( '' === $field_key ) {
+		$parts = explode( '[', $attrs['name'] );
+		if ( is_array( $parts ) && ! empty( $parts[1] ) ) {
+			// Remove the trailing `]`.
+			$field_key = substr( end( $parts ), 0, -1 );
+		}
+	}
+
+	/**
+	 * We only output the nonce if we have a field key, as it's possible to render
+	 * the file input without a real field. But, basic uploaders that don't have any
+	 * custom logic will likely fail to upload anyway if they don't have a field key.
+	 */
+	if ( '' !== $field_key ) {
+		$nonce_attrs = array(
+			'name'  => 'acf[' . $field_key . '_file_nonce]',
+			'value' => wp_create_nonce( 'acf/file_uploader_nonce/' . $field_key ),
+		);
+		$nonce_field = sprintf(
+			'<input type="hidden" %s />',
+			acf_esc_attrs( $nonce_attrs )
+		);
+	}
+
+	return sprintf(
+		'<input type="file" %1$s />%2$s',
+		acf_esc_attrs( $attrs ),
+		$nonce_field
+	);
 }
 
 /**
@@ -228,7 +274,7 @@ function acf_get_file_input( $attrs = array() ) {
  * @return  string
  */
 function acf_textarea_input( $attrs = array() ) {
-	echo acf_get_textarea_input( $attrs );
+	echo acf_get_textarea_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -263,7 +309,7 @@ function acf_get_textarea_input( $attrs = array() ) {
  * @return  string
  */
 function acf_checkbox_input( $attrs = array() ) {
-	echo acf_get_checkbox_input( $attrs );
+	echo acf_get_checkbox_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -296,7 +342,27 @@ function acf_get_checkbox_input( $attrs = array() ) {
 
 	// Render.
 	$checked = isset( $attrs['checked'] );
-	return '<label' . ( $checked ? ' class="selected"' : '' ) . '><input ' . acf_esc_attr( $attrs ) . '/> ' . acf_esc_html( $label ) . '</label>';
+
+	// Build label attributes array for accessibility and consistency.
+	$label_attrs = array();
+	if ( $checked ) {
+		$label_attrs['class'] = 'selected';
+	}
+
+	if ( ! empty( $attrs['button_group'] ) ) {
+		unset( $attrs['button_group'] );
+		// If tabindex is provided, use it for the label; otherwise, use checked-based default.
+		if ( isset( $attrs['tabindex'] ) ) {
+			$label_attrs['tabindex'] = (string) $attrs['tabindex'];
+			unset( $attrs['tabindex'] );
+		} else {
+			$label_attrs['tabindex'] = $checked ? '0' : '-1';
+		}
+		$label_attrs['role']         = 'radio';
+		$label_attrs['aria-checked'] = $checked ? 'true' : 'false';
+	}
+
+	return '<label' . ( acf_esc_attrs( $label_attrs ) ? ' ' . acf_esc_attrs( $label_attrs ) : '' ) . '><input ' . acf_esc_attrs( $attrs ) . '/> ' . acf_esc_html( $label ) . '</label>';
 }
 
 /**
@@ -311,7 +377,7 @@ function acf_get_checkbox_input( $attrs = array() ) {
  * @return  string
  */
 function acf_radio_input( $attrs = array() ) {
-	echo acf_get_radio_input( $attrs );
+	echo acf_get_radio_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -342,7 +408,7 @@ function acf_get_radio_input( $attrs = array() ) {
  * @return  string
  */
 function acf_select_input( $attrs = array() ) {
-	echo acf_get_select_input( $attrs );
+	echo acf_get_select_input( $attrs ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by input generation function.
 }
 
 /**
@@ -375,8 +441,8 @@ function acf_get_select_input( $attrs = array() ) {
  * @since   5.6.0
  *
  * @param   array $choices The choices to walk through.
- * @param   array $values The selected choices.
- * @param   array $depth The current walk depth.
+ * @param   array $values  The selected choices.
+ * @param   array $depth   The current walk depth.
  * @return  string
  */
 function acf_walk_select_input( $choices = array(), $values = array(), $depth = 0 ) {
@@ -411,7 +477,7 @@ function acf_walk_select_input( $choices = array(), $values = array(), $depth = 
 					$attrs['selected'] = 'selected';
 					$attrs['data-i']   = $pos;
 				}
-				$html .= sprintf( '<option %s>%s</option>', acf_esc_attr( $attrs ), esc_html( $label ) );
+				$html .= sprintf( '<option %s>%s</option>', acf_esc_attrs( $attrs ), esc_html( $label ) );
 			}
 		}
 	}
@@ -451,11 +517,10 @@ function acf_esc_atts( $attrs ) {
 /**
  * acf_esc_attr
  *
- * See acf_esc_attrs().
- *
  * @date    13/6/19
  * @since   5.8.1
  * @deprecated  5.6.0
+ * @see acf_esc_attrs().
  *
  * @param   array $attrs The array of attrs.
  * @return  string
@@ -474,7 +539,6 @@ function acf_esc_attr( $attrs ) {
  * @deprecated  5.6.0
  *
  * @param   array $attrs The array of attrs.
- * @return  string
  */
 function acf_esc_attr_e( $attrs ) {
 	echo acf_esc_attrs( $attrs );
@@ -490,7 +554,6 @@ function acf_esc_attr_e( $attrs ) {
  * @deprecated  5.6.0
  *
  * @param   array $attrs The array of attrs.
- * @return  string
  */
 function acf_esc_atts_e( $attrs ) {
 	echo acf_esc_attrs( $attrs );

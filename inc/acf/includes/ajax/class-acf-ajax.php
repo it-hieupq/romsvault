@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package ACF
+ * @author  WP Engine
+ *
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -14,7 +23,7 @@ if ( ! class_exists( 'ACF_Ajax' ) ) :
 		/** @var array The $_REQUEST data. */
 		var $request;
 
-		/** @var bool Prevents access for non-logged in users. */
+		/** @var boolean Prevents access for non-logged in users. */
 		var $public = false;
 
 		/**
@@ -69,7 +78,7 @@ if ( ! class_exists( 'ACF_Ajax' ) ) :
 		 * @date    31/7/18
 		 * @since   5.7.2
 		 *
-		 * @param   string $key The data key.
+		 * @param   string $key   The data key.
 		 * @param   mixed  $value The data value.
 		 * @return  ACF_Ajax
 		 */
@@ -129,7 +138,7 @@ if ( ! class_exists( 'ACF_Ajax' ) ) :
 		function request() {
 
 			// Store data for has() and get() functions.
-			$this->request = wp_unslash( $_REQUEST );
+			$this->request = wp_unslash( $_REQUEST ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verified below in verify_request().
 
 			// Verify request and handle error.
 			$error = $this->verify_request( $this->request );
@@ -228,5 +237,3 @@ if ( ! class_exists( 'ACF_Ajax' ) ) :
 	}
 
 endif; // class_exists check
-
-

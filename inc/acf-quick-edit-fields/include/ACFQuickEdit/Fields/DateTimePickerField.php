@@ -10,16 +10,15 @@ class DateTimePickerField extends Field {
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
+	protected function _render_column( $object_id ) {
 
-		$value = $this->get_value( $object_id, false );
+		$value = (string) $this->get_value( $object_id, false );
 
-		if ( is_null( $value ) ) {
-			return __('(No value)', 'acf-quickedit-fields');
+		if ( '' === $value ) {
+			return $this->__no_value();
 		}
 
 		return acf_format_date( $value, $this->acf_field['display_format'] );
-
 	}
 
 	/**
@@ -55,6 +54,4 @@ class DateTimePickerField extends Field {
 	public function is_sortable() {
 		return 'datetime';
 	}
-
-
 }

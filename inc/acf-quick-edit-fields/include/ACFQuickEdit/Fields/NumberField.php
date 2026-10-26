@@ -7,21 +7,19 @@ if ( ! defined( 'ABSPATH' ) )
 
 class NumberField extends Field {
 
+	use Traits\BulkOperationNumeric;
+
 	/**
 	 *	@inheritdoc
 	 */
-	public function render_column( $object_id ) {
-
-		/*
-		$value = get_field( $this->acf_field['key'], $object_id );
-		/*/
-		$value = $this->get_value( $object_id );
-		//*/
+	protected function _render_column( $object_id ) {
 
 		$output = '';
 
+		$value = $this->get_value( $object_id );
+
 		if ( $value === "" ) {
-			$output .= esc_html__('(No value)', 'acf-quickedit-fields');
+			$output .= $this->__no_value();
 		} else {
 			$output .= number_format_i18n( floatval($value), strlen( substr( strrchr( $value, "." ), 1 ) ) ); //
 		}
@@ -49,5 +47,4 @@ class NumberField extends Field {
 	public function is_sortable() {
 		return 'numeric';
 	}
-
 }

@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package ACF
+ * @author  WP Engine
+ *
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -30,10 +39,10 @@ if ( ! class_exists( 'ACF_Location_Options_Page' ) ) :
 		 * @date    9/4/20
 		 * @since   5.9.0
 		 *
-		 * @param   array $rule The location rule.
-		 * @param   array $screen The screen args.
+		 * @param   array $rule        The location rule.
+		 * @param   array $screen      The screen args.
 		 * @param   array $field_group The field group settings.
-		 * @return  bool
+		 * @return  boolean
 		 */
 		public function match( $rule, $screen, $field_group ) {
 
@@ -67,7 +76,11 @@ if ( ! class_exists( 'ACF_Location_Options_Page' ) ) :
 					$choices[ $page['menu_slug'] ] = $page['page_title'];
 				}
 			} else {
-				$choices[''] = __( 'No options pages exist', 'acf' );
+				$choices[''] = __( 'Select options page...', 'acf' );
+			}
+
+			if ( acf_get_setting( 'enable_options_pages_ui' ) ) {
+				$choices['add_new_options_page'] = __( 'Add New Options Page', 'acf' );
 			}
 
 			// Return choices.
@@ -77,5 +90,4 @@ if ( ! class_exists( 'ACF_Location_Options_Page' ) ) :
 
 	// initialize
 	acf_register_location_type( 'ACF_Location_Options_Page' );
-
 endif; // class_exists check
