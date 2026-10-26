@@ -417,8 +417,6 @@ require get_template_directory() . '/inc/img-compressor.php';
 /**
  * Caching
  */
-require get_template_directory() . '/setting/setting-console-group.php';
-
 require get_template_directory() . '/caching/caching-rom.php';
 
 

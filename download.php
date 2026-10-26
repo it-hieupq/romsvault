@@ -383,6 +383,10 @@ else :
         </section>
     <?php endif;
 endif;
+
+// Help for the step the reader is at, under whichever file list this page shows:
+// the rom FAQ for roms, the emulator FAQ for emulators.
+get_template_part( 'template-parts/faq', null, array( 'items' => rom_faq_items( $is_emulator ? 'emulator' : 'rom' ) ) );
 ?>
 
     <section class="pb-6">

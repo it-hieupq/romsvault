@@ -1762,6 +1762,11 @@ video {
   border-width: 4px;
 }
 
+.border-y {
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -2334,6 +2339,10 @@ video {
 
 .pt-\[6rem\] {
   padding-top: 6rem;
+}
+
+.pr-8 {
+  padding-right: 2rem;
 }
 
 .text-left {

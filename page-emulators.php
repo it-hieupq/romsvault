@@ -65,5 +65,8 @@ global $post;
 			?>
         </div>
     </section>
+
+    <?php // The one page that carries the emulator FAQ schema (inc/utility.php). ?>
+    <?php get_template_part( 'template-parts/faq', null, array( 'items' => rom_faq_items( 'emulator' ), 'container' => 'content-container px-4 sm:px-6 lg:px-8 w-full' ) ); ?>
 <?php
 get_footer();

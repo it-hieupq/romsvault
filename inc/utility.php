@@ -1079,3 +1079,75 @@ function rom_nearby_query( $post, $term, $limit = 10 ) {
 		'ignore_sticky_posts' => true,
 	) );
 }
+/**
+ * The shared FAQ for every rom or every emulator page, from Configs > FAQs.
+ * Empty rows are dropped.
+ *
+ * @param string $type 'rom' or 'emulator'.
+ * @return array[] Each item: array( 'question' => string, 'answer' => string ), plain text.
+ */
+function rom_faq_items( $type ) {
+	$rows = get_field( 'faq_' . $type, 'option' );
+	if ( ! is_array( $rows ) ) {
+		return array();
+	}
+
+	$items = array();
+	foreach ( $rows as $row ) {
+		$question = trim( (string) ( $row['question'] ?? '' ) );
+		$answer   = trim( (string) ( $row['answer'] ?? '' ) );
+		if ( '' !== $question && '' !== $answer ) {
+			$items[] = array( 'question' => $question, 'answer' => $answer );
+		}
+	}
+
+	return $items;
+}
+
+/**
+ * FAQPage schema, added to Yoast's graph so the page keeps one connected graph.
+ *
+ * Google only allows FAQ markup on one page when the same questions repeat
+ * across a site, so it goes on the Roms and Emulators listing pages, never on
+ * the singles that also show the FAQ. Questions and answers are the same
+ * rom_faq_items() the page renders.
+ */
+add_filter( 'wpseo_schema_graph', function ( $graph, $context ) {
+	if ( is_page_template( 'page-roms.php' ) ) {
+		$type = 'rom';
+	} elseif ( is_page_template( 'page-emulators.php' ) ) {
+		$type = 'emulator';
+	} else {
+		return $graph;
+	}
+	$items = rom_faq_items( $type );
+	if ( ! $items ) {
+		return $graph;
+	}
+
+	$page_id    = $context->main_schema_id;
+	$questions  = array();
+	foreach ( $items as $i => $item ) {
+		$questions[] = array(
+			'@type'          => 'Question',
+			'@id'            => $context->canonical . '#faq-' . ( $i + 1 ),
+			'position'       => $i + 1,
+			'name'           => $item['question'],
+			'answerCount'    => 1,
+			'acceptedAnswer' => array(
+				'@type' => 'Answer',
+				'text'  => $item['answer'],
+			),
+		);
+	}
+
+	$graph[] = array(
+		'@type'            => 'FAQPage',
+		'@id'              => $context->canonical . '#faq',
+		'mainEntityOfPage' => array( '@id' => $page_id ),
+		'isPartOf'         => array( '@id' => $page_id ),
+		'mainEntity'       => $questions,
+	);
+
+	return $graph;
+}, 10, 2 );

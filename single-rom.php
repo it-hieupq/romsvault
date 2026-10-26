@@ -255,6 +255,24 @@ while ( have_posts() ) : the_post();
         </div>
     </section>
 
+	<?php if ( $post->post_content !== '' ) : ?>
+        <!-- About -->
+        <section id="about" class="py-6 sm:py-8 scroll-mt-24">
+            <div class="max-w-content mx-auto px-4 sm:px-6">
+                <div class="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 lg:p-9 shadow-card space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Game Information', 'rom' ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
+							<?php echo esc_html( sprintf( __( 'About %1$s for %2$s', 'rom' ), get_the_title(), $console->name ) ); ?>
+                        </h2>
+                    </div>
+                    <div class="prose max-w-none text-slate-700 text-body">
+						<?php the_content(); ?>
+                    </div>
+                </div>
+            </div>
+        </section>
+	<?php endif; ?>
 	<?php
 	$screenshots = get_field( 'image' );
 	$shot_total  = is_array( $screenshots ) ? count( $screenshots ) : 0;
@@ -329,25 +347,6 @@ while ( have_posts() ) : the_post();
                                  loading="lazy">
                         </a>
                     <?php endforeach; endif; ?>
-                    </div>
-                </div>
-            </div>
-        </section>
-	<?php endif; ?>
-
-	<?php if ( $post->post_content !== '' ) : ?>
-        <!-- About -->
-        <section id="about" class="py-6 sm:py-8 scroll-mt-24">
-            <div class="max-w-content mx-auto px-4 sm:px-6">
-                <div class="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 lg:p-9 shadow-card space-y-6">
-                    <div class="border-b border-slate-100 pb-4">
-                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Game Information', 'rom' ); ?></span>
-                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
-							<?php echo esc_html( sprintf( __( 'About %1$s for %2$s', 'rom' ), get_the_title(), $console->name ) ); ?>
-                        </h2>
-                    </div>
-                    <div class="prose max-w-none text-slate-700 text-body">
-						<?php the_content(); ?>
                     </div>
                 </div>
             </div>
@@ -512,15 +511,6 @@ while ( have_posts() ) : the_post();
         </section>
 	<?php endif; ?>
 
-    <!-- Ratings, report and comments. These partials bring their own card wrapper. -->
-    <section class="py-2">
-        <div class="max-w-content mx-auto px-4 sm:px-6">
-			<?php get_template_part( 'template-parts/rating-section' ); ?>
-			<?php get_template_part( 'template-parts/report-form' ); ?>
-			<?php comments_template(); ?>
-        </div>
-    </section>
-
 	<?php
 	// Other roms in the same collection.
 	$collections = wp_get_post_terms( $post->ID, 'collection' );
@@ -583,6 +573,15 @@ while ( have_posts() ) : the_post();
             </div>
         </section>
 	<?php endif; ?>
+
+    <!-- Ratings, report and comments. These partials bring their own card wrapper. -->
+    <section class="py-2">
+        <div class="max-w-content mx-auto px-4 sm:px-6">
+			<?php get_template_part( 'template-parts/rating-section' ); ?>
+			<?php get_template_part( 'template-parts/report-form' ); ?>
+			<?php comments_template(); ?>
+        </div>
+    </section>
 
 <?php
 endwhile;
