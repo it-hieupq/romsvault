@@ -15,6 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! defined( 'RF_RATINGS_CACHE_TTL' ) ) {
+	// The first page of a post's public reviews is cached (Redis-backed transient) for
+	// this long. rf_rating_recount() drops it on every write, so the TTL only bounds how
+	// stale a reviewer's name / avatar can get.
+	define( 'RF_RATINGS_CACHE_TTL', HOUR_IN_SECONDS );
+}
+
 if ( ! defined( 'RF_RATING_MAXLEN' ) ) {
 	define( 'RF_RATING_MAXLEN', 164 ); // hard server-side cap for the review text (chars)
 }
@@ -173,8 +180,16 @@ function rf_rating_recount( $post_id ) {
 		delete_post_meta( $post_id, 'rating_avg' );
 	}
 	$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
+	delete_transient( rf_ratings_cache_key( $post_id ) );
 
 	return array( 'count' => $count, 'avg' => $avg, 'dist' => $dist );
+}
+
+/**
+ * Transient key for the cached first page of a post's public reviews.
+ */
+function rf_ratings_cache_key( $post_id ) {
+	return 'rf_ratings_p1_' . (int) $post_id;
 }
 
 /**
@@ -203,41 +218,55 @@ function rf_rest_ratings_list( WP_REST_Request $request ) {
 	$table   = rf_member_rating_table();
 	$members = rf_member_table();
 
-	$total = (int) $wpdb->get_var( $wpdb->prepare(
-		"SELECT COUNT(*) FROM `{$table}` WHERE post_id = %d AND status = 1",
-		$post_id
-	) );
+	// The first page is the same for everyone and is what every single page view asks
+	// for, so its public part (not `mine`) is cached until the next rating write.
+	$cacheable = ( 0 === $offset && 10 === $limit );
+	$public    = $cacheable ? get_transient( rf_ratings_cache_key( $post_id ) ) : false;
+	if ( is_array( $public ) ) {
+		$total = (int) $public['total'];
+		$out   = $public['reviews'];
+		$dist  = $public['dist'];
+	} else {
+		$total = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM `{$table}` WHERE post_id = %d AND status = 1",
+			$post_id
+		) );
 
-	$rows = $wpdb->get_results( $wpdb->prepare(
-		"SELECT r.id, r.score, r.content, r.created_at, m.name AS member_name, m.avatar_url
-		 FROM `{$table}` r
-		 JOIN `{$members}` m ON m.id = r.member_id
-		 WHERE r.post_id = %d AND r.status = 1
-		 ORDER BY r.created_at DESC, r.id DESC
-		 LIMIT %d OFFSET %d",
-		$post_id, $limit, $offset
-	), ARRAY_A );
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT r.id, r.score, r.content, r.created_at, m.name AS member_name, m.avatar_url
+			 FROM `{$table}` r
+			 JOIN `{$members}` m ON m.id = r.member_id
+			 WHERE r.post_id = %d AND r.status = 1
+			 ORDER BY r.created_at DESC, r.id DESC
+			 LIMIT %d OFFSET %d",
+			$post_id, $limit, $offset
+		), ARRAY_A );
 
-	$out = array();
-	foreach ( (array) $rows as $r ) {
-		$out[] = array(
-			'id'            => (int) $r['id'],
-			'score'         => (int) $r['score'],
-			'content'       => $r['content'],
-			'member_name'   => $r['member_name'],
-			'member_avatar' => $r['avatar_url'],
-			'date'          => $r['created_at'],
-		);
-	}
+		$out = array();
+		foreach ( (array) $rows as $r ) {
+			$out[] = array(
+				'id'            => (int) $r['id'],
+				'score'         => (int) $r['score'],
+				'content'       => $r['content'],
+				'member_name'   => $r['member_name'],
+				'member_avatar' => $r['avatar_url'],
+				'date'          => $r['created_at'],
+			);
+		}
 
-	// Per-star histogram of visible member reviews — the Play-Store "analysis" bars.
-	$dist_rows = $wpdb->get_results( $wpdb->prepare(
-		"SELECT score, COUNT(*) AS c FROM `{$table}` WHERE post_id = %d AND status = 1 GROUP BY score",
-		$post_id
-	), ARRAY_A );
-	$dist = array( '1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0 );
-	foreach ( (array) $dist_rows as $dr ) {
-		$dist[ (string) (int) $dr['score'] ] = (int) $dr['c'];
+		// Per-star histogram of visible member reviews — the Play-Store "analysis" bars.
+		$dist_rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT score, COUNT(*) AS c FROM `{$table}` WHERE post_id = %d AND status = 1 GROUP BY score",
+			$post_id
+		), ARRAY_A );
+		$dist = array( '1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0 );
+		foreach ( (array) $dist_rows as $dr ) {
+			$dist[ (string) (int) $dr['score'] ] = (int) $dr['c'];
+		}
+
+		if ( $cacheable ) {
+			set_transient( rf_ratings_cache_key( $post_id ), array( 'total' => $total, 'reviews' => $out, 'dist' => $dist ), RF_RATINGS_CACHE_TTL );
+		}
 	}
 
 	$resp = array(

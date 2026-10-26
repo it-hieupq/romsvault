@@ -213,9 +213,19 @@
   });
 
   // --- initial load ---
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { loadPage(true); });
-  } else {
+  // A guest on a post with no visible review has nothing to fetch: no reviews, and no
+  // `mine` without a session. Show the empty state straight away instead of a request.
+  function start() {
+    if (sec.getAttribute('data-rf-count') === '0' && !auth.getDisplay()) {
+      if (loading) loading.classList.add('hidden');
+      if (empty) empty.classList.remove('hidden');
+      return;
+    }
     loadPage(true);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
   }
 })();

@@ -290,6 +290,7 @@ Cột, index và lý do thiết kế từng bảng: [MEMBER_SYSTEM.md § 6](./ME
 | `member:{id}:contacts` | `DAY_IN_SECONDS` | `auth/actions/contact.php` |
 | `rftrk_status` | `5 * MINUTE_IN_SECONDS` | `tracking/status.php` — heartbeat + số post đang chờ, cho admin notice |
 | `rom_search_rebuild_notice_{user_id}` | `MINUTE_IN_SECONDS` | `inc/search-index.php` — kết quả nút Rebuild now |
+| `rf_ratings_p1_{post_id}` | `RF_RATINGS_CACHE_TTL` (`HOUR_IN_SECONDS`) | `auth/actions/rating.php` — phần công khai trang 1 của `GET /ratings` (reviews, total, dist; không có `mine`); `rf_rating_recount()` xoá khi có vote / hide / unhide / delete |
 
 Convention key per-member: `rf_member_cache_key( $entity, $member_id )` →
 `member:{id}:{entity}`. Theme option **không** có tầng cache riêng — đọc trực tiếp bằng

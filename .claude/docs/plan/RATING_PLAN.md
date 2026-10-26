@@ -1,50 +1,33 @@
 # RATING_PLAN — Custom member ratings (Play Store style)
 
-Status: DESIGN (awaiting review) · Date: 2026-08-01
+Status: **IMPLEMENTED** · Designed 2026-08-01 · Last updated 2026-10-26 (recount model, commit `74808dd`)
 
-Replace the rateYo, cookie-based guest rating with a **member-only** rating system:
-display-only stars everywhere, plus a Play-Store-style review section (score 1–5 +
-text) under single pages, backed by a new table. **Existing rating data is preserved.**
+Member-only ratings: a member rates a post once (whole star 1–5 + optional short review),
+reviews are listed Play-Store style under single pages, and the post's average/count are a
+cache recounted from the visible reviews. The legacy rateYo / cookie / `k_rating` guest
+flow is gone. Post types: `rom` and `emulator` (the theme has no others).
 
 ---
 
-## 1. Decisions (locked)
+## 1. Decisions (current)
 
 | # | Decision |
 |---|---|
-| Average source | **Unchanged running-average.** Each member rating updates post_meta `rating_avg`/`rating_count` **incrementally with the existing formula** (`avg = (avg*count + score)/(count+1)`, `count += 1`); input = member score 1–5. The `member_rating` table does NOT compute the average — it only stores the review. No seed, no recompute-from-table; existing avg/count just keep accumulating. |
-| Review section | **Full Play Store.** Member's own create/edit form + a **public list of all members' reviews** (paginated, Load more). |
-| Moderation | **Auto-publish + `status` column.** Reviews show immediately; admin can hide later (1=visible, 0=hidden). Hiding removes the review from the LIST only — it does **not** recompute the average (score stays counted). |
-| Editing | **None — immutable.** One rating per member per post; a second attempt is rejected (409). Enforced by UNIQUE(member_id, post_id). |
-| Content | Optional, `wp_strip_all_tags` + trim, **≤ 1000 chars**. Score = whole star **1–5**. |
-| Stars display | **Display-only, custom CSS** from `rating_avg` (fractional). rateYo (js+css) removed. |
-| Guest rating | **Removed.** Rating is member-only now; legacy `k_rating` admin-ajax + cookie + nonce deleted. |
+| Source of truth | The `member_rating` table. Post_meta `rating_avg` / `rating_count` are only a **cache** of the visible reviews (`status = 1`), so listings never aggregate the table. |
+| Cache update | **Recount, not running average.** `rf_rating_recount()` recomputes count / avg / per-star dist from the table after every new rating and every admin hide / unhide / delete, under a per-post `GET_LOCK`. No visible review → both meta rows are deleted (missing reads as 0). |
+| Review section | Play Store: aggregate (score, total, 5→1 bars), member form, public paginated list (Load more), avatars. |
+| Moderation | Auto-publish + `status` column (1 visible, 0 hidden). Hide / unhide / delete all recount the cache, so the shown average always matches the visible reviews. |
+| Editing | **Immutable.** One rating per member per post, enforced by `UNIQUE(member_id, post_id)`; a second attempt is 409. |
+| Content | Optional, `wp_strip_all_tags` + trim, **≤ 164 chars** (`RF_RATING_MAXLEN`). Score: int 1–5. |
+| Display | Server-rendered stars everywhere (no JS renderer, no rateYo). One display rule: `rom_rating()` rounds half-up to one decimal. Unrated posts show **empty stars + "No reviews yet"**; cards hide the star badge. |
+| Guest rating | Removed. Guests see the sign-in modal when they try to rate. |
+| SEO | `SoftwareApplication` node in Yoast's graph; `aggregateRating` only when `count > 0`. |
 
 ---
 
-## 2. Current system (to be replaced) — verified in code
+## 2. Data model
 
-- Average stored in **post_meta** `rating_avg` (float) + `rating_count` (int); ACF fields on
-  rom/lib/pack/emulator (`inc/setting-*.php`).
-- **Displayed in many places** (read side we KEEP): `single-rom.php`, `single-emulator.php`,
-  `single-library.php`, `single-pack.php`, `download.php`, `header.php` — each renders
-  `<div class="rating" data-post_id data-rateyo-rating="{avg}">` for rateYo.
-- Write path: `k_rating()` in `inc/ajax.php` (`wp_ajax[_nopriv]_k_rating`) → running average in
-  post_meta; anti-repeat via **cookie `ratings`**; nonce `k_rating_action`; rateYo `onSet` in
-  `js/main.js` (~L266); `rating_nonce` localized in `functions.php`; `'rating'` in the
-  `get_nonce` map (`inc/ajax.php`).
-- **SEO schema** (`header.php` L33–51): inline JSON-LD `aggregateRating` with
-  `ratingCount: {count}?:1`, `ratingValue: {score}?:5` — **falls back to a fake 1 rating / 5★**
-  when the post has none.
-- **ACF defaults are fake:** `rating_count` default_value = **1**, `rating_avg` default_value = **5**
-  (`inc/setting-rom.php` L273/285; also `setting-lib.php`, `setting-pack.php`) — every freshly
-  published post looks pre-rated 5★ even before anyone rates it.
-
----
-
-## 3. Data model
-
-### 3.1 New table `{prefix}member_rating`
+### 2.1 Table `{prefix}member_rating` (`auth/setting-member.php`, `RF_MEMBER_DB_VERSION`)
 ```sql
 CREATE TABLE {prefix}member_rating (
   id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -56,169 +39,129 @@ CREATE TABLE {prefix}member_rating (
   created_at DATETIME        NOT NULL,
   updated_at DATETIME        NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_member_post (member_id, post_id),          -- one rating per member per post
-  KEY idx_post_status_created (post_id, status, created_at), -- public reviews list, newest-first
-  KEY idx_member_created (member_id, created_at)            -- profile "my ratings"
+  UNIQUE KEY uq_member_post (member_id, post_id),
+  KEY idx_post_status_created (post_id, status, created_at),
+  KEY idx_member_created (member_id, created_at)
 ) ENGINE=InnoDB
 ```
-Created in `auth/setting-member.php` (bump `RF_MEMBER_DB_VERSION` → '5'); add
-`rf_member_rating_table()` helper. Idempotent `CREATE TABLE IF NOT EXISTS`.
+Helper: `rf_member_rating_table()`. Idempotent `CREATE TABLE IF NOT EXISTS`, version-guarded.
 
-### 3.2 Average update (unchanged running-average)
-The `member_rating` table is **storage only** — it does NOT compute the average. On each new member
-rating the POST handler updates post_meta with the SAME formula legacy `k_rating` used:
-```
-$count = (int)   get_post_meta($post_id, 'rating_count', true);
-$avg   = (float) get_post_meta($post_id, 'rating_avg', true);
-$new_count = $count + 1;
-$new_avg   = (($avg * $count) + $score) / $new_count;   // score = member's 1..5
-update_post_meta($post_id, 'rating_count', $new_count);
-update_post_meta($post_id, 'rating_avg', round($new_avg, 2));
-```
-No seed, no SUM over the table. Existing avg/count simply keep accumulating (data preserved by not
-changing the logic). Ratings are immutable (no edit) so the running average never needs to reverse a
-value. Admin "hide" affects the reviews LIST only — the score stays counted in the average.
-Templates keep reading `rating_avg`/`rating_count` unchanged.
+### 2.2 Post_meta cache
+- `rating_count` (int) and `rating_avg` (float, 2 decimals) on `rom` / `emulator`.
+- Written **only** by `rf_rating_recount()` (`auth/actions/rating.php`):
+  `SELECT score, COUNT(*) … WHERE post_id = %d AND status = 1 GROUP BY score` → count, avg, dist.
+- **Not ACF fields any more** (removed from `setting/setting-rom.php`): their `default_value 0`
+  wrote a pair of zero rows on every post save and let admins hand-edit the cache. All zero-value
+  rows and the `_rating_*` ACF reference rows were deleted (~140k rows, 2026-10-26).
+- Why keep the cache: cards in a 20-item listing read it from the primed meta cache with **0 extra
+  queries**; aggregating the table per card would cost one query each.
 
 ---
 
-## 4. Backend — REST (namespace rf/v1, member-core pattern)
+## 3. Backend — REST (`rf/v1`, `auth/actions/rating.php`)
 
-New module `auth/actions/rating.php` (require after report.php in functions.php).
+### 3.1 `POST /rating` { post, score, content? } — submit own rating (once)
+- Guards: `rf_verify_request_origin` (header `X-RF-Auth: 1` + same-origin `Origin`/`Referer`),
+  `rf_current_member`, blocked → 403, `rf_check_action_rate`.
+- Validate: post published + `valid_post_type`; score int 1..5; content sanitized + capped.
+- `INSERT IGNORE` → 0 rows = 409 `already_rated`; on insert, `rf_rating_recount()`.
+- Returns `{ ok, mine, post:{avg,count,score}, dist, summary:{hero,compact}, message }`.
+  `score` is the rounded display value; `summary` is server-rendered HTML
+  (`rom_rating_summary_html()`) that `js/rating.js` swaps into the page after a vote.
 
-### 4.1 `POST /rating`  { post, score, content? }  — submit own rating (once)
-- Guards: `rf_verify_request_origin`, `rf_current_member`, **blocked → 403**, `rf_check_action_rate`.
-- Validate: `post` absint + published + `valid_post_type`; `score` int 1..5; `content`
-  `wp_strip_all_tags`+trim, ≤ 1000 (`RF_RATING_MAXLEN`).
-- **Insert-only (immutable):** `INSERT` the row; if it already exists (UNIQUE member_id+post_id) →
-  **409 `already_rated`**, no update. (Guard by checking an existing row first and/or `INSERT IGNORE`
-  + affected-rows.)
-- On a genuine insert, update the post average **incrementally** per §3.2. Do NOT touch avg/count on a
-  duplicate/409.
-- Returns `{ ok, mine:{score,content,created_at}, post:{avg,count} }`.
+### 3.2 `GET /ratings?post=&offset=&limit=` — public reviews list
+- Origin check only (no session needed). Visible rows, newest-first, `, id DESC` tiebreaker,
+  limit default 10 / max 50. Joins `member` for name + avatar.
+- Returns `{ ok, reviews, has_more, total, dist, post:{avg,count,score} }`, plus `mine` when a
+  member session is present.
+- **Cache:** the first page (`offset=0, limit=10`, what every single page view asks for) keeps its
+  public part (`reviews`, `total`, `dist`) in transient `rf_ratings_p1_<post>` — Redis-backed —
+  for `RF_RATINGS_CACHE_TTL` (1 h). `rf_rating_recount()` deletes it on every write, so the TTL only
+  bounds stale reviewer names / avatars. `post` is read from meta (object cache) and `mine` is never
+  cached. Measured: miss 4 queries, hit 0.
+- **Skipped for guests on unreviewed posts:** `rating-section.php` renders `data-rf-count`;
+  `js/rating.js` shows the empty state without a request when it is `0` and there is no member
+  session (no reviews to list, no `mine` to find). Members always fetch.
 
-### 4.2 `GET /ratings?post=&offset=&limit=`  — PUBLIC reviews list
-- Public (no session required); origin check only. Visible rows (`status=1`) for the post,
-  newest-first, paginated (limit default 10, max 50), served by `idx_post_status_created`.
-- Join `member` for display name (+ avatar). Returns `{ ok, reviews:[{id,score,content,
-  member_name,member_avatar,date}], has_more, total, post:{avg,count,dist?} }`.
-- If a member session is present, also return `mine` (their own rating) to prefill the form.
-- `dist` (5→1 star histogram) optional (GROUP BY score) — Play-Store bars; can be phase 2.
-
-### 4.3 `GET /my-ratings?offset=&limit=`  — profile dashboard panel
-- Member session; **allowed while blocked** (read-only, like my-reports). Own rows +
-  post title (LEFT JOIN posts), newest-first, paginated. `{ ok, ratings:[...], has_more, total }`.
-
-All list queries add a `, id DESC` tiebreaker for stable offset pagination (as with reports/comments).
-
----
-
-## 5. Frontend
-
-### 5.1 Display-only stars (replace rateYo)
-- Add `rf_render_stars($avg)` helper (e.g. in `inc/utility.php`) → CSS overlay stars:
-  `<span class="rf-stars" style="--rf-fill:{avg/5*100}%">★★★★★</span>` (empty + filled layer).
-- CSS in `style.css` (`.rf-stars`). Replace the 6 `.rating` render blocks
-  (single-rom/emulator/library/pack, download.php, header.php) with `rf_render_stars($score)`.
-- Remove rateYo enqueue (js+css) in functions.php; remove `$('.rating').rateYo()` init in main.js.
-
-### 5.2 Review section — `template-parts/rating-section.php` (single pages)
-Cache-safe shell (static HTML, JS fills). Included in the single templates below the content.
-- **Aggregate header:** big `rating_avg` + display stars + total `rating_count` (+ optional dist bars).
-- **Member form** (`rf-authed-only`): custom 5-star input (buttons/radios, no lib) + textarea
-  (≤1000) + submit → `POST /rating`. If already rated (`mine` present), show their rating **read-only**
-  instead of the form (no edit). One toast on result.
-- **Guest** (`rf-guest-only`): "Sign in to rate" line (no modal auto-open, matches comment pattern).
-- **Blocked:** form hidden via `html.rf-blocked` (server still 403s) — reuse existing blocked hook.
-- **Reviews list:** client-rendered from `GET /ratings`, newest-first, **Load more** (10/page),
-  skeleton → rows → branded button. Reuse the accordion/list loader style from the profile dashboard.
-- JS lives in a new `js/rating.js` (or auth.js) using `window.rfAuth.fetch`.
-
-### 5.3 SEO schema + ACF defaults (no fake ratings)
-Goal: a post has NO rating until it genuinely earns one — no phantom 5★ in search results.
-- **ACF defaults → 0.** Change `rating_count` default_value `1 → 0` and `rating_avg` `5 → 0` in
-  `inc/setting-rom.php`, `setting-lib.php`, `setting-pack.php` (and `setting-emulator.php` if it
-  defines these fields). Only affects NEW posts; existing stored values are untouched.
-- **SEO schema gated on real ratings.** In `header.php`, render the `aggregateRating` block ONLY
-  when `rating_count > 0`; drop the `?:1` / `?:5` fallbacks. A just-published post (count 0) emits
-  NO `aggregateRating` (Product/Thing schema without the rating node). Posts with ≥1 rating render
-  normally from `rating_avg` / `rating_count` (which, post-launch, already blend seed + members).
-- **Existing rated posts:** keep their current `rating_avg` / `rating_count` as the immutable seed
-  (§3.2); later member ratings recompute the blend on top of that seed. Never overwritten.
-- No blend: a never-rated post starts at `0 / 0`; the first member rating makes it `1 / score`.
-  Already-rated posts keep their stored avg/count and keep accumulating (unchanged logic).
-
-### 5.5 Profile dashboard — enable Ratings
-- Flip the reserved "Ratings (Soon)" card to active; add `CATS.ratings` +
-  `renderRatingRow` in the generic accordion loader; count from `my-stats`
-  (add `ratings` count) ; panel = `GET /my-ratings`. Minimal, reuses the pattern.
+### 3.3 `GET /my-ratings?offset=&limit=` — profile dashboard panel
+- Member session; allowed while blocked (read-only). Own rows + post title (LEFT JOIN posts).
 
 ---
 
-## 6. Admin moderation
-- Add a lightweight admin list (mirror `auth/admin-report.php`) `auth/admin-rating.php`
-  (is_admin-gated): list reviews, **Hide/Unhide** action (flip `status`) — **list visibility only**,
-  the average is not recomputed (§3.2). Optional delete.
+## 4. Frontend
+
+### 4.1 Display helpers (`inc/utility.php`)
+- `rom_rating( $post_id )` → `{count, score}`; score rounded half-up to 1 decimal, 0 when unrated.
+  Used by the hero, download page, cards and schema, so every place shows the same number.
+- `rom_star_fill( $score )` → fill width %. A star tile is 1.1em wide but the star 1em, so whole
+  stars count the full tile and the fraction only the star (4.3 → 85.45%, not 86%). Mirrored by
+  `starFill()` in `js/rating.js`.
+- `rom_rating_summary_html( $post_id, 'hero'|'compact' )` → stars + score + "(n reviews)", or empty
+  stars + "No reviews yet". The `hero` variant (single pages, under the cover) has one invisible
+  button per star tile.
+
+### 4.2 Where ratings show
+- **Single rom / emulator hero:** `rom_rating_summary_html( …, 'hero' )` in
+  `[data-rf-rating-summary="hero"]`. Hover previews a score; click scrolls to `#rating` and preselects
+  that score in the form (guests → sign-in modal; already rated → just scrolls).
+- **Download page:** `'compact'` variant, display only.
+- **Cards** (`template-parts/rom-card.php`, `emu-item.php`): star badge only when `count > 0`.
+- **Review section** `template-parts/rating-section.php` (`#rating`) + `js/rating.js`: aggregate
+  (score / total / 5→1 bars from `dist`), member form (`rf-authed-only`), read-only "Your rating"
+  once rated, public list with Load more. After a vote the summary, bars and hero line update in place.
+- **Profile:** "Ratings" card + `my-ratings` panel (`auth/js/auth.js`).
+- Cache-safe: all HTML is identical for every visitor; member state is client-side only. No cookie is read.
+
+### 4.3 SEO (`inc/utility.php`)
+- `rom_software_schema( $post )` builds a `SoftwareApplication` node: plain-text `name`,
+  `applicationCategory` (`GameApplication` for roms, `UtilitiesApplication` for emulators),
+  `operatingSystem` (rom: console term; emulator: `os` terms; omitted when none), free `offers`, and
+  `aggregateRating` (`ratingValue`, `ratingCount`, best 5 / worst 1) only when `count > 0`.
+  No empty values.
+- A `wpseo_schema_graph` filter adds it to Yoast's graph on single rom / emulator pages (not the
+  noindexed download pages) with `@id` `…#software`, `mainEntityOfPage` → Yoast's `WebPage`, and
+  `image` → Yoast's `#primaryimage` (the featured image / og:image source). Those `@id`s are **looked
+  up in the graph**, not rebuilt, because Yoast's stored permalink can differ from the live URL; a
+  missing node means no link. Without Yoast, `header.php` prints the node standalone instead.
 
 ---
 
-## 7. Remove legacy guest flow (after member path verified)
-- `inc/ajax.php`: delete `k_rating()` + its two `add_action` hooks; remove `'rating'` from the
-  `get_nonce` allowed map.
-- `functions.php`: remove `rating_nonce` localize (L197) + rateYo enqueue (js+css, deps).
-- `js/main.js`: remove the rateYo init/submit block (~L266–350).
-- Cookie `ratings`: stops being written; harmless if left in old browsers.
+## 5. Admin moderation (`auth/admin-ratings.php`)
+- WP_List_Table of reviews; Hide / Unhide / Delete with `manage_options` + nonce.
+- Each action reads the review's `post_id` first, then calls `rf_rating_recount()`.
+- Delete also frees `uq_member_post`, so that member can rate the post again.
 
 ---
 
-## 8. Data-preservation guarantees
-1. The avg/count **calculation logic is unchanged** (same running average as legacy `k_rating`) —
-   existing values are never wiped, just accumulated onto. No seed meta, no table aggregation.
-2. New `member_rating` table is **purely additive** (storage only); migration idempotent
-   (`IF NOT EXISTS`, version-guarded on `admin_init` + `after_switch_theme`).
-3. ACF `rating_avg`/`rating_count` fields keep their stored values; only the field DEFAULT changes
-   (1→0, 5→0), affecting **new posts only** — existing posts' data is not rewritten.
-4. Rollback: drop `member_rating`; the post_meta averages are independent of it and remain valid.
+## 6. Validation / security
+- Score strictly int 1..5; content sanitized + capped (164). Post must be published + valid type.
+- Every query uses `$wpdb->prepare`; output escaped (member name / content / summary HTML).
+- Writes: origin + session + blocked + action throttle. Reads allowed while blocked.
+- One rating per member per post enforced in the DB (UNIQUE), not just the UI. The hero's
+  client-side `getDisplay()` check only routes the UI; the server is the gate.
+- Recount races: read + write run under `GET_LOCK('rf_rating_<post>')`, so a recount that read
+  before another vote committed can't write its stale total last (verified with 6 concurrent writers).
 
 ---
 
-## 9. Validation / security / throttle
-- Score strictly int 1..5; content sanitized + length-capped (1000). Post must be published +
-  `valid_post_type`. All `$wpdb->prepare`. Output escaped (member name/content) on render.
-- Writes: origin + session + blocked + shared action throttle. Reads (`/ratings` public,
-  `/my-ratings`) allowed while blocked.
-- One rating/member/post enforced at DB (UNIQUE) — not just UI.
+## 7. Changes from the original design (2026-08-01)
+- **Running average → recount from table.** The original kept the legacy `k_rating` running average
+  and let "hide" leave the score counted. That made the shown count disagree with the visible list
+  after moderation and accumulated rounding drift. There turned out to be no legacy baseline to
+  preserve (every stored `rating_count` was 0), so the table became the source of truth.
+- **ACF rating fields removed** (they were the source of the zero rows and allowed hand edits).
+- **`rf_render_stars()` + JS star renderer → server-rendered `rom_rating_summary_html()`**;
+  `data-rateyo-*`, `data-post_id` and the cookie `ratings` reads were removed from the templates.
+- **Unrated display:** cards briefly showed a fake ★5 for unrated posts; now the badge is hidden and
+  the hero shows empty stars.
+- **Schema:** the hand-written JSON-LD in `header.php` (string values, broken by quotes in titles,
+  empty `operatingSystem` / `softwareVersion`) became the Yoast-graph node in §4.3.
+- Content cap is 164 chars, not 1000. `single-library.php` / `single-pack.php` and their settings
+  never applied to this theme.
 
----
-
-## 10. Build order (each step ends with php -l / node --check + a functional check)
-1. **Schema** — `member_rating` table + `rf_member_rating_table()` + version bump. table & indexes exist.
-2. **`POST /rating`** — insert row (409 on duplicate, immutable) + incremental avg/count update (§3.2).
-   inserted once; 2nd attempt 409; blocked→403; avg/count move by the classic formula.
-3. **`GET /ratings`** (public list + `mine`) & **`GET /my-ratings`**. shape + pagination + `,id DESC` tiebreaker.
-4. **Display stars** — `rf_render_stars()` + CSS; swap 6 templates; drop rateYo enqueue+init. stars from avg, no rateYo.
-5. **Review section** template + `js/rating.js` (submit-once form, list + Load more, guest/blocked). end-to-end.
-6. **Profile Ratings** card + `my-ratings` panel + `my-stats` ratings count. count + list.
-7. **ACF defaults → 0 + SEO schema gate** — rating_count/avg default 1→0 & 5→0 (rom/lib/pack,
-   emulator if present); `header.php` emits `aggregateRating` only when `rating_count>0` (drop
-   `?:1`/`?:5`). Independent of the rest (may run first). unrated posts show no fake 5★.
-8. **Remove legacy `k_rating`** (ajax, nonce, localize, main.js block). no refs, checks pass.
-9. *(optional)* Admin moderation page (hide/unhide = list visibility only); distribution histogram.
-
----
-
-## 11. Suggestions / open items
-- **SEO (now specified in §5.3):** the existing `header.php` JSON-LD keeps rich snippets, but is
-  gated on `rating_count > 0` so a just-published post emits no `aggregateRating` (no fake 5★).
-  Reviews themselves stay client-rendered.
-- **Reviews cache:** `GET /ratings` for hot posts could use a per-post transient (like wishlist)
-  invalidated on new review. Start simple (indexed query); add cache if load shows need.
-- **Distribution bars** (5★…1★ histogram) — nice Play-Store touch, one GROUP BY; phase 2.
-- **Delete own rating** — Play Store allows; add a DELETE (or score=0 semantics) if wanted. v1: edit only.
-- **Avatar in reviews** — member.avatar_url is available; include for a richer list.
-
-## 12. Risks
-- Touching 6 display templates (star swap) — mechanical but broad; do in one focused step.
-- Concurrent-rating race on the read-modify-write of avg/count post_meta (same as legacy `k_rating`) —
-  acceptable (ratings are rare); note only.
-- Removing guest rating changes product behavior (only members rate now) — intended per decisions.
+## 8. Open items
+- **Cloudflare cache:** a vote updates the meta but doesn't purge the post's cached HTML, so cached
+  pages show the old score until the next purge. Could purge the permalink from `rf_rating_recount()`.
+  This also gates the guest skip above: a page cached with `data-rf-count="0"` keeps skipping the
+  reviews request for guests until it is purged.
+- **Delete own rating:** not offered (ratings are immutable); admin delete is the only path.

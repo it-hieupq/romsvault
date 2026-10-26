@@ -12,8 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 $post_id = get_the_ID();
+// The visible review count, so js/rating.js can skip the reviews request for a guest
+// on a post nobody has reviewed. Same for every visitor: cache-safe.
+$rf_count = rom_rating( $post_id )['count'];
 ?>
-<section id="rating" class="rf-rating-section bg-white rounded-2xl shadow-md p-6 my-6 scroll-mt-24" data-rf-rating="<?php echo esc_attr( $post_id ); ?>">
+<section id="rating" class="rf-rating-section bg-white rounded-2xl shadow-md p-6 my-6 scroll-mt-24" data-rf-rating="<?php echo esc_attr( $post_id ); ?>" data-rf-count="<?php echo esc_attr( $rf_count ); ?>">
     <h3 class="text-xl font-bold text-gray-900 mb-4"><?php esc_html_e( 'Ratings & reviews', 'rom' ); ?></h3>
 
     <!-- Summary (Play Store style): left = score + total, right = per-star analysis
