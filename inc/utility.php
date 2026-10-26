@@ -168,6 +168,16 @@ add_filter( 'query_vars', function ( $vars ) {
 } );
 
 /**
+ * Download page URL, without a trailing slash: {permalink}download for the file
+ * list, {permalink}download/{n} for one file (1-based). Every link to the endpoint
+ * goes through here so the two forms never drift apart.
+ */
+function rom_download_url( $post, $file = 0 ) {
+    $url = trailingslashit( get_permalink( $post ) ) . 'download';
+    return $file ? $url . '/' . (int) $file : $url;
+}
+
+/**
  * The download endpoint resolves to its own rom/emulator, so canonical redirection
  * would send /.../download/ back to the post permalink; the member pages are query-var
  * routes with no post behind them at all. Cancel it for those two only: everywhere else
@@ -185,6 +195,16 @@ function k_download_template_redirect() {
     // A slug that matches no post keeps WP's own 404 instead of the download page.
     if ( ! get_query_var( 'download' ) || is_404() ) {
         return;
+    }
+
+    // One URL per page: the rules accept a trailing slash, rom_download_url() never
+    // emits one, so /download/ and /download/1/ are sent to their slashless form.
+    $request = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+    $path    = (string) wp_parse_url( $request, PHP_URL_PATH );
+    if ( strlen( $path ) > 1 && '/' === substr( $path, -1 ) ) {
+        $query = (string) wp_parse_url( $request, PHP_URL_QUERY );
+        wp_safe_redirect( home_url( untrailingslashit( $path ) ) . ( $query ? '?' . $query : '' ), 301 );
+        exit;
     }
 
     require get_template_directory() . '/download.php';

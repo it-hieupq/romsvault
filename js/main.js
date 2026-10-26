@@ -865,7 +865,10 @@ function showCopyMessage(buttonElement) {
             return;
         }
         
-        let countdown = 7;
+        // The wait before the button shows; the bar runs 0 -> 100% across it.
+        const duration = 10000;
+        const progressBar = document.getElementById('download-progress');
+        const progressRole = progressBar ? progressBar.parentElement : null;
         let storedDownloadHTML = null;
         
         // Get AJAX URL from data attribute or use localized ajax_url
@@ -917,29 +920,60 @@ function showCopyMessage(buttonElement) {
             xhr.send('action=k_get_download&post_id=' + encodeURIComponent(postId) + '&file=' + encodeURIComponent(fileNumber));
         })();
         
-        // Update countdown every second
-        const interval = setInterval(function () {
-            countdown--;
-            countdownElement.textContent = countdown;
-            
-            if (countdown <= 0) {
-                clearInterval(interval);
-                
-                // Hide loading
-                loadingElement.classList.add('hidden');
-                
-                // Insert stored HTML or fallback to existing button
-                if (storedDownloadHTML) {
-                    downloadContainer.innerHTML = storedDownloadHTML;
-                } else {
-                    // Fallback: show existing button if AJAX failed
-                    const buttonElement = document.getElementById('download-button');
-                    if (buttonElement) {
-                        buttonElement.classList.remove('hidden');
-                    }
+        // Fill the progress bar frame by frame for smoothness, but reveal the button on
+        // a plain timer: browsers pause requestAnimationFrame in background tabs, and the
+        // button must not wait for the reader to come back.
+        const startedAt = performance.now();
+        let shownPercent = -1;
+        let finished = false;
+
+        function render(ratio) {
+            if (progressBar) {
+                progressBar.style.transform = 'scaleX(' + ratio + ')';
+            }
+            // The number and aria value only change when the whole percent does.
+            const percent = Math.floor(ratio * 100);
+            if (percent !== shownPercent) {
+                shownPercent = percent;
+                countdownElement.textContent = percent;
+                if (progressRole) {
+                    progressRole.setAttribute('aria-valuenow', percent);
                 }
             }
-        }, 1000);
+        }
+
+        function finish() {
+            if (finished) {
+                return;
+            }
+            finished = true;
+            render(1);
+
+            // Hide loading
+            loadingElement.classList.add('hidden');
+
+            // Insert stored HTML or fallback to existing button
+            if (storedDownloadHTML) {
+                downloadContainer.innerHTML = storedDownloadHTML;
+            } else {
+                // Fallback: show existing button if AJAX failed
+                const buttonElement = document.getElementById('download-button');
+                if (buttonElement) {
+                    buttonElement.classList.remove('hidden');
+                }
+            }
+        }
+
+        function step(now) {
+            if (finished) {
+                return;
+            }
+            render(Math.min(1, (now - startedAt) / duration));
+            requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(step);
+        setTimeout(finish, duration);
     }
     
     // Initialize when DOM is ready

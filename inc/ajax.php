@@ -110,11 +110,11 @@ function k_get_download() {
 	<div id="download-button">
 		<a href="<?php echo esc_url( $download_url ); ?>"
 		   id="download-link"
-		   class="inline-flex items-center justify-center px-6 py-4 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+		   class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-hover active:scale-95 transition-all shadow-md shadow-primary/25 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0"
 		   rel="nofollow">
-			<?php echo get_svg_icon( 'save' ) . ' ' . __( 'Download Now', 'rom' ) . ' ' . ' (' . $file_size . ')'; ?>
+			<?php echo get_svg_icon( 'save' ) . esc_html( __( 'Download Now', 'rom' ) . ( $file_size ? ' (' . $file_size . ')' : '' ) ); ?>
 		</a>
-		<p class="text-sm text-gray-500 mt-4">
+		<p class="text-caption text-slate-500 mt-3">
 			<?php esc_html_e( 'If the download doesn\'t start automatically, click the button above', 'rom' ); ?>
 		</p>
 	</div>
