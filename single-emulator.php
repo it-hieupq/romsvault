@@ -375,20 +375,7 @@ while ( have_posts() ) : the_post();
     </section>
 
 	<?php
-	$related_query = new WP_Query( array(
-		'post_type'      => 'emulator',
-		'posts_per_page' => 6,
-		'post__not_in'   => array( $post->ID ),
-		'post_status'    => 'publish',
-		'no_found_rows'  => true,
-		'tax_query'      => array(
-			array(
-				'taxonomy' => 'emulator_console',
-				'field'    => 'term_id',
-				'terms'    => $console->term_id,
-			),
-		),
-	) );
+	$related_query = rom_nearby_query( $post, $console, 6 );
 
 	if ( $related_query->have_posts() ) : ?>
         <section class="py-8 sm:py-12 border-t border-slate-200/80">
@@ -403,10 +390,14 @@ while ( have_posts() ) : the_post();
                     <a href="<?php echo esc_url( $console_link ); ?>"
                        class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
-					<?php while ( $related_query->have_posts() ) : $related_query->the_post();
-						get_template_part( 'template-parts/emu-item' );
-					endwhile; wp_reset_postdata(); ?>
+                <div class="horizontal-scroll-container">
+                    <div class="horizontal-scroll-wrapper">
+						<?php while ( $related_query->have_posts() ) : $related_query->the_post(); ?>
+                            <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 min-w-0 px-1.5 md:px-2 box-border grid">
+								<?php get_template_part( 'template-parts/emu-item' ); ?>
+                            </div>
+						<?php endwhile; wp_reset_postdata(); ?>
+                    </div>
                 </div>
             </div>
         </section>

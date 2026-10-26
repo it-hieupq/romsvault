@@ -511,20 +511,7 @@ while ( have_posts() ) : the_post();
 	$collections = wp_get_post_terms( $post->ID, 'collection' );
 	if ( ! is_wp_error( $collections ) && ! empty( $collections ) ) :
 		$primary_collection    = $collections[0];
-		$collection_roms_query = new WP_Query( array(
-			'post_type'      => 'rom',
-			'posts_per_page' => 10,
-			'post__not_in'   => array( $post->ID ),
-			'post_status'    => 'publish',
-			'no_found_rows'  => true,
-			'tax_query'      => array(
-				array(
-					'taxonomy' => 'collection',
-					'field'    => 'term_id',
-					'terms'    => $primary_collection->term_id,
-				),
-			),
-		) );
+		$collection_roms_query = rom_nearby_query( $post, $primary_collection );
 
 		if ( $collection_roms_query->have_posts() ) : ?>
             <section class="py-8 border-t border-slate-200/80">
@@ -539,10 +526,14 @@ while ( have_posts() ) : the_post();
                         <a href="<?php echo esc_url( get_term_link( $primary_collection->term_id ) ); ?>"
                            class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-						<?php while ( $collection_roms_query->have_posts() ) : $collection_roms_query->the_post();
-							get_template_part( 'template-parts/rom-card' );
-						endwhile; wp_reset_postdata(); ?>
+                    <div class="horizontal-scroll-container">
+                        <div class="horizontal-scroll-wrapper">
+							<?php while ( $collection_roms_query->have_posts() ) : $collection_roms_query->the_post(); ?>
+                                <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-1.5 md:px-2 box-border grid">
+									<?php get_template_part( 'template-parts/rom-card' ); ?>
+                                </div>
+							<?php endwhile; wp_reset_postdata(); ?>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -550,20 +541,7 @@ while ( have_posts() ) : the_post();
 	endif; ?>
 
 	<?php
-	$related_query = new WP_Query( array(
-		'post_type'      => 'rom',
-		'posts_per_page' => 10,
-		'post__not_in'   => array( $post->ID ),
-		'post_status'    => 'publish',
-		'no_found_rows'  => true,
-		'tax_query'      => array(
-			array(
-				'taxonomy' => 'console',
-				'field'    => 'term_id',
-				'terms'    => $console->term_id,
-			),
-		),
-	) );
+	$related_query = rom_nearby_query( $post, $console );
 
 	if ( $related_query->have_posts() ) : ?>
         <section class="py-8 sm:py-12 border-t border-slate-200/80">
@@ -578,10 +556,14 @@ while ( have_posts() ) : the_post();
                     <a href="<?php echo esc_url( $console_link ); ?>"
                        class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-					<?php while ( $related_query->have_posts() ) : $related_query->the_post();
-						get_template_part( 'template-parts/rom-card' );
-					endwhile; wp_reset_postdata(); ?>
+                <div class="horizontal-scroll-container">
+                    <div class="horizontal-scroll-wrapper">
+						<?php while ( $related_query->have_posts() ) : $related_query->the_post(); ?>
+                            <div class="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 min-w-0 px-1.5 md:px-2 box-border grid">
+								<?php get_template_part( 'template-parts/rom-card' ); ?>
+                            </div>
+						<?php endwhile; wp_reset_postdata(); ?>
+                    </div>
                 </div>
             </div>
         </section>

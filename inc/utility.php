@@ -1004,3 +1004,44 @@ function rom_sort_regions( $terms ) {
 	} );
 	return $terms;
 }
+
+/**
+ * Posts sharing $term with $post, published closest to it: half newer, half older,
+ * the short side topped up by the other. Each single page then shows its own
+ * neighbours instead of every page in a term listing the same latest posts.
+ * post_date is compared with ID as tie-break, since imported batches share dates.
+ *
+ * @param WP_Post $post  Current post.
+ * @param WP_Term $term  Term the neighbours must share (console, collection...).
+ * @param int     $limit How many posts to return.
+ * @return WP_Query Newest first.
+ */
+function rom_nearby_query( $post, $term, $limit = 10 ) {
+	global $wpdb;
+
+	$base = "SELECT p.ID FROM {$wpdb->posts} p
+		INNER JOIN {$wpdb->term_relationships} tr ON tr.object_id = p.ID AND tr.term_taxonomy_id = %d
+		WHERE p.post_type = %s AND p.post_status = 'publish'";
+
+	$newer = $wpdb->get_col( $wpdb->prepare(
+		"$base AND ( p.post_date > %s OR ( p.post_date = %s AND p.ID > %d ) ) ORDER BY p.post_date ASC, p.ID ASC LIMIT %d",
+		$term->term_taxonomy_id, $post->post_type, $post->post_date, $post->post_date, $post->ID, $limit
+	) );
+	$older = $wpdb->get_col( $wpdb->prepare(
+		"$base AND ( p.post_date < %s OR ( p.post_date = %s AND p.ID < %d ) ) ORDER BY p.post_date DESC, p.ID DESC LIMIT %d",
+		$term->term_taxonomy_id, $post->post_type, $post->post_date, $post->post_date, $post->ID, $limit
+	) );
+
+	$take_newer = min( count( $newer ), max( intdiv( $limit, 2 ), $limit - count( $older ) ) );
+	$take_older = min( count( $older ), $limit - $take_newer );
+	$ids        = array_merge( array_reverse( array_slice( $newer, 0, $take_newer ) ), array_slice( $older, 0, $take_older ) );
+
+	return new WP_Query( array(
+		'post_type'           => $post->post_type,
+		'post__in'            => $ids ? array_map( 'intval', $ids ) : array( 0 ),
+		'orderby'             => 'post__in',
+		'posts_per_page'      => $limit,
+		'no_found_rows'       => true,
+		'ignore_sticky_posts' => true,
+	) );
+}
