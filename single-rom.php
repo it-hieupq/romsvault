@@ -369,7 +369,7 @@ while ( have_posts() ) : the_post();
                 <div class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
                     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-card divide-y divide-slate-100 overflow-hidden">
 						<?php foreach ( $all_downloads as $index => $file ) :
-							// 1-based, matching the /download/{n} endpoint.
+							// 1-based, matching the /download/{n}/ endpoint.
 							$file_url  = rom_download_url( $post, $index + 1 );
 							$file_type = ! empty( $file['file_type'] ) ? $file['file_type'] : '';
 							// The badge shows the archive the link really serves (zip, 7z, iso...),

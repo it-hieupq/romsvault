@@ -236,7 +236,9 @@ Rule là generic, không sinh theo từng term ⇒ thêm/sửa term không cần
   `inc/utility.php`. `download_file` **1-based**; rule chỉ nhận `[1-9][0-9]*` nên
   `/download/0/` và `/download/abc/` rơi về 404.
 - `template_redirect` → `k_download_template_redirect()` nạp `download.php`. Slug không
-  khớp post nào ⇒ giữ nguyên 404 của WP.
+  khớp post nào ⇒ giữ nguyên 404 của WP. URL luôn có dấu `/` cuối (`rom_download_url()`):
+  WP Rocket chỉ cache URL có `/` khớp permalink structure, và filter `do_rocket_generate_caching_files` trong `inc/utility.php` cho phép
+  cache trang download chỉ khi path request đúng bằng `rom_download_url()` (sai console ⇒ không cache).
 - `download.php` lấy post bằng `get_queried_object()`, dựng mọi link con từ
   `get_permalink()`. Không có `download_file` ⇒ liệt kê mọi file; có ⇒ trang tải 1 file.
 - `inc/ajax.php:k_get_download()` nhận `post_id` + `file` qua `$_POST`

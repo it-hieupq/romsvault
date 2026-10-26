@@ -181,13 +181,13 @@ add_action( 'init', function () {
 } );
 
 /**
- * Download page URL, without a trailing slash: {permalink}download for the file
- * list, {permalink}download/{n} for one file (1-based). Every link to the endpoint
- * goes through here so the two forms never drift apart.
+ * Download page URL: {permalink}download/ for the file list, {permalink}download/{n}/
+ * for one file (1-based). Keep the trailing slash: WP Rocket only caches URLs that
+ * end like the permalink structure.
  */
 function rom_download_url( $post, $file = 0 ) {
-    $url = trailingslashit( get_permalink( $post ) ) . 'download';
-    return $file ? $url . '/' . (int) $file : $url;
+    $url = trailingslashit( get_permalink( $post ) ) . 'download/';
+    return $file ? $url . (int) $file . '/' : $url;
 }
 
 /**
@@ -204,20 +204,24 @@ add_filter( 'redirect_canonical', function ( $redirect_url ) {
     return $redirect_url;
 } );
 
+/**
+ * WP Rocket won't cache a singular page whose URL isn't the post permalink, which the
+ * download page always is. Allow it when the path is exactly rom_download_url(), so
+ * variants (wrong console segment, no slash) stay uncached.
+ */
+add_filter( 'do_rocket_generate_caching_files', function ( $can_cache ) {
+    if ( $can_cache || ! get_query_var( 'download' ) || is_404() ) {
+        return $can_cache;
+    }
+    $request  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+    $expected = wp_parse_url( rom_download_url( get_queried_object_id(), (int) get_query_var( 'download_file' ) ), PHP_URL_PATH );
+    return $expected === wp_parse_url( $request, PHP_URL_PATH );
+}, 20 );
+
 function k_download_template_redirect() {
     // A slug that matches no post keeps WP's own 404 instead of the download page.
     if ( ! get_query_var( 'download' ) || is_404() ) {
         return;
-    }
-
-    // One URL per page: the rules accept a trailing slash, rom_download_url() never
-    // emits one, so /download/ and /download/1/ are sent to their slashless form.
-    $request = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
-    $path    = (string) wp_parse_url( $request, PHP_URL_PATH );
-    if ( strlen( $path ) > 1 && '/' === substr( $path, -1 ) ) {
-        $query = (string) wp_parse_url( $request, PHP_URL_QUERY );
-        wp_safe_redirect( home_url( untrailingslashit( $path ) ) . ( $query ? '?' . $query : '' ), 301 );
-        exit;
     }
 
     require get_template_directory() . '/download.php';
