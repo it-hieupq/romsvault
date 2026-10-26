@@ -188,12 +188,12 @@ function rom_enqueue_scripts() {
 		);
 	}
 
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
-
-	// lightGallery for post/rom
-	if (is_singular() && valid_post_type($post_type) ) {
+	// lightGallery only where there is something to open: the same screenshots /
+	// youtube_url check the single templates use to render the Screenshots row.
+	// About 7% of roms and emulators have one, so most single pages skip all six files.
+	$has_gallery = is_singular() && valid_post_type( $post_type ) && ! $is_download_page
+		&& ( get_field( 'image', get_queried_object_id() ) || get_field( 'youtube_url', get_queried_object_id() ) );
+	if ( $has_gallery ) {
 
 		wp_enqueue_style(
 			'lightgallery',
@@ -246,13 +246,50 @@ function rom_enqueue_scripts() {
         wp_enqueue_script(
             'lightgallery-init',
             get_template_directory_uri() . '/assets/js/lightgallery-init.js',
-            ['jquery', 'lightgallery', 'lg-thumbnail', 'lg-video'],
+            ['lightgallery', 'lg-thumbnail', 'lg-video'],
             filemtime( get_template_directory() . '/assets/js/lightgallery-init.js' ),
             true
         );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'rom_enqueue_scripts' );
+
+/**
+ * Front-end jQuery without jQuery Migrate, loaded in the footer instead of <head>.
+ * Nothing in the theme uses an API Migrate restores, and no inline script needs jQuery
+ * before the footer. The Configs "Header js" field prints in <head>, before jQuery now.
+ * wp-admin keeps the default.
+ */
+function rom_frontend_jquery( $scripts ) {
+	if ( is_admin() ) {
+		return;
+	}
+	$jquery = $scripts->query( 'jquery', 'registered' );
+	if ( $jquery ) {
+		$jquery->deps = array_values( array_diff( $jquery->deps, array( 'jquery-migrate' ) ) );
+	}
+	foreach ( array( 'jquery', 'jquery-core' ) as $handle ) {
+		$scripts->add_data( $handle, 'group', 1 );
+	}
+}
+add_action( 'wp_default_scripts', 'rom_frontend_jquery' );
+
+/**
+ * Defer the theme's own scripts. They already sit in the footer; defer also takes
+ * them off the parser's path and keeps their order. Runs after every enqueue so
+ * scripts added on other hooks (rf-tracking) are covered. jQuery stays a plain
+ * footer script: the deferred ones that depend on it run after it anyway.
+ */
+function rom_defer_theme_scripts() {
+	$handles = array( 'rf-toast', 'rf-auth', 'main-js', 'rf-rating', 'rf-tracking',
+		'lightgallery', 'lg-thumbnail', 'lg-video', 'lightgallery-init' );
+	foreach ( $handles as $handle ) {
+		if ( wp_script_is( $handle, 'enqueued' ) ) {
+			wp_script_add_data( $handle, 'strategy', 'defer' );
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'rom_defer_theme_scripts', 99 );
 
 /**
  * Enqueue admin scripts and styles.

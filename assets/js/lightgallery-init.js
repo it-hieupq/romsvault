@@ -1,4 +1,6 @@
-jQuery(function ($) {
+// Screenshot / video lightbox for the single pages. Plain JS: only enqueued when the
+// post has a gallery (functions.php), and runs once the DOM is ready.
+(function () {
     'use strict';
 
     function initRomGalleryOnce() {
@@ -101,4 +103,4 @@ jQuery(function ($) {
         setTimeout(initRomGalleryOnce, 150);
     });
 
-});
+})();

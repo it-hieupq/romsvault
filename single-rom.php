@@ -111,10 +111,17 @@ while ( have_posts() ) : the_post();
 
                     <!-- Boxart -->
                     <div class="w-full max-w-[260px] md:max-w-none mx-auto flex flex-col items-center">
-						<?php if ( $thumb_url = get_the_post_thumbnail_url( $post->ID, 'full' ) ) : ?>
+						<?php if ( has_post_thumbnail( $post ) ) : ?>
                         <div class="relative w-full rounded-2xl overflow-hidden shadow-md border border-slate-200/80 bg-slate-100 group">
-                                <img src="<?php echo esc_url( $thumb_url ); ?>" alt="<?php the_title_attribute(); ?>"
-                                     class="w-full h-auto block group-hover:scale-105 transition-transform duration-500" loading="eager">
+                                <?php // The page's LCP image: width/height, a srcset sized to this column, high fetch priority. ?>
+                                <?php echo wp_get_attachment_image( get_post_thumbnail_id( $post ), 'full', false, array(
+									'alt'           => the_title_attribute( array( 'echo' => false ) ),
+									'class'         => 'w-full h-auto block group-hover:scale-105 transition-transform duration-500',
+									'loading'       => 'eager',
+									'fetchpriority' => 'high',
+									'decoding'      => 'async',
+									'sizes'         => '(min-width: 1024px) 280px, (min-width: 768px) 200px, 260px',
+								) ); ?>
                             <div class="absolute top-3 right-3">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-950/85 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
                                     <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
