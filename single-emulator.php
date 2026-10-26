@@ -116,7 +116,7 @@ while ( have_posts() ) : the_post();
                         <!-- Console + OS tags -->
                         <div class="flex flex-wrap items-center gap-2">
                             <a href="<?php echo esc_url( $console_link ); ?>"
-                               class="px-3 py-1 rounded-lg bg-rose-50 text-primary text-caption font-bold border border-rose-200/60 hover:bg-rose-100 transition-colors"><?php echo esc_html( $console->name ); ?></a>
+                               class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-50 text-primary text-caption font-bold border border-rose-200/60 hover:bg-rose-100 transition-colors [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0"><?php echo get_svg_icon( 'joystick' ) . esc_html( $console->name ); ?></a>
 							<?php
 							if ( ! is_wp_error( $os_terms ) && ! empty( $os_terms ) ) :
 								foreach ( $os_terms as $os_term ) :
@@ -131,12 +131,15 @@ while ( have_posts() ) : the_post();
 
                         <!-- Title + meta -->
                         <div>
-                            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-snug">
-								<?php
-								/* translators: 1: emulator name, 2: console name. */
-								echo esc_html( sprintf( __( '%1$s %2$s Emulator', 'rom' ), get_the_title(), $console->name ) );
-								?>
-                            </h1>
+                            <div class="flex items-start justify-between gap-3">
+                                <h1 class="min-w-0 text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-snug">
+									<?php
+									/* translators: 1: emulator name, 2: console name. */
+									echo esc_html( sprintf( __( '%1$s %2$s Emulator', 'rom' ), get_the_title(), $console->name ) );
+									?>
+                                </h1>
+                                <div class="flex-shrink-0 [&_.rf-wish-btn]:m-0"><?php rf_render_wishlist_button( $post->ID ); ?></div>
+                            </div>
                             <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-meta text-slate-500 mt-2">
                                 <span class="flex items-center gap-1 text-slate-600">
 									<?php echo esc_html( number_format( $downloads, 0, '', ',' ) . ' ' . __( 'downloads', 'rom' ) ); ?>
@@ -175,18 +178,20 @@ while ( have_posts() ) : the_post();
 							} ?>
                             <div class="flex flex-wrap items-center gap-3">
 								<?php if ( ! empty( $all_downloads ) ) : ?>
-                                    <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?> flex flex-wrap items-center gap-3">
-                                        <a href="<?php echo esc_url( $download_url ); ?>"
-                                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-meta hover:bg-primary-hover active:scale-95 transition-all shadow-sm shadow-primary/25 [&_svg]:w-4 [&_svg]:h-4">
+                                    <?php // Display lives on the inner span: a flex utility here would override rf-authed-only's display:none. ?>
+                                    <span class="<?php echo $rf_restricted ? 'rf-authed-only rf-hide-blocked' : ''; ?>">
+                                    <span class="flex flex-wrap items-center gap-3">
+                                        <a href="<?php echo esc_url( $download_url ); ?>" rel="nofollow"
+                                           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-hover active:scale-95 transition-all shadow-sm shadow-primary/25 [&_svg]:w-4 [&_svg]:h-4">
 											<?php echo get_svg_icon( 'save' ) . esc_html__( 'Download Emulator', 'rom' ); ?>
                                         </a>
                                         <a href="<?php echo esc_url( $console_link ); ?>"
-                                           class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-meta hover:bg-slate-200 hover:text-slate-900 transition-colors [&_svg]:w-3.5 [&_svg]:h-3.5">
+                                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 hover:text-slate-900 transition-colors [&_svg]:w-5 [&_svg]:h-5 [&_svg]:mr-0">
 											<?php echo get_svg_icon( 'emulator' ) . esc_html( sprintf( __( 'All %s Emulators', 'rom' ), $console->name ) ); ?>
                                         </a>
                                     </span>
+                                    </span>
 								<?php endif; ?>
-								<?php rf_render_wishlist_button( $post->ID ); ?>
                             </div>
                         </div>
 
@@ -319,7 +324,7 @@ while ( have_posts() ) : the_post();
 								$file_ext = '';
 							}
 							?>
-                            <div class="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-rose-50/20 transition-colors">
+                            <div class="p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 hover:bg-rose-50/20 transition-colors">
                                 <div class="flex items-start gap-3.5 flex-1 min-w-0">
                                     <div class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption flex-shrink-0 mt-0.5 uppercase">
 										<?php echo esc_html( $file_ext ? $file_ext : '#' . ( $index + 1 ) ); ?>
@@ -332,17 +337,17 @@ while ( have_posts() ) : the_post();
 											<?php endif; ?>
 											<?php if ( ! empty( $file['file_size'] ) ) : ?>
 												<?php if ( $file_type ) : ?><span>&bull;</span><?php endif; ?>
-                                                <span><?php esc_html_e( 'File Size:', 'rom' ); ?> <strong class="text-slate-800 font-bold"><?php echo esc_html( $file['file_size'] ); ?></strong></span>
+                                                <span><?php esc_html_e( 'Size:', 'rom' ); ?> <strong class="text-slate-800 font-bold"><?php echo esc_html( $file['file_size'] ); ?></strong></span>
 											<?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2 self-start md:self-center flex-shrink-0">
-                                    <a href="<?php echo esc_url( $file_url ); ?>"
-                                       class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-white font-bold text-[11px] uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all">
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <a href="<?php echo esc_url( $file_url ); ?>" rel="nofollow" aria-label="<?php esc_attr_e( 'Download', 'rom' ); ?>"
+                                       class="inline-flex items-center justify-center gap-1.5 w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1 rounded-full bg-primary text-white font-bold text-[10px] uppercase tracking-wider hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all">
                                         <?php // Own icon: the shared 'download' one is painted pink and vanishes on this button. ?>
                                         <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
-											<?php esc_html_e( 'Download', 'rom' ); ?>
+											<span class="hidden sm:inline"><?php esc_html_e( 'Download', 'rom' ); ?></span>
                                     </a>
                                 </div>
                             </div>

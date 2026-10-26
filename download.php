@@ -473,39 +473,35 @@ endif;
     </section>
 
 <?php
-// Display related ROMs
+// Neighbours by publish date in the same console, laid out like the single page's
+// "You Might Also Like" row. download.php serves roms and emulators alike, so the
+// card and column widths follow the post type.
 if ( $console && isset( $console->term_id ) ) :
-    $related_args = array(
-            'post_type'      => $post->post_type,
-            'post_status'    => 'publish',
-            'posts_per_page' => 6,
-            'post__not_in'   => array( $post_id ),
-            'no_found_rows'  => true,
-            'tax_query'      => array(
-                    array(
-                            'taxonomy' => 'console',
-                            'field'    => 'term_id',
-                            'terms'    => $console->term_id
-                    )
-            )
-    );
-    $related_query = new WP_Query( $related_args );
+    $is_emulator   = ( 'emulator' === $post->post_type );
+    $related_query = rom_nearby_query( $post, $console, $is_emulator ? 6 : 10 );
 
     if ( $related_query->have_posts() ) :
         ?>
-        <section class="pb-6 text-gray-900">
-            <div class="content-container px-4 sm:px-6 lg:px-8 w-full">
-                <h2 class="font-bold text-black text-lg mb-4">
-                    <?php esc_html_e( 'Recommended for you', 'rom' ); ?>
-                </h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-                    <?php
-                    while ( $related_query->have_posts() ) :
-                        $related_query->the_post();
-                        get_template_part( 'template-parts/rom-card' );
-                    endwhile;
-                    wp_reset_postdata();
-                    ?>
+        <section class="py-8 sm:py-12 border-t border-slate-200/80">
+            <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-6 gap-3">
+                    <div>
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600">
+                            <?php echo esc_html( sprintf( __( 'More %s', 'rom' ), $console->name ) ); ?>
+                        </span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Recommended for you', 'rom' ); ?></h2>
+                    </div>
+                    <a href="<?php echo esc_url( get_term_link( $console ) ); ?>"
+                       class="text-caption sm:text-meta font-bold text-primary hover:text-primary-hover flex-shrink-0"><?php esc_html_e( 'View all', 'rom' ); ?> &rarr;</a>
+                </div>
+                <div class="horizontal-scroll-container">
+                    <div class="horizontal-scroll-wrapper">
+                        <?php while ( $related_query->have_posts() ) : $related_query->the_post(); ?>
+                            <div class="flex-shrink-0 <?php echo $is_emulator ? 'w-1/2 md:w-1/3 lg:w-1/4' : 'w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5'; ?> min-w-0 px-1.5 md:px-2 box-border grid">
+                                <?php get_template_part( $is_emulator ? 'template-parts/emu-item' : 'template-parts/rom-card' ); ?>
+                            </div>
+                        <?php endwhile; wp_reset_postdata(); ?>
+                    </div>
                 </div>
             </div>
         </section>

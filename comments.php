@@ -16,17 +16,27 @@
 		?>
 
         <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
-            <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Comments', 'rom' ) ?></h2>
+            <h2 class="text-lg font-bold mb-4 text-gray-900"><?php _e( 'Discussions', 'rom' ) ?></h2>
 
             <?php // Cache-safe: rendered the same for everyone. JS toggles html.rf-authed
                   // to show the member form vs the sign-in prompt (no is_user_logged_in). ?>
 
-            <!-- Guest: prompt to sign in (member-only comments, plan §4.7) -->
-            <div class="rf-guest-only p-4 bg-gray-50 border border-gray-200 rounded-2xl text-center mb-6">
-                <p class="text-gray-600 mb-3"><?php _e( 'You need to sign in to comment, report, and more.', 'rom' ); ?></p>
-                <button type="button" data-rf-login class="px-6 py-3 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition font-semibold">
-                    <?php _e( 'Sign in', 'rom' ); ?>
-                </button>
+            <!-- Guest: prompt to sign in (member-only comments, plan §4.7). Display classes sit on
+                 the inner div so they never fight rf-guest-only's own display rule. -->
+            <div class="rf-guest-only mb-6">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+                    <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-50 text-primary">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </span>
+                    <p class="flex-1 m-0 text-meta text-slate-600">
+                        <span class="block font-semibold text-slate-800"><?php _e( 'Join the discussion', 'rom' ); ?></span>
+                        <?php _e( 'Sign in to comment, report broken links and more.', 'rom' ); ?>
+                    </p>
+                    <button type="button" data-rf-login class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-hover shadow-sm shadow-primary/25 active:scale-95 transition-all">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+                        <?php _e( 'Sign in', 'rom' ); ?>
+                    </button>
+                </div>
             </div>
 
             <!-- Member: comment form (raw text, no name/email — identity from session) -->
