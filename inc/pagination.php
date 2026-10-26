@@ -2,42 +2,79 @@
 /*
  * Pagination
  */
-if( !function_exists('k_pagination') ){
-function k_pagination($pages = '', $range = 1) {
-    global $paged;
-    $showitems = ( $range * 2 )+1;
-    if( empty( $paged) ) $paged = 1;
-    if($pages == ''){
-        global $wp_query;
-        $pages = $wp_query->max_num_pages;
-        if(!$pages){
-            $pages = 1;
-        }
-    }
-    if(1 != $pages) {
-        echo "<nav class='nav-pagination flex justify-center mt-8 mb-4'><ul class='flex items-center justify-center gap-2 flex-wrap'>";
-        if($paged > 2 && $paged > $range+1 && $showitems < $pages) echo '<li><a class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200" href="' . get_pagenum_link(1) . '" aria-label="First page"><svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor"><path d="M390.3 473.9L180.9 264.5c-4.7-4.7-4.7-12.3 0-17L390.3 38.1c4.7-4.7 12.3-4.7 17 0l19.8 19.8c4.7 4.7 4.7 12.3 0 17L246.4 256l180.7 181.1c4.7 4.7 4.7 12.3 0 17l-19.8 19.8c-4.7 4.7-12.3 4.7-17 0zm-143 0l19.8-19.8c4.7-4.7 4.7-12.3 0-17L86.4 256 267.1 74.9c4.7-4.7 4.7-12.3 0-17l-19.8-19.8c-4.7-4.7-12.3-4.7-17 0L20.9 247.5c-4.7 4.7-4.7 12.3 0 17l209.4 209.4c4.7 4.7 12.3 4.7 17 0z"/></svg></a></li>';
-        if($paged > 1 && $showitems < $pages) echo '<li><a class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200" aria-label="Previous" href="' . get_pagenum_link($paged - 1) . '"><svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" fill="currentColor"><path d="M231.293 473.899l19.799-19.799c4.686-4.686 4.686-12.284 0-16.971L70.393 256 251.092 74.87c4.686-4.686 4.686-12.284 0-16.971L231.293 38.1c-4.686-4.686-12.284-4.686-16.971 0L4.908 247.515c-4.686 4.686-4.686 12.284 0 16.971L214.322 473.9c4.687 4.686 12.285 4.686 16.971-.001z"/></svg></a></li>';
-        for ($i=1; $i <= $pages; $i++) {
-            if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems )){
-                if($paged == $i) {
-                    echo "<li><span class='flex items-center justify-center w-8 h-8 rounded-full bg-rom-pink text-white font-semibold cursor-not-allowed' aria-current='page'>" . $i . "</span></li>";
-                } else {
-                    echo "<li><a class='flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200' href='".get_pagenum_link($i)."'>".$i."</a></li>";
-                }
-            }
-        }
-        if ($paged < $pages && $showitems < $pages) echo '<li><a class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200" aria-label="Next" href="' . get_pagenum_link($paged + 1) . '"><svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" fill="currentColor"><path d="M24.707 38.101L4.908 57.899c-4.686 4.686-4.686 12.284 0 16.971L185.607 256 4.908 437.13c-4.686 4.686-4.686 12.284 0 16.971L24.707 473.9c4.686 4.686 12.284 4.686 16.971 0l209.414-209.414c4.686-4.686 4.686-12.284 0-16.971L41.678 38.101c-4.687-4.687-12.285-4.687-16.971 0z"/></svg></a></li>';
-        
-		if ( $paged < $pages - 1 ) {
-			if ( $paged + $range - 1 < $pages ) {
-				if ( $showitems < $pages ) {
-					echo '<li><a class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-colors duration-200" href="' . get_pagenum_link($pages) . '" aria-label="Last page"><svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor"><path d="M57.7 38.1l209.4 209.4c4.7 4.7 4.7 12.3 0 17L57.7 473.9c-4.7 4.7-12.3 4.7-17 0l-19.8-19.8c-4.7-4.7-4.7-12.3 0-17L201.6 256 20.9 74.9c-4.7-4.7-4.7-12.3 0-17l19.8-19.8c4.7-4.7 12.3-4.7 17 0zm143 0l-19.8 19.8c-4.7 4.7-4.7 12.3 0 17L361.6 256 180.9 437.1c-4.7 4.7-4.7 12.3 0 17l19.8 19.8c4.7 4.7 12.3 4.7 17 0l209.4-209.4c4.7-4.7 4.7-12.3 0-17L217.7 38.1c-4.7-4.7-12.3-4.7-17 0z"/></svg></a></li>';
-				}
+/**
+ * One pill bar: Prev, the first page, $range pages either side of the current
+ * one, the last page, Next. Skipped runs collapse into "…". Prev/Next stay in
+ * place (disabled) at either end so the bar doesn't jump while paging.
+ *
+ * @param int|string $pages Total pages; defaults to the main query's.
+ * @param int        $range Pages shown on each side of the current one.
+ */
+function rom_pagination( $pages = '', $range = 1 ) {
+	global $paged;
+	$current = max( 1, (int) $paged );
+	if ( '' === $pages ) {
+		global $wp_query;
+		$pages = $wp_query->max_num_pages;
+	}
+	$pages = max( 1, (int) $pages );
+	if ( 1 === $pages ) {
+		return;
+	}
+
+	// Page numbers to show, in order; 0 marks a gap.
+	$numbers = array();
+	foreach ( range( 1, $pages ) as $i ) {
+		if ( 1 === $i || $pages === $i || abs( $i - $current ) <= $range ) {
+			if ( $numbers && $i - end( $numbers ) > 1 ) {
+				$numbers[] = 0;
 			}
+			$numbers[] = $i;
 		}
-       
-	   echo "</ul></nav>";
-    }
-}
+	}
+
+	$cell  = 'flex items-center justify-center h-9 min-w-[2.25rem] px-2 rounded-xl text-meta font-semibold transition-colors';
+	$link  = $cell . ' text-slate-600 hover:bg-rose-50 hover:text-primary';
+	$arrow = 'flex items-center justify-center gap-1 h-9 px-2.5 sm:px-3 rounded-xl text-meta font-semibold transition-colors';
+	$prev  = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>';
+	$next  = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+	?>
+    <nav class="flex justify-center mt-8 mb-4" aria-label="<?php esc_attr_e( 'Pagination', 'rom' ); ?>">
+        <ul class="inline-flex items-center gap-0.5 p-1 bg-white rounded-2xl border border-slate-200/80 shadow-card max-w-full overflow-x-auto">
+            <li>
+				<?php if ( $current > 1 ) : ?>
+                    <a class="<?php echo esc_attr( $arrow ); ?> text-slate-600 hover:bg-rose-50 hover:text-primary" href="<?php echo esc_url( get_pagenum_link( $current - 1 ) ); ?>" rel="prev">
+						<?php echo $prev; ?><span class="hidden sm:inline"><?php esc_html_e( 'Prev', 'rom' ); ?></span>
+                    </a>
+				<?php else : ?>
+                    <span class="<?php echo esc_attr( $arrow ); ?> text-slate-300 cursor-default" aria-disabled="true">
+						<?php echo $prev; ?><span class="hidden sm:inline"><?php esc_html_e( 'Prev', 'rom' ); ?></span>
+                    </span>
+				<?php endif; ?>
+            </li>
+			<?php foreach ( $numbers as $n ) : ?>
+                <li>
+					<?php if ( 0 === $n ) : ?>
+                        <span class="<?php echo esc_attr( $cell ); ?> text-slate-400 cursor-default" aria-hidden="true">&hellip;</span>
+					<?php elseif ( $n === $current ) : ?>
+                        <span class="<?php echo esc_attr( $cell ); ?> bg-primary text-white shadow-sm shadow-primary/25" aria-current="page"><?php echo esc_html( number_format_i18n( $n ) ); ?></span>
+					<?php else : ?>
+                        <a class="<?php echo esc_attr( $link ); ?>" href="<?php echo esc_url( get_pagenum_link( $n ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Page %s', 'rom' ), number_format_i18n( $n ) ) ); ?>"><?php echo esc_html( number_format_i18n( $n ) ); ?></a>
+					<?php endif; ?>
+                </li>
+			<?php endforeach; ?>
+            <li>
+				<?php if ( $current < $pages ) : ?>
+                    <a class="<?php echo esc_attr( $arrow ); ?> text-slate-600 hover:bg-rose-50 hover:text-primary" href="<?php echo esc_url( get_pagenum_link( $current + 1 ) ); ?>" rel="next">
+                        <span class="hidden sm:inline"><?php esc_html_e( 'Next', 'rom' ); ?></span><?php echo $next; ?>
+                    </a>
+				<?php else : ?>
+                    <span class="<?php echo esc_attr( $arrow ); ?> text-slate-300 cursor-default" aria-disabled="true">
+                        <span class="hidden sm:inline"><?php esc_html_e( 'Next', 'rom' ); ?></span><?php echo $next; ?>
+                    </span>
+				<?php endif; ?>
+            </li>
+        </ul>
+    </nav>
+	<?php
 }

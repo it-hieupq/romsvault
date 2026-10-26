@@ -41,7 +41,7 @@ $template_slug = get_taxonomy_template_slug_by_post_type( $taxonomy_post_type );
 					endwhile; ?>
                 </div>
 			<?php
-				k_pagination(); 
+				rom_pagination(); 
 			else :
 				get_template_part('template-parts/content', 'none');
 			endif;

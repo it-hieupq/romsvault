@@ -161,7 +161,7 @@ $filter_data = array(
 
         <?php if ($query->max_num_pages > 1) : ?>
             <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <?php k_pagination($query->max_num_pages); ?>
+                <?php rom_pagination($query->max_num_pages); ?>
             </div>
         <?php endif; ?>
     </section>

@@ -35,7 +35,7 @@ global $wp_query;
 					endwhile; ?>
                 </div>
 				<?php
-				k_pagination();
+				rom_pagination();
 			else :
 				get_template_part( 'template-parts/content', 'none' );
 			endif;

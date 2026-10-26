@@ -23,7 +23,7 @@ $keywords = get_search_query();
                         get_template_part( 'template-parts/rom-card' );
                     endwhile; ?>
                 </div>
-                <?php k_pagination();
+                <?php rom_pagination();
             else :
                 get_template_part( 'template-parts/content', 'none' );
             endif;

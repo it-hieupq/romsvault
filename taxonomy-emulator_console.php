@@ -28,8 +28,9 @@ get_template_part( 'template-parts/hero');
 				// Custom query args
 				$args = array(
 					'post_type'      => 'emulator',
-					'posts_per_page' => 10,
-                    'no_found_rows'  => true,
+					// Same page size as the main query that resolves /page/N, and found rows
+					// kept: rom_pagination() needs max_num_pages.
+					'posts_per_page' => ROM_ARCHIVE_PER_PAGE,
 					'paged'          => $paged,
 					'tax_query'      => array(
 						array(
@@ -50,7 +51,7 @@ get_template_part( 'template-parts/hero');
 					endwhile;
 					echo '</div>';
 
-					k_pagination( $query->max_num_pages );
+					rom_pagination( $query->max_num_pages );
 
 					wp_reset_postdata();
 				else :

@@ -509,18 +509,19 @@ function k_modify_main_query( $query ): void {
 		$query->set( 'post_type', 'rom' );
 	}
 
-	if ( is_tax() || is_archive() || $query->is_search() ) {
+	// The blog (posts page) pages like every other listing.
+	if ( is_tax() || is_archive() || $query->is_search() || $query->is_home() ) {
 		$query->set( 'posts_per_page', ROM_ARCHIVE_PER_PAGE );
 	}
 }
 add_action( 'pre_get_posts', 'k_modify_main_query' );
 
 /**
- * Items per page on every archive and search listing. The main query above and
+ * Items per page on every archive, search and blog listing. The main query above and
  * the filtered query in k_build_roms_query() must agree, or the last pages of
  * one 404 under the other.
  */
-defined( 'ROM_ARCHIVE_PER_PAGE' ) || define( 'ROM_ARCHIVE_PER_PAGE', 15 );
+defined( 'ROM_ARCHIVE_PER_PAGE' ) || define( 'ROM_ARCHIVE_PER_PAGE', 20 );
 
 
 function get_rom_page_templates(): array {
