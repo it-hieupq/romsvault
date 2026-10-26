@@ -259,27 +259,12 @@ else :
     $file_index = $file_number - 1;
     $link       = $downloads[ $file_index ];
 
-    // Apply affiliate codes if applicable
-    $affs = get_field('affs', 'option');
-    if ( is_array( $affs ) && ! empty( $affs ) ) {
-        $link_url = esc_url_raw( $link['url'] );
-        foreach ( $affs as $aff ) {
-            if ( ! empty( $aff['aff_host'] ) && ! empty( $aff['aff_code'] ) ) {
-                if ( strpos( $link_url, $aff['aff_host'] ) !== false ) {
-                    $separator = parse_url( $link_url, PHP_URL_QUERY ) ? '&' : '?';
-                    $link_url  .= $separator . sanitize_text_field( $aff['aff_code'] );
-                    break; // Only apply first matching affiliate
-                }
-            }
-        }
-        $link['url'] = $link_url;
-    }
-
-    // Generate download URL with token. Members-only posts (approach C) never bake
-    // the URL into this cacheable HTML — the button fetches it from rf/v1/download-url
-    // after the session is verified. This <a> is only the fallback k_get_download reveals.
+    // No file URL or token is ever printed here: the token encodes the visitor's IP and
+    // a time window, so a cached copy would hand one visitor's token (and IP) to everyone.
+    // The real link comes per visitor from k_get_download (inc/ajax.php, which also adds
+    // the affiliate code) when the wait ends, or from rf/v1/download-url for members-only
+    // posts. This <a> is the fallback: js/main.js fetches the link when it is clicked.
     $rf_members   = rf_is_restricted( $post_id );
-    $download_url = $rf_members ? '' : add_query_arg( 'token', urlencode( get_download_token() ), $link['url'] );
     $file_name    = $link['name'];
     $file_type    = isset( $link['file_type'] ) ? $link['file_type'] : '';
     $file_size    = isset( $link['file_size'] ) ? $link['file_size'] : '';
@@ -330,9 +315,9 @@ else :
 
                     <!-- Download Button (Hidden initially) -->
                     <div id="download-button" class="hidden">
-                        <a href="<?php echo $rf_members ? '#' : esc_url( $download_url ); ?>"
+                        <a href="#"
                            id="download-link"
-                           <?php if ( $rf_members ) : ?>data-rf-download data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $file_number ); ?>"<?php endif; ?>
+                           <?php if ( $rf_members ) : ?>data-rf-download data-post="<?php echo esc_attr( $post_id ); ?>" data-file="<?php echo esc_attr( $file_number ); ?>"<?php else : ?>data-rf-fetch-link<?php endif; ?>
                            class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-hover active:scale-95 transition-all shadow-md shadow-primary/25 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0"
                            rel="nofollow">
                             <?php echo get_svg_icon( 'save' ) . esc_html( __( 'Download Now', 'rom' ) . ( $file_size ? ' (' . $file_size . ')' : '' ) ); ?>

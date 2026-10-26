@@ -182,6 +182,12 @@ function rf_rating_recount( $post_id ) {
 	$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) );
 	delete_transient( rf_ratings_cache_key( $post_id ) );
 
+	// The single and its download pages print the score and review count: drop their
+	// cached HTML (rocket_post_purge_urls adds the download pages).
+	if ( function_exists( 'rocket_clean_post' ) ) {
+		rocket_clean_post( $post_id );
+	}
+
 	return array( 'count' => $count, 'avg' => $avg, 'dist' => $dist );
 }
 

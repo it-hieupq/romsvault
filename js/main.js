@@ -889,36 +889,54 @@ function showCopyMessage(buttonElement) {
             return;
         }
         
-        // Call AJAX immediately when page loads
-        (function() {
+        // Ask the server for this visitor's own link (k_get_download). The page HTML never
+        // carries one, since it is cached for everyone.
+        function requestDownload(onDone) {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', ajaxUrl, true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-            
             xhr.onload = function() {
+                let data = null;
                 if (xhr.status === 200) {
                     try {
                         const response = JSON.parse(xhr.responseText);
-                        if (response.success && response.data && response.data.html) {
-                            storedDownloadHTML = response.data.html;
-                        } else {
-                            // Log generic error message (detailed errors only in development via PHP)
-                            console.error('Failed to load download link');
+                        if (response.success && response.data) {
+                            data = response.data;
                         }
-                    } catch (e) {
-                        console.error('Failed to load download link');
-                    }
-                } else {
+                    } catch (e) {}
+                }
+                if (!data) {
+                    // Log generic error message (detailed errors only in development via PHP)
                     console.error('Failed to load download link');
                 }
+                onDone(data);
             };
-            
             xhr.onerror = function() {
                 console.error('Failed to load download link');
+                onDone(null);
             };
-            
             xhr.send('action=k_get_download&post_id=' + encodeURIComponent(postId) + '&file=' + encodeURIComponent(fileNumber));
-        })();
+        }
+
+        // Fetch it as the page loads, so it is ready when the wait ends.
+        requestDownload(function (data) {
+            if (data && data.html) {
+                storedDownloadHTML = data.html;
+            }
+        });
+
+        // Fallback button (shown when that first request failed): fetch the link on click.
+        const fallbackLink = downloadContainer.querySelector('[data-rf-fetch-link]');
+        if (fallbackLink) {
+            fallbackLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                requestDownload(function (data) {
+                    if (data && data.download_url) {
+                        window.location.href = data.download_url;
+                    }
+                });
+            });
+        }
         
         // Fill the progress bar frame by frame for smoothness, but reveal the button on
         // a plain timer: browsers pause requestAnimationFrame in background tabs, and the
