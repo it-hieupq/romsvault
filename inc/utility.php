@@ -638,7 +638,7 @@ add_filter('acf/update_value', 'acf_update_value_for_dynamic_download_urls', 10,
  * @param string $context Context: 'browse' or 'console'
  * @return WP_Query Query object
  */
-function k_build_roms_query($query_args, string $context = 'browse') {
+function build_roms_query($query_args, string $context = 'browse') {
 	$context = sanitize_key($context);
 	
 	// Extract parameters

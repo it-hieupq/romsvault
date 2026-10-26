@@ -126,7 +126,7 @@ get_header();
                     'paged' => $paged,
                 );
                 
-                $query = k_build_roms_query($query_args);
+                $query = build_roms_query($query_args);
 
                 if ($paged > 1 && $query->max_num_pages > 0 && $paged > $query->max_num_pages) {
                     $browse_page_url = get_permalink();

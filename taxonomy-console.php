@@ -128,7 +128,7 @@ $filter_data = array(
 	            'paged' => $paged,
             );
 
-            $query = k_build_roms_query($query_args, 'console');
+            $query = build_roms_query($query_args, 'console');
             ?>
 
                 <div class="flex items-center justify-between mb-8">

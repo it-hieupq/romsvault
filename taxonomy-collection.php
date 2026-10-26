@@ -131,7 +131,7 @@ $filter_data = array(
 	            'paged' => $paged,
             );
 
-            $query = k_build_roms_query($query_args, 'collection');
+            $query = build_roms_query($query_args, 'collection');
             ?>
 
                 <div class="flex items-center justify-between mb-8">

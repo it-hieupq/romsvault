@@ -1,34 +1,20 @@
 <?php
 /**
- * k functions and definitions.
- *
- * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ * Theme setup, assets and module loading.
  *
  * @package romsvault
  */
 
 if ( ! function_exists( 'k_setup' ) ) :
-/**
- * Sets up theme defaults and registers support for various WordPress features.
- *
- * Note that this function is hooked into the after_setup_theme hook, which
- * runs before the init hook. The init hook is too late for some features, such
- * as indicating support for post thumbnails.
- */
 function k_setup() {
 	load_theme_textdomain( 'rom', get_template_directory() . '/languages' );
 
-	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
 
 	add_theme_support( 'title-tag' );
 
 	add_theme_support( 'post-thumbnails' );
 
-	/*
-	 * Switch default core markup for search form, comment form, and comments
-	 * to output valid HTML5.
-	 */
 	add_theme_support( 'html5', array(
 		'search-form',
 		'comment-form',
@@ -36,27 +22,17 @@ function k_setup() {
 		'gallery',
 		'caption',
 	) );
-	
-	/**
-	 * Add image sizes
-	 */
+
 	add_image_size( 'thumbnail', 300, 9999, false );
 
-	/**
-	 * Add excerpt to page
-	 */
 	add_post_type_support( 'page', 'excerpt' );
 }
 endif;
 add_action( 'after_setup_theme', 'k_setup' );
 
-/**
- * Register nav menu locations on init instead of after_setup_theme so the
- * translated labels don't load the 'rom' textdomain before init
- * (WP 6.7 _load_textdomain_just_in_time notice).
- */
+// On init, not after_setup_theme: translating the labels earlier triggers WP 6.7's
+// _load_textdomain_just_in_time notice.
 function k_register_nav_menus() {
-	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
 		'primary'    => esc_html__( 'Primary Navigation', 'rom' ),
 		'site-nav'   => esc_html__( 'Site navigation', 'rom' ),
@@ -65,9 +41,7 @@ function k_register_nav_menus() {
 }
 add_action( 'init', 'k_register_nav_menus' );
 
-/**
- * Remove medium_large size
- */
+// Don't generate WP's default intermediate sizes.
 function k_remove_image_sizes( $sizes) {
 	unset( $sizes['medium'] );
 	unset( $sizes['medium_large'] );
@@ -78,21 +52,11 @@ function k_remove_image_sizes( $sizes) {
 }
 add_filter('intermediate_image_sizes_advanced', 'k_remove_image_sizes');
 
-/**
- * Set the content width in pixels, based on the theme's design and stylesheet.
- *
- * Priority 0 to make it available to lower priority callbacks.
- *
- * @global int $content_width
- */
 function k_content_width() {
 	$GLOBALS['content_width'] = apply_filters( 'k_content_width', 640 );
 }
 add_action( 'after_setup_theme', 'k_content_width', 0 );
 
-/**
- * Enqueue scripts and styles.
- */
 function rom_enqueue_scripts() {
     wp_enqueue_style(
         'main-style',
@@ -105,13 +69,11 @@ function rom_enqueue_scripts() {
     wp_enqueue_style(
 		'tailwind',
 		get_template_directory_uri() . '/assets/css/output.css',
-		array(), // Dependencies
+		array(),
 		filemtime(get_template_directory() . '/assets/css/output.css')
 	);
 
-	// Member auth UI (P2.0). Cache-safe: no login state in PHP; JS + localStorage only.
-	// Auth CSS lives in style.css (enqueued above as 'main-style').
-	// Toast notifications — standalone (no jQuery). Loaded first so auth + main can use it.
+	// Toast first: auth.js and main.js both use it.
 	wp_enqueue_script(
 		'rf-toast',
 		get_template_directory_uri() . '/js/toast.js',
@@ -127,9 +89,7 @@ function rom_enqueue_scripts() {
 		filemtime( get_template_directory() . '/auth/js/auth.js' ),
 		true
 	);
-	// Static config for the auth UI (same for everyone -> stays cache-safe).
-	// Uses GOOGLE_CLIENT_ID from wp-config.php (public client id). The GSI ID-token
-	// flow needs only the client id; GOOGLE_CLIENT_SECRET / GOOGLE_REDIRECT_URI are unused here.
+	// Same for every visitor (cache-safe). The GSI ID-token flow needs only the public client id.
 	wp_localize_script(
 		'rf-auth',
 		'RF_AUTH',
@@ -138,46 +98,32 @@ function rom_enqueue_scripts() {
 			'rest'     => esc_url_raw( rest_url( 'rf/v1/' ) ),
 		)
 	);
-				
-	// Check post type first to determine dependencies
+
 	global $wp_query;
 	$post_type = get_post_type();
-	$site_js_deps = array('jquery', 'rf-toast');
-	
+
 	$is_download_page = ! empty( $wp_query->query_vars['download'] );
 
     wp_enqueue_script(
         'main-js',
         get_template_directory_uri() . '/js/main.js',
-        $site_js_deps,
+        array( 'jquery', 'rf-toast' ),
         filemtime( get_template_directory() . '/js/main.js' ),
         true
     );
-	
-	// Localize script with AJAX URL, comment nonce, and rating nonce.
-	// site_url comes from WP_SITEURL (wp-config) so JS never hardcodes the domain.
-	$localize_data = array(
-		'ajax_url' => admin_url( 'admin-ajax.php' ),
-		'site_url' => untrailingslashit( site_url() ),
-	);
-	
-	// Check if dynamic nonce should be enabled (for specific pages)
-	require_once get_template_directory() . '/inc/utility-post-type.php';
-	$enable_dynamic_nonce = should_load_dynamic_nonce();
-	$localize_data['enable_dynamic_nonce'] = $enable_dynamic_nonce;
-	
-	// Rating is member-only (POST rf/v1/rating).
 
-	wp_localize_script( 'main-js', 'ajax', $localize_data );
+	wp_localize_script( 'main-js', 'ajax', array(
+		'ajax_url'             => admin_url( 'admin-ajax.php' ),
+		'site_url'             => untrailingslashit( site_url() ),
+		'enable_dynamic_nonce' => should_load_dynamic_nonce(),
+	) );
 
-	// Live search suggestions. Inline JSON rather than wp_localize_script, which
-	// would turn the numbers and booleans into strings.
+	// Inline JSON: wp_localize_script would turn numbers and booleans into strings.
 	$search_config = rom_search_js_config();
 	if ( $search_config ) {
 		wp_add_inline_script( 'main-js', 'window.romSearch = ' . wp_json_encode( $search_config, JSON_UNESCAPED_SLASHES ) . ';', 'before' );
 	}
 
-	// Member rating & reviews UI (rf/v1/rating) — single valid-post-type + download page.
 	if ( ( is_singular() && valid_post_type( $post_type ) ) || $is_download_page ) {
 		wp_enqueue_script(
 			'rf-rating',
@@ -188,9 +134,7 @@ function rom_enqueue_scripts() {
 		);
 	}
 
-	// lightGallery only where there is something to open: the same screenshots /
-	// youtube_url check the single templates use to render the Screenshots row.
-	// About 7% of roms and emulators have one, so most single pages skip all six files.
+	// lightGallery only on singles with screenshots or a video (~7% of posts).
 	$has_gallery = is_singular() && valid_post_type( $post_type ) && ! $is_download_page
 		&& ( get_field( 'image', get_queried_object_id() ) || get_field( 'youtube_url', get_queried_object_id() ) );
 	if ( $has_gallery ) {
@@ -209,7 +153,6 @@ function rom_enqueue_scripts() {
 			'2.8.3'
 		);
 
-		// Plays the youtube_url preview inside the lightbox instead of leaving the site.
 		wp_enqueue_style(
 			'lg-video',
 			get_template_directory_uri() . '/assets/css/lg-video.min.css',
@@ -217,7 +160,6 @@ function rom_enqueue_scripts() {
 			'2.8.3'
 		);
 
-		// lightGallery JS - Must be enqueued with proper dependencies
 		wp_enqueue_script(
 			'lightgallery',
 			get_template_directory_uri() . '/assets/js/lightgallery.min.js',
@@ -242,7 +184,6 @@ function rom_enqueue_scripts() {
 			true
 		);
 
-		// File JS khởi tạo (tự viết)
         wp_enqueue_script(
             'lightgallery-init',
             get_template_directory_uri() . '/assets/js/lightgallery-init.js',
@@ -255,10 +196,8 @@ function rom_enqueue_scripts() {
 add_action( 'wp_enqueue_scripts', 'rom_enqueue_scripts' );
 
 /**
- * Front-end jQuery without jQuery Migrate, loaded in the footer instead of <head>.
- * Nothing in the theme uses an API Migrate restores, and no inline script needs jQuery
- * before the footer. The Configs "Header js" field prints in <head>, before jQuery now.
- * wp-admin keeps the default.
+ * Front end: jQuery without Migrate, in the footer. The Configs "Header js" field
+ * prints in <head>, so it runs before jQuery.
  */
 function rom_frontend_jquery( $scripts ) {
 	if ( is_admin() ) {
@@ -274,12 +213,7 @@ function rom_frontend_jquery( $scripts ) {
 }
 add_action( 'wp_default_scripts', 'rom_frontend_jquery' );
 
-/**
- * Defer the theme's own scripts. They already sit in the footer; defer also takes
- * them off the parser's path and keeps their order. Runs after every enqueue so
- * scripts added on other hooks (rf-tracking) are covered. jQuery stays a plain
- * footer script: the deferred ones that depend on it run after it anyway.
- */
+// Defer the theme's scripts. Priority 99 so ones enqueued on other hooks (rf-tracking) are covered.
 function rom_defer_theme_scripts() {
 	$handles = array( 'rf-toast', 'rf-auth', 'main-js', 'rf-rating', 'rf-tracking',
 		'lightgallery', 'lg-thumbnail', 'lg-video', 'lightgallery-init' );
@@ -291,20 +225,14 @@ function rom_defer_theme_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'rom_defer_theme_scripts', 99 );
 
-/**
- * Enqueue admin scripts and styles.
- */
 function rom_admin_scripts() {
 	wp_enqueue_script( 'admin-js', get_template_directory_uri() . '/js/admin.js', array('jquery'), 2, true );
 	wp_localize_script( 'admin-js', 'ajax', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 }
 add_action( 'admin_enqueue_scripts', 'rom_admin_scripts' );
 
-/**
- * ACF PRO and ACF QuickEdit Fields ship with the theme (inc/) instead of running as
- * plugins. Both build their asset URLs with plugin_dir_url(), which only knows the
- * plugins folder, so map files under the theme to the theme URL.
- */
+// ACF PRO and ACF QuickEdit Fields ship in inc/. Both build asset URLs with
+// plugin_dir_url(), so map files under the theme to the theme URL.
 add_filter( 'plugins_url', function ( $url, $path, $plugin ) {
 	$theme_dir = wp_normalize_path( get_template_directory() );
 	$plugin    = wp_normalize_path( (string) $plugin );
@@ -318,151 +246,82 @@ add_filter( 'acf/settings/show_updates', '__return_false', 100 );
 require_once get_template_directory() . '/inc/acf/acf.php';
 require_once get_template_directory() . '/inc/acf-quick-edit-fields/index.php';
 
-/**
- * Custom fields
- */
 require get_template_directory() . '/setting/setting-post.php';
 require get_template_directory() . '/setting/setting-rom.php';
 require get_template_directory() . '/setting/setting-emulator.php';
 require get_template_directory() . '/setting/setting-page-home.php';
 
-/**
- * Download token functions.
- */
 require get_template_directory() . '/inc/download-token.php';
 
 require get_template_directory() . '/auth/setting-member.php';
 
-// Member subsystem. member-core (session, origin guard, current-member, throttle)
-// must load before auth-google and every action module, which depend on it.
+// member-core must load before auth-google and the action modules, which depend on it.
 require get_template_directory() . '/auth/member-core.php';
-require get_template_directory() . '/auth/auth-google.php';       // Google login / logout
-require get_template_directory() . '/auth/actions/comment.php';   // POST /comment, GET /my-comments
-require get_template_directory() . '/auth/actions/wishlist.php';  // GET/POST /wishlist
-require get_template_directory() . '/auth/actions/download.php';  // GET /download-url (gated)
-require get_template_directory() . '/auth/actions/report.php';    // POST /report, GET /my-reports
-require get_template_directory() . '/auth/actions/profile.php';   // GET /my-stats (dashboard)
-require get_template_directory() . '/auth/actions/rating.php';    // POST /rating, GET /ratings, /my-ratings
-require get_template_directory() . '/auth/actions/ticket.php';    // POST /ticket, GET /my-tickets, POST /ticket/close
-require get_template_directory() . '/auth/actions/contact.php';   // POST /contact, GET /my-contacts
-require get_template_directory() . '/auth/member-ui.php';         // member menu + restricted notice
+require get_template_directory() . '/auth/auth-google.php';
+require get_template_directory() . '/auth/actions/comment.php';
+require get_template_directory() . '/auth/actions/wishlist.php';
+require get_template_directory() . '/auth/actions/download.php';
+require get_template_directory() . '/auth/actions/report.php';
+require get_template_directory() . '/auth/actions/profile.php';
+require get_template_directory() . '/auth/actions/rating.php';
+require get_template_directory() . '/auth/actions/ticket.php';
+require get_template_directory() . '/auth/actions/contact.php';
+require get_template_directory() . '/auth/member-ui.php';
 require get_template_directory() . '/auth/member-pages.php';
 
 if ( is_admin() ) {
 	require get_template_directory() . '/auth/admin-members.php';
-	require get_template_directory() . '/auth/admin-report.php'; // Report admin page (member_report)
-	require get_template_directory() . '/auth/admin-ratings.php'; // Ratings & Reviews admin page (member_rating)
-	require get_template_directory() . '/auth/admin-wishlists.php'; // Wishlists admin page (member_wishlist, grouped by post)
-	require get_template_directory() . '/auth/admin-ticket.php'; // Requests admin page (member_ticket)
-	require get_template_directory() . '/auth/admin-contact.php'; // Contact admin page (member_contact)
-	require get_template_directory() . '/tracking/status.php'; // tracking status in Configs > General + stale flush notice
+	require get_template_directory() . '/auth/admin-report.php';
+	require get_template_directory() . '/auth/admin-ratings.php';
+	require get_template_directory() . '/auth/admin-wishlists.php';
+	require get_template_directory() . '/auth/admin-ticket.php';
+	require get_template_directory() . '/auth/admin-contact.php';
+	require get_template_directory() . '/tracking/status.php';
 }
 
-/**
- * Permanent delete of a post plus the media only it uses: row action, bulk
- * action and the Actions box on the edit screen.
- *
- * Loaded everywhere, not just in admin: the before_delete_post hook in there has
- * to catch a delete that arrives over REST, WP-CLI or cron too, where is_admin()
- * is false. The admin-only pieces gate themselves on their own hooks.
- */
+// Loaded everywhere: its before_delete_post hook must also catch deletes over REST,
+// WP-CLI and cron, where is_admin() is false.
 require get_template_directory() . '/inc/admin-delete.php';
 
-/**
- * Ajax functions
- */
 require get_template_directory() . '/inc/ajax.php';
 
-/**
- * Navigation Walker.
- */
 require get_template_directory() . '/inc/nav-walker.php';
 require get_template_directory() . '/inc/menu-icons.php';
 
-/**
- * Utility functions.
- */
 require get_template_directory() . '/inc/utility.php';
 require get_template_directory() . '/inc/utility-post-type.php';
 
-/**
- * Theme Options.
- */
 require get_template_directory() . '/inc/options.php';
 
-/**
- * Quick search index (static JSON shards in uploads/search-index/).
- */
 require get_template_directory() . '/inc/search-index.php';
 
-/**
- * Load Breadcrumb
- */
 require get_template_directory() . '/inc/breadcrumb.php';
 
-/**
- * Load Pagination
- */
 require get_template_directory() . '/inc/pagination.php';
 
-/**
- * Load Grabber
- */
 require get_template_directory() . '/grabber/grabber.php';
-// require get_template_directory() . '/grabber/grabber-rom.php';
-// require get_template_directory() . '/grabber/grabber-mobygames.php';
-// require get_template_directory() . '/grabber/grabber-igdb.php';
-// require get_template_directory() . '/grabber/grabber-retrostic.php';
 require get_template_directory() . '/grabber/grabber-multi.php';
-/**
- * Load Insert SEO
- */
+
 require get_template_directory() . '/inc/insert-seo.php';
 
-/**
- * Load Insert Link
- */
 require get_template_directory() . '/inc/insert-link.php';
 require get_template_directory() . '/inc/insert-link-s3.php';
 
-/**
- * Load Insert Link Aff
- */
 require get_template_directory() . '/inc/insert-link-aff.php';
 
-/**
- * Load Insert External Link Aff
- */
 require get_template_directory() . '/inc/insert-external-link-aff.php';
 
-/**
- * Load Get File
- */
 require get_template_directory() . '/inc/get-file.php';
 
-/**
- * In-memory WebP compression. Declares functions only — no hooks, no queries —
- * so loading it everywhere costs nothing; the grabber is meant to call it.
- */
 require get_template_directory() . '/inc/img-compressor.php';
 
-/**
- * Caching
- */
 require get_template_directory() . '/caching/caching-rom.php';
 
-
-/**
- * Security
- */
 require get_template_directory() . '/caching/AppSecurity.php';
 
-/**
- * Enqueue AJAX tracking script
- */
 function rf_enqueue_tracking_script(): void {
     global $wp_query;
-    
+
     $track_type = null;
     $post_id = 0;
 
@@ -475,13 +334,11 @@ function rf_enqueue_tracking_script(): void {
             }
         }
     }
-    // Check for single post pages
     elseif (is_singular(['rom', 'emulator', 'post'])) {
         $post_id = get_the_ID();
         $track_type = 'view';
     }
-    
-    // Enqueue script if tracking is needed
+
     if ($track_type && $post_id > 0) {
         wp_enqueue_script(
             'rf-tracking',
@@ -490,10 +347,9 @@ function rf_enqueue_tracking_script(): void {
             filemtime(get_template_directory() . '/js/tracking.js'),
             true
         );
-        
+
         wp_localize_script('rf-tracking', 'rfTracking', [
-            // Beacon endpoint, mapped by nginx straight at tracking/track.php so
-            // counting a view never bootstraps WordPress.
+            // nginx maps /t straight to tracking/track.php, so a view never boots WordPress.
             'endpoint' => '/t',
             'postId' => $post_id,
             'trackType' => $track_type
@@ -507,50 +363,25 @@ function get_sort_list(): array {
 	return array('newest', 'oldest', 'popular', 'downloads', 'alphabetical', 'latest');
 }
 
-//add_action('save_post', 'update_post_date_now');
-function update_post_date_now($post_id) {
-
-    if (get_post_status($post_id) !== 'publish') {
-        return;
-    }
-
-    remove_action( 'save_post', 'update_post_date_now' );
-
-    $update_post = array(
-        'ID' => $post_id,
-        'post_date'     => current_time( 'mysql' ),
-        'post_date_gmt' => current_time( 'mysql', 1 ),
-    );
-
-    wp_update_post( $update_post );
-
-    add_action( 'save_post', 'update_post_date_now' );
-}
-
-
 function rom_modify_main_query( $query ): void {
 
 	if ( is_admin() || ! $query->is_main_query() ) {
 		return;
 	}
 
-	// Search → chỉ rom
+	// Search covers roms only.
 	if ( $query->is_search() ) {
 		$query->set( 'post_type', 'rom' );
 	}
 
-	// The blog (posts page) pages like every other listing.
 	if ( is_tax() || is_archive() || $query->is_search() || $query->is_home() ) {
 		$query->set( 'posts_per_page', ROM_ARCHIVE_PER_PAGE );
 	}
 }
 add_action( 'pre_get_posts', 'rom_modify_main_query' );
 
-/**
- * Items per page on every archive, search and blog listing. The main query above and
- * the filtered query in k_build_roms_query() must agree, or the last pages of
- * one 404 under the other.
- */
+// Items per page on every listing. build_roms_query() must use the same value, or
+// the last pages of one 404 under the other.
 defined( 'ROM_ARCHIVE_PER_PAGE' ) || define( 'ROM_ARCHIVE_PER_PAGE', 20 );
 
 
@@ -602,12 +433,3 @@ add_filter( 'pre_transient_wp_rocket_customer_data', function() {
         'is_reseller'        => false,
     ];
 } );
-
-function dump($data, $message = '') {
-	echo '<pre class="debug-dump text-black">';
-
-	if ($message) echo '<h1>' . $message . '</h1>';
-
-	var_dump($data);
-	echo '</pre>';
-}
