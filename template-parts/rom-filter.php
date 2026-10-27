@@ -117,15 +117,17 @@ endif;
                     
                     <div class="relative flex flex-col lg:flex-row gap-3">
                         <label class="relative flex-1">
-                            <input type="text" id="searchInput" placeholder="<?php esc_attr_e( 'Search games, ROMs or ISOs…', 'rom' ); ?>"
+                            <?php // No Search button: Enter submits (Apply Filters is the form's submit) and live search lists matches. ?>
+                            <?php
+                            // The box filters this listing only, so name it: "Search PS2 ROMs…" on a term page.
+                            /* translators: %s: the listing title, e.g. "PS2 ROMs" */
+                            $search_placeholder = ( is_tax() && ! empty( $title ) ) ? sprintf( __( 'Search %s…', 'rom' ), $title ) : __( 'Search ROMs by title…', 'rom' );
+                            ?>
+                            <input type="text" id="searchInput" placeholder="<?php echo esc_attr( $search_placeholder ); ?>"
                                    name="q"
+                                   enterkeyhint="search"
                                    value="<?php echo $current_search; ?>"
                                    class="w-full rounded-full border border-border px-4 sm:px-6 py-3 text-gray-900 outline-none focus:ring-2 focus:ring-brand/40 text-sm">
-                            <span class="absolute inset-y-0 right-1 flex items-center pr-1">
-                                <button id="searchButton" class="px-5 sm:px-6 py-2.5 rounded-full text-white font-semibold shadow-soft bg-rom-pink hover:bg-rom-pink-dark transition text-xs">
-                                  <?php _e('Search', 'rom') ?>
-                                </button>
-                          </span>
                         </label>
                         <?php if ( rom_search_location_enabled( 'filter' ) ) : ?>
                             <div id="filter-search-results" class="search-results" role="listbox" aria-label="<?php esc_attr_e( 'Search suggestions', 'rom' ); ?>" hidden></div>
@@ -144,7 +146,7 @@ endif;
                                 </div>
                                 <div class="custom-select-dropdown" id="console-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search consoles…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search consoles', 'rom'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-4 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search consoles…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search consoles', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('console', $post_ids, $current_term->term_id) : get_cached_all_terms('console');
@@ -181,7 +183,7 @@ endif;
                             </div>
                             <div class="custom-select-dropdown" id="genre-dropdown">
                                 <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                    <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search genres…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search genres', 'rom'); ?>">
+                                    <input type="text" class="custom-select-search-input w-full px-4 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search genres…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search genres', 'rom'); ?>">
                                 </div>
                                 <?php
                                 $terms = ($is_tax && isset($current_term)) ? get_cached_terms('genre', $post_ids, $current_term->term_id) : get_cached_all_terms('genre');
@@ -217,7 +219,7 @@ endif;
                                 </div>
                                 <div class="custom-select-dropdown" id="collection-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search collections…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search collections', 'rom'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-4 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search collections…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search collections', 'rom'); ?>">
                                     </div>
                                     <?php
                                     $terms = ($is_tax && isset($current_term)) ? get_cached_terms('collection', $post_ids, $current_term->term_id) : get_cached_all_terms('collection');
@@ -254,10 +256,10 @@ endif;
                                 </div>
                                 <div class="custom-select-dropdown" id="type-dropdown">
                                     <div class="custom-select-search sticky top-0 bg-white z-10 px-3 py-2 border-b border-gray-100">
-                                        <input type="text" class="custom-select-search-input w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search types…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search types', 'rom'); ?>">
+                                        <input type="text" class="custom-select-search-input w-full px-4 py-1.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-rom-pink/40" placeholder="<?php esc_attr_e('Search types…', 'rom'); ?>" aria-label="<?php esc_attr_e('Search types', 'rom'); ?>">
                                     </div>
                                     <?php
-                                    $terms = ($is_tax && isset($current_term)) ? get_cached_terms('type', $post_ids, $current_term->term_id) : get_cached_all_terms('type');
+                                    $terms = ($is_tax && isset($current_term)) ? get_cached_terms('release_type', $post_ids, $current_term->term_id) : get_cached_all_terms('release_type');
                                     if ( !is_wp_error($terms) && !empty($terms)) :
                                         foreach ($terms as $term_id => $name) :
                                             $is_checked = in_array($term_id, $current_types);
@@ -318,19 +320,26 @@ endif;
                         </div>
                     </div>
 
-                    <div id="selected-filters-container" class="border-t border-gray-200 py-4 hidden">
+                    <?php // A submit next to the selects, so phones don't have to scroll back up to Search. ?>
+                    <div class="flex items-center justify-between gap-3">
+                        <button type="button" id="clearFilters"
+                            class="inline-flex justify-center px-4 py-2 text-xs bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition font-medium">
+                            <?php echo get_svg_icon('reload').' '.__('Clear Filters', 'rom') ?>
+                        </button>
+                        <button type="submit"
+                            class="inline-flex items-center justify-center gap-1.5 px-5 py-2 text-xs rounded-full text-white font-semibold bg-rom-pink hover:bg-rom-pink-dark transition shadow-soft">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 2v-8.5L4 5z"/></svg>
+                            <?php esc_html_e( 'Apply Filters', 'rom' ); ?>
+                        </button>
+                    </div>
+
+                    <div id="selected-filters-container" class="border-t border-gray-200 mt-4 pt-4 hidden">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-sm font-semibold text-gray-900"> <?php _e('Selected Filters', 'rom') ?>:</span>
                         </div>
                         <div id="selected-filters" class="flex flex-wrap gap-2"></div>
                     </div>
                 </form>
-				<div>
-					<button id="clearFilters"
-						class="inline-flex justify-center px-4 py-2 text-xs bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition font-medium">
-						<?php echo get_svg_icon('reload').' '.__('Clear Filters', 'rom') ?>
-					</button>
-				</div>
 			</div>
 		</div>
 	</div>

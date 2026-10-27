@@ -410,7 +410,24 @@ body {
     display: block;
 }
 
+/* Desktop: the trigger is a quarter of the row (~210px), too narrow for long lists like
+   genres, so the panel gets its own width and more height. The last select's panel
+   opens leftwards so it stays in the box. */
+@media (min-width: 1024px) {
+    .custom-select-dropdown {
+        min-width: 280px;
+        max-height: 460px;
+        border-radius: 12px;
+    }
+
+    .custom-select-wrapper:last-child .custom-select-dropdown {
+        left: auto;
+        right: 0;
+    }
+}
+
 .custom-select-option {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 10px 14px;
@@ -445,6 +462,14 @@ body {
     margin: 0;
     font-size: 14px;
     color: #333;
+}
+
+/* The row's padding sits on the wrapper div, which toggles nothing. Stretch the label
+   over the whole row so a click anywhere on it checks the option. */
+.custom-select-option label::after {
+    content: '';
+    position: absolute;
+    inset: 0;
 }
 
 /* Close dropdown when clicking outside */
@@ -901,6 +926,15 @@ body.rf-webview .rf-gsi-slot { display: none; }
 /* Spans the header container (header.php), edge to edge with the page content.
    The header box only shows from lg up, where the container padding is 2rem. */
 .search-results--header { left: 2rem; right: 2rem; }
+/* The menu drawer's box (header.php): screen-wide, one result per row, down to the
+   bottom of the screen. js/main.js sets top under the box. */
+.search-results--mobile {
+    position: fixed;
+    left: 0.5rem;
+    right: 0.5rem;
+    max-height: calc(100dvh - 9rem);
+}
+.search-results--mobile:not([hidden]) { grid-template-columns: 1fr; }
 .search-results-note,
 .search-results-all,
 .search-skeleton { grid-column: 1 / -1; }

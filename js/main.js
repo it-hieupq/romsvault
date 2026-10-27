@@ -495,12 +495,12 @@ const selectedFiltersDiv = document.getElementById('selected-filters');
 // SVG Icons - converted from PHP svg_icons() function
 const svgIcons = {
     '': '',
-    'sort': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="#000000"><path d="M144-264v-72h240v72H144Zm0-180v-72h432v72H144Zm0-180v-72h672v72H144Z"/></svg>',
-    'collection': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="18px" height="18px" fill="#000000"><path d="m276-528 204-336 204 336H276ZM696-96q-70 0-119-49t-49-119q0-70 49-119t119-49q70 0 119 49t49 119q0 70-49 119T696-96Zm-552-24v-288h288v288H144Zm551.77-48Q736-168 764-195.77q28-27.78 28-68Q792-304 764.23-332q-27.78-28-68-28Q656-360 628-332.23q-28 27.78-28 68Q600-224 627.77-196q27.78 28 68 28ZM216-192h144v-144H216v144Zm188-408h152l-76-125-76 125Zm76 0ZM360-336Zm331 67Z"/></svg>',
-    'type': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="#000000"><path d="M425-144v-241L217-265l-55-95 208-120-208-120 55-95 208 120v-241h110v241l208-120 55 95-208 120 208 120-55 95-208-120v241H425Z"/></svg>',
+    'sort': '<svg class="inline w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>',
+    'collection': '<svg class="inline w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>',
+    'type': '<svg class="inline w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4"/></svg>',
     'region': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="#000000"><path d="M480.21-480Q510-480 531-501.21t21-51Q552-582 530.79-603t-51-21Q450-624 429-602.79t-21 51Q408-522 429.21-501t51 21ZM480-96Q323.03-227.11 245.51-339.55 168-452 168-549q0-134 89-224.5T479.5-864q133.5 0 223 90.5T792-549q0 97-77 209T480-96Z"/></svg>',
-    'console': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="#000000"><path d="m251-444 229 132 230-132-194-111v147h-72v-147L251-444Zm193-195v-14q-42.24-12.32-69.12-46.92-26.88-34.6-26.88-80.1 0-54.98 38.72-93.48 38.72-38.5 93.5-38.5t93.28 38.6q38.5 38.6 38.5 93.21 0 45.19-26.88 79.99T516-653v14l264 153q17.1 9.62 26.55 25.81Q816-444 816-424v104q0 20-9.45 36.19Q797.1-267.63 780-258L516-105q-17.13 10-36.07 10Q461-95 444-105L180-258q-17.1-9.63-26.55-25.81Q144-300 144-320v-104q0-20 9.45-36.19Q162.9-476.38 180-486l264-153Zm0 389L216-382v62l264 152 264-152v-62L516-250q-17.13 10-36.07 10Q461-240 444-250Zm36-470q25 0 42.5-17.5T540-780q0-25-17.5-42.5T480-840q-25 0-42.5 17.5T420-780q0 25 17.5 42.5T480-720Zm0 552Z"/></svg>',
-    'genre': '<svg class="inline" width="22px" height="22px" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.25 11.25c.364 0 .704.145.984.391.549.332.766-.034.766-.391v-1.75c0-.825-.675-1.5-1.5-1.5h-2.75c-.356 0-.724-.216-.391-.766.246-.28.391-.619.391-.984 0-.967-1.007-1.75-2.25-1.75s-2.25.783-2.25 1.75c0 .3.095.576.255.823.507.673.136.927-.255.927h-2.75c-.825 0-1.5.675-1.5 1.5v1.75c0 .391.254.762.928.244.246-.149.522-.244.822-.244.966 0 1.75 1.008 1.75 2.25s-.784 2.25-1.75 2.25c-.364 0-.704-.145-.984-.391-.549-.332-.766.034-.766.391v2.75c0 .825.675 1.5 1.5 1.5h2.75c.391 0 .762-.254.243-.927-.148-.247-.243-.523-.243-.823 0-.967 1.007-1.75 2.25-1.75s2.25.783 2.25 1.75c0 .365-.145.704-.391.984-.333.55.035.766.391.766h2.75c.825 0 1.5-.675 1.5-1.5v-2.75c0-.391-.254-.762-.928-.244-.246.149-.522.244-.822.244-.966 0-1.75-1.008-1.75-2.25s.784-2.25 1.75-2.25z"/></svg>',
+    'console': '<svg class="inline w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h4M8 9v4"/><path d="M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.41.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.55-.6-6.58-.69-7.26A4 4 0 0 0 17.32 5z"/></svg>',
+    'genre': '<svg class="inline w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.3 10a.7.7 0 0 1-.63-1.08L11.4 3a.7.7 0 0 1 1.2-.04l3.7 5.94a.7.7 0 0 1-.57 1.1z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>',
     'home': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="#000000"><path d="M192-144v-337l-64 49-44-58 396-302 396 302-44 58-64-49v337H192Zm144-216q-15 0-25.5-10.5T300-396q0-14 10.5-25t25.5-11q14 0 25 11t11 25q0 15-11 25.5T336-360Zm144 0q-15 0-25.5-10.5T444-396q0-14 10.5-25t25.5-11q14 0 25 11t11 25q0 15-11 25.5T480-360Zm144 0q-15 0-25.5-10.5T588-396q0-14 10.5-25t25.5-11q14 0 25 11t11 25q0 15-11 25.5T624-360Z"/></svg>',
     'size': '<svg class="inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="#000000"><path d="m243-240-51-51 405-405H240v-72h480v480h-72v-357L243-240Z"/></svg>',
     'send': '<svg class="inline mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="20px" height="20px" fill="currentColor"><path d="M144-192v-576l720 288-720 288Zm72-107 454-181-454-181v109l216 72-216 72v109Zm0 0v-362 362Z"/></svg>',
@@ -1285,6 +1285,19 @@ function showCopyMessage(buttonElement) {
     // The header box always searches the whole site; only the filter box is scoped.
     if (cfg.at.header) bind('header-search', 'header-search-results', function (input) { return input.form; }, '');
     if (cfg.at.filter) bind('searchInput', 'filter-search-results', function (input, panel) { return panel.parentNode; }, cfg.scope);
+    // Phones search from the menu drawer. Its panel is fixed and screen-wide (the drawer
+    // scrolls and would clip it), so it is placed under the box whenever that can move.
+    if (cfg.at.header) {
+      bind('mobile-search', 'mobile-search-results', function (input) { return input.form; }, '');
+      var mInput = document.getElementById('mobile-search');
+      var mPanel = document.getElementById('mobile-search-results');
+      if (mInput && mPanel) {
+        var place = function () { mPanel.style.top = (mInput.getBoundingClientRect().bottom + 8) + 'px'; };
+        mInput.addEventListener('focus', place);
+        mInput.addEventListener('input', place);
+        window.addEventListener('resize', place);
+      }
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

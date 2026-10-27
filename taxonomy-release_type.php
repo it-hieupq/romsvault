@@ -82,9 +82,10 @@ $filter_data = array(
                 
                 if ($latest_roms_query->have_posts()) : ?>
                     <section class="mb-8">
-                        <h2 class="text-xl font-bold flex items-center mb-4">
-                            <?php echo esc_html($type->name . ' ' . __('Latest ROMs', 'rom')); ?>
-                        </h2>
+                        <div class="mb-4">
+                            <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Recently updated', 'rom' ); ?></span>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php /* translators: %s: term name */ echo esc_html( sprintf( __( 'Latest %s ROMs', 'rom' ), $type->name ) ); ?></h2>
+                        </div>
 
                         <div class="carousel-container relative mx-auto" data-carousel-id="consoleLatestROMs">
                             <div class="carousel-wrapper">
@@ -125,18 +126,17 @@ $filter_data = array(
             $query = build_roms_query($query_args, 'type');
             ?>
 
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-xl font-bold flex items-center">
-						<?php 
-                        $title = $type->name;
-                        if (!empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_consoles)) {
-                            $title .= ' ' . __('Filtered ROMs', 'rom');
-                        } else {
-                            $title .= ' ' . __('Popular ROMs', 'rom');
-                        }
-						echo $title . ' (' .$query->found_posts.')';
-                        ?>
-                    </h2>
+                <?php
+                $is_filtered = ! empty( $search_term ) || ! empty( $selected_genres ) || ! empty( $selected_collections ) || ! empty( $selected_consoles );
+                $grid_title  = sprintf( $is_filtered ? __( 'Filtered %s ROMs', 'rom' ) : __( 'All %s ROMs', 'rom' ), $type->name );
+                $count_text  = sprintf( _n( '%s ROM', '%s ROMs', $query->found_posts, 'rom' ), number_format_i18n( $query->found_posts ) );
+                ?>
+                <div class="flex items-end justify-between gap-3 mb-6">
+                    <div class="min-w-0">
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php echo esc_html( rom_sort_label( $sort_by, __( 'Popular', 'rom' ) ) ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php echo esc_html( $grid_title ); ?></h2>
+                    </div>
+                    <span class="flex-shrink-0 px-2.5 py-1 rounded-lg bg-white border border-slate-200/80 text-caption font-bold text-slate-600"><?php echo esc_html( $count_text ); ?></span>
                 </div>
 
                 <div class="<?php echo $query->have_posts() ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4' : ''; ?>">

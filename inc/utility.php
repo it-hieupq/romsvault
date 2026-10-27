@@ -782,6 +782,22 @@ function build_roms_query($query_args, string $context = 'browse') {
 }
 
 /**
+ * Eyebrow over a rom listing: the order its grid is in. An empty $sort is the listing's
+ * own default order, which the caller names.
+ */
+function rom_sort_label( $sort, $default ) {
+	$labels = array(
+		'popular'      => __( 'Most viewed', 'rom' ),
+		'downloads'    => __( 'Most downloaded', 'rom' ),
+		'latest'       => __( 'Recently updated', 'rom' ),
+		'newest'       => __( 'Newest', 'rom' ),
+		'oldest'       => __( 'Oldest', 'rom' ),
+		'alphabetical' => __( 'A to Z', 'rom' ),
+	);
+	return $labels[ $sort ] ?? $default;
+}
+
+/**
  * Get parent comments with pagination (no cache)
  * 
  * @param int $post_id Post ID

@@ -83,10 +83,9 @@ get_header();
                 
                 if ($latest_roms_query->have_posts()) : ?>
                     <section class="mb-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-xl font-bold flex items-center">
-                                <?php _e('Latest ROMs', 'rom'); ?>
-                            </h2>
+                        <div class="mb-4">
+                            <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Recently updated', 'rom' ); ?></span>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php esc_html_e( 'Latest ROMs', 'rom' ); ?></h2>
                         </div>
                         
                         <div class="horizontal-scroll-container">
@@ -156,18 +155,18 @@ get_header();
                 }
             ?>
 
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold flex items-center">
-                <?php 
-                if (!empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_types) || !empty($selected_consoles)) {
-	                $title =  number_format($query->found_posts) .' '. __('ROM found', 'rom');
-                } else {
-	                $title = __('Filtered ROMs', 'rom');
-                }
-                echo esc_html($title);
+                <?php
+                $is_filtered = ! empty( $search_term ) || ! empty( $selected_genres ) || ! empty( $selected_collections ) || ! empty( $selected_types ) || ! empty( $selected_consoles );
+                $grid_title  = $is_filtered ? __( 'Filtered ROMs', 'rom' ) : __( 'All ROMs', 'rom' );
+                $count_text  = sprintf( _n( '%s ROM', '%s ROMs', $query->found_posts, 'rom' ), number_format_i18n( $query->found_posts ) );
                 ?>
-            </h2>
-        </div>
+                <div class="flex items-end justify-between gap-3 mb-6">
+                    <div class="min-w-0">
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php echo esc_html( rom_sort_label( $sort_by, __( 'Newest', 'rom' ) ) ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php echo esc_html( $grid_title ); ?></h2>
+                    </div>
+                    <span class="flex-shrink-0 px-2.5 py-1 rounded-lg bg-white border border-slate-200/80 text-caption font-bold text-slate-600"><?php echo esc_html( $count_text ); ?></span>
+                </div>
 
                 <div class="<?php echo $query->have_posts() ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4' : ''; ?>">
 					<?php

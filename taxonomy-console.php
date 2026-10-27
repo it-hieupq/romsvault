@@ -88,9 +88,15 @@ $filter_data = array(
 
                 if ($latest_query->have_posts()) : ?>
                     <section class="mb-8">
-                        <h2 class="text-xl font-bold flex items-center mb-4">
-                            <?php echo esc_html($console->name . ' ' . ($is_pc ? __('Latest Games', 'rom') : __('Latest ROMs', 'rom'))); ?>
-                        </h2>
+                        <div class="mb-4">
+                            <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'Recently updated', 'rom' ); ?></span>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
+                                <?php
+                                /* translators: %s: console name */
+                                echo esc_html( sprintf( $is_pc ? __( 'Latest %s PC Games', 'rom' ) : __( 'Latest %s ROMs', 'rom' ), $console->name ) );
+                                ?>
+                            </h2>
+                        </div>
 
                         <div class="horizontal-scroll-container">
                             <div class="horizontal-scroll-wrapper">
@@ -131,18 +137,26 @@ $filter_data = array(
             $query = build_roms_query($query_args, 'console');
             ?>
 
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-xl font-bold flex items-center">
-						<?php
-                        $title = $console->name;
-                        if (!empty($search_term) || !empty($selected_genres) || !empty($selected_collections) || !empty($selected_types)) {
-                            $title .= ' ' . ($is_pc ? __('Filtered Games', 'rom') : __('Filtered ROMs', 'rom'));
-                        } else {
-                            $title .= ' ' . ($is_pc ? __('Popular Games', 'rom') : __('Popular ROMs', 'rom'));
-                        }
-                        echo $title . ' (' .$query->found_posts.')';
-                        ?>
-                    </h2>
+                <?php
+                $is_filtered = ! empty( $search_term ) || ! empty( $selected_genres ) || ! empty( $selected_collections ) || ! empty( $selected_types );
+                // No sort: build_roms_query() orders by the downloads meta, shown as plain "Popular".
+                $sort_label = rom_sort_label( $sort_by, __( 'Popular', 'rom' ) );
+                if ( $is_pc ) {
+                    /* translators: %s: console name */
+                    $grid_title = sprintf( $is_filtered ? __( 'Filtered %s PC Games', 'rom' ) : __( 'All %s PC Games', 'rom' ), $console->name );
+                    $count_text = sprintf( _n( '%s game', '%s games', $query->found_posts, 'rom' ), number_format_i18n( $query->found_posts ) );
+                } else {
+                    /* translators: %s: console name */
+                    $grid_title = sprintf( $is_filtered ? __( 'Filtered %s ROMs', 'rom' ) : __( 'All %s ROMs', 'rom' ), $console->name );
+                    $count_text = sprintf( _n( '%s ROM', '%s ROMs', $query->found_posts, 'rom' ), number_format_i18n( $query->found_posts ) );
+                }
+                ?>
+                <div class="flex items-end justify-between gap-3 mb-6">
+                    <div class="min-w-0">
+                        <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php echo esc_html( $sort_label ); ?></span>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5"><?php echo esc_html( $grid_title ); ?></h2>
+                    </div>
+                    <span class="flex-shrink-0 px-2.5 py-1 rounded-lg bg-white border border-slate-200/80 text-caption font-bold text-slate-600"><?php echo esc_html( $count_text ); ?></span>
                 </div>
 
                 <div class="<?php echo $query->have_posts() ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4' : ''; ?>">
@@ -174,8 +188,16 @@ $filter_data = array(
 	    <?php if ( $paged == 1 && !$has_filters && $desc = $console->description ) : ?>
             <section class="py-6 text-gray-900">
                 <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                    <div class="px-6 py-4 mt-12 rounded-xl bg-white">
-                        <h2 class="text-xl mb-4 font-semibold text-gray-800"><?php _e('Information', 'rom') ?></h2>
+                    <div class="mt-12 bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 shadow-card space-y-4">
+                        <div class="border-b border-slate-100 pb-4">
+                            <span class="text-caption font-bold uppercase tracking-widest text-amber-600"><?php esc_html_e( 'About', 'rom' ); ?></span>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
+                                <?php
+                                /* translators: %s: console name */
+                                echo esc_html( sprintf( $is_pc ? __( 'About %s PC Games', 'rom' ) : __( 'About %s ROMs', 'rom' ), $console->name ) );
+                                ?>
+                            </h2>
+                        </div>
                         <?php // Term descriptions are saved as plain text with blank lines between paragraphs. ?>
                         <div class="rich-text"><?php echo wpautop( $desc ); ?></div>
                     </div>

@@ -186,6 +186,9 @@ $search_param  = $browse_url ? 'q' : 's';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
         </div>
+        <?php if ( rom_search_location_enabled( 'header' ) ) : ?>
+            <div id="mobile-search-results" class="search-results search-results--mobile" role="listbox" aria-label="<?php esc_attr_e( 'Search suggestions', 'rom' ); ?>" hidden></div>
+        <?php endif; ?>
     </form>
 
     <div class="mobile-menu-content">
