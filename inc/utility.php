@@ -310,12 +310,12 @@ function k_admin_posts_filter_restrict_manage_posts() {
 
 
 <?php
-     $terms = get_terms(array('taxonomy' => 'type', 'hide_empty' => false));
+     $terms = get_terms(array('taxonomy' => 'release_type', 'hide_empty' => false));
         ?>
-        <select name="type" style="width: 90px;">
+        <select name="release_type" style="width: 90px;">
 	        <option value=""><?php _e('Release Type', 'rom'); ?></option>
 	        <?php
-	            $current_v = isset($_GET['type'])? $_GET['type']:'';
+	            $current_v = isset($_GET['release_type'])? $_GET['release_type']:'';
 	            foreach ($terms as $term) {
 	                printf
 	                    (
@@ -678,7 +678,7 @@ function build_roms_query($query_args, string $context = 'browse') {
 		$args['tax_query'] = array(
 			'relation' => 'AND',
 			array(
-				'taxonomy' => 'type',
+				'taxonomy' => 'release_type',
 				'field' => 'term_id',
 				'terms' => $type_id,
 			),
@@ -722,7 +722,7 @@ function build_roms_query($query_args, string $context = 'browse') {
 	}
 	if (!empty($filters['types']) && $context !== 'type') {
 		$tax_query[] = array(
-			'taxonomy' => 'type',
+			'taxonomy' => 'release_type',
 			'field' => 'term_id',
 			'terms' => $filters['types'],
 			'operator' => 'IN',

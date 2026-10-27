@@ -103,7 +103,7 @@ Theme có đúng **2 CPT**.
 | `capability_type` | `post` |
 | `menu_position` / `menu_icon` | `5` / `dashicons-media-interactive` |
 
-Taxonomy: `console`, `collection`, `region`, `language`, `genre`, `dev`, `pub`, `type`
+Taxonomy: `console`, `collection`, `region`, `language`, `genre`, `developer`, `publisher`, `release_type`
 
 ### 3.2 `emulator` — `setting/setting-emulator.php:k_init_emulator()`
 
@@ -131,9 +131,9 @@ Taxonomy: `emulator_console`, `os`
 | `region` | `true` | `slug: roms/region`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `language` | `true` | `slug: roms/language`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
 | `genre` | `true` | `slug: roms/genre`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
-| `dev` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
-| `pub` | `false` | `slug: roms/publisher`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
-| `type` (label "Release Type") | `true` | `slug: roms/release`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | ✅ | `taxonomy-type.php` |
+| `developer` | `false` | `slug: roms/developer`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
+| `publisher` | `false` | `slug: roms/publisher`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | — | `taxonomy.php` |
+| `release_type` (label "Release Type") | `true` | `slug: roms/release`, `with_front: false`, `hierarchical: false` (rules moved ahead of the rom single rule, § 5) | ✅ | `taxonomy-release_type.php` |
 
 ### 4.2 Của `emulator`
 
@@ -171,7 +171,7 @@ console thì không có URL dùng được — permalink rơi về dạng query,
 | Console archive | `/roms/{console_slug}/` |
 | Collection | `/roms/collection/{slug}/` (trang tổng hợp vẫn là page `/collection/`) |
 | Language archive | `/roms/language/{slug}/` |
-| Release type archive (taxonomy `type`) | `/roms/release/{type_slug}/` |
+| Release type archive (taxonomy `release_type`) | `/roms/release/{type_slug}/` |
 | Emulator single | `/emulators/{emulator_console_slug}/{post_name}/` |
 | Emulator console archive | `/emulators/{slug}/` (+ `/page/{n}/`) |
 | Download | `{permalink của post}` + `download/[{file_index}/]` |
@@ -199,8 +199,8 @@ Ba filter phối hợp, tất cả trong `setting/setting-rom.php`:
 
 ### 5.3 Taxonomy archive dưới `/roms/`
 
-`dev`, `pub`, `language`, `region`, `genre` và `type` dùng rewrite slug
-`roms/{developer|publisher|language|region|genre|release|collection}` (`release` = taxonomy `type`). Rule WP sinh cho chúng được
+`developer`, `publisher`, `language`, `region`, `genre` và `release_type` dùng rewrite slug
+`roms/{developer|publisher|language|region|genre|release|collection}` (`release` = taxonomy `release_type`). Rule WP sinh cho chúng được
 `rewrite_rules_array` (`setting/setting-rom.php`) đưa lên trước rule rom single
 `roms/[^/]+/([^/]+)/?$`, vì rule đó sẽ đọc slug term thành `post_name` của rom.
 Rule là generic, không sinh theo từng term ⇒ thêm/sửa term không cần flush.
@@ -276,9 +276,9 @@ Rule là generic, không sinh theo từng term ⇒ thêm/sửa term không cần
 |---|---|
 | `console` | `taxonomy-console.php` |
 | `collection` | `taxonomy-collection.php` |
-| `type` | `taxonomy-type.php` |
+| `release_type` | `taxonomy-release_type.php` |
 | `emulator_console` | `taxonomy-emulator_console.php` |
-| `region` · `language` · `genre` · `dev` · `pub` · `os` | `taxonomy.php` (dispatcher) |
+| `region` · `language` · `genre` · `developer` · `publisher` · `os` | `taxonomy.php` (dispatcher) |
 
 `taxonomy.php` chọn partial và heading qua `get_taxonomy_template_slug_by_post_type()` /
 `get_taxonomy_title_suffix_by_post_type()` (`inc/utility-post-type.php`).

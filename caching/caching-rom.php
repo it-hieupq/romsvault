@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function get_filter_base_url() : string {
-	if (is_tax('console') || is_tax('type')) {
+	if (is_tax('console') || is_tax('release_type')) {
 		$browse_page_url = get_term_link(get_queried_object());
 	} else {
 		$browse_page_url = get_brows_page_url();

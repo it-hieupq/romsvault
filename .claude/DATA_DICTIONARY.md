@@ -21,7 +21,7 @@ Theme có đúng **2 CPT**.
 | `supports` | `title`, `editor`, `thumbnail` |
 | `show_in_rest` | `true` |
 
-**Taxonomies:** `console`, `collection`, `region`, `language`, `genre`, `dev`, `pub`, `type`
+**Taxonomies:** `console`, `collection`, `region`, `language`, `genre`, `developer`, `publisher`, `release_type`
 
 ### `emulator` — `setting/setting-emulator.php:k_init_emulator()`
 | Property | Value |
@@ -46,9 +46,9 @@ Theme có đúng **2 CPT**.
 | `region` | `true` | `roms/region` (`with_front: false`) | — |
 | `language` | `true` | `roms/language` (`with_front: false`) | — |
 | `genre` | `true` | `roms/genre` (`with_front: false`) | — |
-| `dev` | `false` | `roms/developer` (`with_front: false`) | — |
-| `pub` | `false` | `roms/publisher` (`with_front: false`) | — |
-| `type` (label "Release Type") | `true` | `roms/release` (`with_front: false`) | ✅ |
+| `developer` | `false` | `roms/developer` (`with_front: false`) | — |
+| `publisher` | `false` | `roms/publisher` (`with_front: false`) | — |
+| `release_type` (label "Release Type") | `true` | `roms/release` (`with_front: false`) | ✅ |
 
 ### Của `emulator`
 | Taxonomy | `hierarchical` | Rewrite slug |

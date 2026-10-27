@@ -245,7 +245,7 @@ endif;
                             </div>
                             <?php endif; ?>
 
-                            <?php if (!is_tax('type')) : ?>
+                            <?php if (!is_tax('release_type')) : ?>
                             <div class="custom-select-wrapper" id="type-select-wrapper">
                                 <label class="block text-sm font-semibold mb-2 text-gray-900"><?php _e('Release Type', 'rom'); ?></label>
                                 <div class="custom-select-trigger rounded-full" id="type-select-trigger">

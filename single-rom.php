@@ -44,12 +44,12 @@ while ( have_posts() ) : the_post();
 		);
 	}
 	foreach ( array(
-		'region'     => array( 'region', __( 'Region', 'rom' ) ),
-		'dev'        => array( 'dev', __( 'Developer', 'rom' ) ),
-		'pub'        => array( 'publisher', __( 'Publisher', 'rom' ) ),
-		'collection' => array( 'collection', __( 'Collection', 'rom' ) ),
-		'type'       => array( 'type', __( 'Release Type', 'rom' ) ),
-		'language'   => array( 'flag', __( 'Language', 'rom' ) ),
+		'region'       => array( 'region', __( 'Region', 'rom' ) ),
+		'developer'    => array( 'dev', __( 'Developer', 'rom' ) ),
+		'publisher'    => array( 'publisher', __( 'Publisher', 'rom' ) ),
+		'collection'   => array( 'collection', __( 'Collection', 'rom' ) ),
+		'release_type' => array( 'type', __( 'Release Type', 'rom' ) ),
+		'language'     => array( 'flag', __( 'Language', 'rom' ) ),
 	) as $spec_tax => $spec_meta ) {
 		$spec_terms = wp_get_post_terms( $post->ID, $spec_tax, array( 'fields' => 'all' ) );
 		if ( is_wp_error( $spec_terms ) || empty( $spec_terms ) ) {

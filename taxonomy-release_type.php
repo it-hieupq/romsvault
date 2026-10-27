@@ -1,13 +1,13 @@
 <?php
 /**
- * Taxonomy type
+ * Release type archive
  *
  * @package romsvault
  */
 global $post;
 $type = get_queried_object();
 // Validate type object
-if (!is_tax('type') || !isset($type->term_id)) {
+if (!is_tax('release_type') || !isset($type->term_id)) {
     wp_die(__('Invalid type taxonomy.', 'rom'));
 }
 get_header();
@@ -73,7 +73,7 @@ $filter_data = array(
                     'order' => 'DESC',
                     'tax_query' => array(
                         array(
-                            'taxonomy' => 'type',
+                            'taxonomy' => 'release_type',
                             'field' => 'term_id',
                             'terms' => $type->term_id,
                         ),
@@ -148,7 +148,7 @@ $filter_data = array(
                     else : ?>
                         <div class="bg-white rounded-lg shadow-md p-8 text-center">
                             <p class="text-gray-600 text-lg"><?php _e('No ROMs found matching your filters.', 'rom'); ?></p>
-                            <a href="<?php echo get_term_link($type->term_id, 'type'); ?>" class="inline-block mt-4 px-6 py-2 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition">
+                            <a href="<?php echo get_term_link($type->term_id, 'release_type'); ?>" class="inline-block mt-4 px-6 py-2 bg-rom-pink text-white rounded-full hover:bg-rom-pink-dark transition">
                                 <?php _e('Clear Filters', 'rom'); ?>
                             </a>
                         </div>

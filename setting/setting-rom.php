@@ -166,7 +166,7 @@ function k_init_rom() {
 	/**
 	 * Add developer taxonomy
 	 */
-	register_taxonomy('dev', array('rom'), 
+	register_taxonomy('developer', array('rom'), 
 		array(
 			'labels'            => array(
 				'name'              => __( 'Developer', 'rom' ),
@@ -190,7 +190,7 @@ function k_init_rom() {
 	/**
 	 * Add publisher taxonomy
 	 */
-	register_taxonomy('pub', array('rom'), 
+	register_taxonomy('publisher', array('rom'), 
 		array(
 			'labels'            => array(
 				'name'              => __( 'Publisher', 'rom' ),
@@ -212,9 +212,9 @@ function k_init_rom() {
 	);
 
 	/**
-	 * Add release type taxonomy (key stays "type"): Hack, Fan Translation, Homebrew...
+	 * Add release type taxonomy: Hack, Fan Translation, Homebrew...
 	 */
-	register_taxonomy('type', array('rom'),
+	register_taxonomy('release_type', array('rom'),
 		array(
 			'labels'            => array(
 				'name'              => __( 'Release Types', 'rom' ),
@@ -232,7 +232,6 @@ function k_init_rom() {
 			'show_in_rest'          => true,
 			'hierarchical'      	=> true,
 			'public'            	=> true,
-			'query_var'         	=> 'type',
 			'rewrite' => array('slug' => 'roms/release', 'with_front' => false, 'hierarchical' => false),
 		) 
 	);
@@ -621,11 +620,11 @@ function k_rom_columns_content($col_name, $post_ID) {
 	
 
 	if ($col_name == 'type') {
-        $terms = get_the_terms($post_ID, 'type'); // Replace 'type' with your actual taxonomy slug
+        $terms = get_the_terms($post_ID, 'release_type');
         if ($terms && !is_wp_error($terms)) {
             $term_links = array();
             foreach ($terms as $term) {
-                $term_links[] = '<a href="edit.php?post_type=rom&type=' . $term->slug . '">' . esc_html($term->name) . '</a>';
+                $term_links[] = '<a href="edit.php?post_type=rom&release_type=' . $term->slug . '">' . esc_html($term->name) . '</a>';
             }
             echo implode(', ', $term_links);
         } else {

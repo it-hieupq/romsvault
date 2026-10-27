@@ -248,8 +248,8 @@ if ($temp_post_id > 0) {
                             wp_set_post_terms($post_id, $terms, 'genre');
                         }
 
-wp_set_post_terms($post_id, k_grabber_company_names($devs), 'dev');
-wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'pub');
+wp_set_post_terms($post_id, k_grabber_company_names($devs), 'developer');
+wp_set_post_terms($post_id, k_grabber_company_names($pubs), 'publisher');
 						
 						//new curl to get image
                         $count = 0;

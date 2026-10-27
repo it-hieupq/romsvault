@@ -39,18 +39,18 @@ Chỉ áp dụng khi bài/term **không có** title riêng (`_yoast_wpseo_title`
 | `title-tax-console` | `%%term_title%% ROMs %%sep%% Free Download %%page%%` | Sega Saturn ROMs \| Free Download |
 | `title-tax-collection` | `%%term_title%% ROMs %%sep%% Full Game Collection %%page%%` | God of War ROMs \| Full Game Collection |
 | `title-tax-genre` | `%%term_title%% ROMs %%sep%% Best Games to Download %%page%%` | Action ROMs \| Best Games to Download |
-| `title-tax-type` | `%%term_title%% ROMs %%sep%% Free Download %%page%%` | Undub ROMs \| Free Download |
+| `title-tax-release_type` | `%%term_title%% ROMs %%sep%% Free Download %%page%%` | Undub ROMs \| Free Download |
 | `title-tax-region` | `%%term_title%% ROMs %%sep%% Free Download %%page%%` | Japan ROMs \| Free Download |
 | `title-tax-language` | `%%term_title%% ROMs %%sep%% Free Download %%page%%` | French ROMs \| Free Download |
 | `title-tax-emulator_console` | `Best %%term_title%% Emulators %%sep%% Free Download %%page%%` | Best Nintendo DS Emulators \| Free Download |
 | `title-tax-os` | `Emulators for %%term_title%% %%sep%% Free Download %%page%%` | Emulators for Android \| Free Download |
-| `title-tax-dev` | `%%term_title%% Games %%sep%% ROMs Download %%page%%` | Capcom Games \| ROMs Download |
-| `title-tax-pub` | `%%term_title%% Games %%sep%% ROMs Download %%page%%` | SEGA Games \| ROMs Download |
+| `title-tax-developer` | `%%term_title%% Games %%sep%% ROMs Download %%page%%` | Capcom Games \| ROMs Download |
+| `title-tax-publisher` | `%%term_title%% Games %%sep%% ROMs Download %%page%%` | SEGA Games \| ROMs Download |
 | `title-tax-category` | `%%term_title%% %%page%% %%sep%% %%sitename%%` | News \| ROMSVAULT.COM |
 
 `%%page%%` chỉ in "Page N of M" (kèm separator) trên trang phân trang.
 
-Noindex taxonomy: `pub`, `dev` (15k term, nội dung mỏng), `post_format`. Template `pack` /
+Noindex taxonomy: `publisher`, `developer` (~12k term, nội dung mỏng), `post_format`. Template `pack` /
 `pack_console` (CPT cũ của romsfun) đã xoá; còn sót key breadcrumb `taxonomy-pack_console-ptparent`,
 vô hại.
 
