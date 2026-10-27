@@ -428,6 +428,15 @@ while ( have_posts() ) : the_post();
                                     <div class="min-w-0 flex-1 flex flex-col justify-between gap-3 self-stretch">
                                     <div>
                                         <h3 class="font-bold text-body text-slate-900"><?php the_title(); ?></h3>
+										<?php $emu_os = get_the_terms( get_the_ID(), 'os' ); ?>
+										<?php if ( $emu_os && ! is_wp_error( $emu_os ) ) : ?>
+                                            <div class="flex flex-wrap items-center gap-1.5 mt-2 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0 [&_svg]:text-slate-400">
+												<?php echo get_svg_icon( 'platform' ); ?>
+												<?php foreach ( $emu_os as $os_term ) : ?>
+                                                    <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200/80 text-slate-600 text-[11px] font-semibold"><?php echo esc_html( $os_term->name ); ?></span>
+												<?php endforeach; ?>
+                                            </div>
+										<?php endif; ?>
 										<?php if ( has_excerpt() ) : ?>
                                             <p class="text-caption text-slate-600 leading-relaxed mt-1.5"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 28 ) ); ?></p>
 										<?php endif; ?>
