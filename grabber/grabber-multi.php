@@ -40,7 +40,7 @@ function k_grabber_multi_init()
                     'name' => 'grabber_type',
                     'key' => 'grabber_type',
                     'type' => 'taxonomy',
-                    'taxonomy' => 'type',
+                    'taxonomy' => 'release_type',
                     'field_type' => 'select',
                     'allow_null' => 1,
                 ),
@@ -243,7 +243,7 @@ function grabber_mobygames_ac($url, $console, $type, $stt)
                 $terms[] = $console;
                 wp_set_post_terms($post_id, $terms, 'console');
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
                 update_field('released', $release_date, $post_id);
@@ -404,7 +404,7 @@ function grabber_retrostic_ac($url, $console, $type, $stt)
                 $terms[] = $console;
                 wp_set_post_terms($post_id, $terms, 'console');
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
                 update_field('released', $release_date, $post_id);
@@ -544,7 +544,7 @@ function grabber_igdb_ac($url, $console, $type, $stt)
 
 
         if (!empty($type)) {
-            wp_set_post_terms($post_id, [$type], 'type');
+            wp_set_post_terms($post_id, [$type], 'release_type');
         }
 
 
@@ -697,7 +697,7 @@ function grabber_romstation_ac($url, $console, $type, $stt)
 
                 wp_set_post_terms($post_id, array($console), 'console');
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
                 if (!empty($regions)) {
@@ -857,7 +857,7 @@ function grabber_launchbox_ac($url, $console, $type, $stt)
 
         // Thiết lập type nếu có
         if (!empty($type)) {
-            wp_set_post_terms($post_id, [$type], 'type');
+            wp_set_post_terms($post_id, [$type], 'release_type');
         }
 
         // Thiết lập genres nếu có
@@ -1061,7 +1061,7 @@ function grabber_gog_ac($url, $console, $type, $stt)
                 wp_set_post_terms($post_id, $terms, 'console');
 
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
                 update_field('released', $release_date, $post_id);
@@ -1213,7 +1213,7 @@ function grabber_backloggd_ac($url, $console, $type, $stt)
                 wp_set_post_terms($post_id, $terms, 'console');
 
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
                 update_field('released', $release_date, $post_id);
@@ -1419,7 +1419,7 @@ function grabber_romhackplaza_ac($url, $console, $type, $stt)
                 wp_set_post_terms($post_id, $terms, 'console');
 
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
                 update_field('released', $release_date, $post_id);
@@ -1759,7 +1759,7 @@ function grabber_nintendolife_ac($url, $console, $type, $stt)
                 $terms[] = $console;
                 wp_set_post_terms($post_id, $terms, 'console');
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
 
@@ -1959,7 +1959,7 @@ function grabber_pushsquare_ac($url, $console, $type, $stt)
                 $terms[] = $console;
                 wp_set_post_terms($post_id, $terms, 'console');
                 if (!empty($type)) {
-                    wp_set_post_terms($post_id, [$type], 'type');
+                    wp_set_post_terms($post_id, [$type], 'release_type');
                 }
 
 

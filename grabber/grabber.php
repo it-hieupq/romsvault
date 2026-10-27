@@ -232,7 +232,7 @@ if ($temp_post_id > 0) {
                         wp_set_post_terms($post_id, $terms, 'console');
 
                         if (!empty($type)) {
-                            wp_set_post_terms($post_id, [$type], 'type');
+                            wp_set_post_terms($post_id, [$type], 'release_type');
                         }
 
                         if (!empty($genres)) {
