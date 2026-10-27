@@ -75,15 +75,16 @@ romsvault/
 
 | File | Trạng thái |
 |---|---|
-| `grabber/grabber-rom.php` | require bị comment |
-| `grabber/grabber-mobygames.php` | require bị comment |
-| `grabber/grabber-igdb.php` | require bị comment |
-| `grabber/grabber-retrostic.php` | require bị comment |
-| `inc/check-duplicate.php` | **không có require nào** → `wp_ajax_k_check_duplicate` không tồn tại ở runtime |
-| `inc/acf/acf.php` | include bị comment — theme trông đợi ACF chạy dạng **plugin** |
+| `grabber/grabber-rom.php` | không có require nào |
+| `grabber/grabber-mobygames.php` | không có require nào |
+| `grabber/grabber-igdb.php` | không có require nào |
+| `grabber/grabber-retrostic.php` | không có require nào |
 
-Mỗi file grabber tự `add_action('wp_ajax_…')` ở cuối, nên include lại là đủ để endpoint
-sống lại — không cần sửa gì thêm.
+Cả 4 là bản cũ của các nguồn mà `grabber/grabber-multi.php` đã xử lý (mobygames, retrostic,
+igdb, romstation, cùng launchbox, gog, backloggd, romhackplaza, nintendolife, pushsquare).
+Đừng include lại: `grabber-retrostic.php` khai báo trùng `getGameDataAPI()` /
+`save_file_from_url()` với `grabber-multi.php` ⇒ fatal. Chúng còn ghi vào taxonomy cũ
+`dev`/`pub`/`type`.
 
 ---
 
