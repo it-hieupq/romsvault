@@ -453,7 +453,7 @@ Scrape metadata / gallery / file cho ROM từ Retrostic, IGDB, MobyGames. Dùng
 | Quick edit | `k_edit_download_links`, `k_add_download_link`, `k_save_download_links`, `k_change_post_status`, `k_edit_text_field`, `k_save_text_field` |
 | ROM | `k_change_hide_status`, `willgroup_get_file`, `rom_export_rom_links` |
 | SEO | `k_insert_seo` |
-| Grabber | `k_grabber`, `k_grabber_multi`, `k_grabber_gallery_multi` |
+| Grabber | `k_grabber`, `k_grabber_multi` |
 | Member admin | `app_report_delete_row(s)`, `app_ticket_update_status`, `app_ticket_delete_row(s)`, `app_contact_save_reply`, `app_contact_delete_row(s)` |
 
 ---

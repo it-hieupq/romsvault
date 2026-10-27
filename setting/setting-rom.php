@@ -262,7 +262,7 @@ function k_init_rom() {
             ),
 
 			array (
-				'key' 	=> 'file_size',
+				'key' 	=> 'rom_file_size',
 				'label' => 'File Size',
 				'name' 	=> 'file_size',
 				'type' 	=> 'text',
@@ -331,38 +331,6 @@ function k_init_rom() {
 				'type' 		=> 'gallery',
 				'preview_size' => 'thumbnail',
 			),
-			// grabber gallery
-			array(
-				'key'       => 'grabber_gallery',
-				'name'      => 'grabber_gallery',
-				'label'     => __('Grabber Gallery', 'rom'),
-				'type'      => 'group',
-				'sub_fields' => array(
-					array(
-						'key'       => 'grabber_input',
-						'name'      => 'grabber_input',
-						'type'      => 'text',
-						// 'label'     => __('Image URL', 'rom'),
-						'wrapper'   => array(
-							'width' => '90',
-						),
-					),
-					array(
-						'key'       => 'grabber_button',
-						'name'      => 'grabber_button',
-						'type'      => 'text',
-						'wrapper'   => array(
-							'width' => '10',
-						),
-						'readonly' => 1,
-						'default_value' => __('Grab Images', 'rom'),
-					),
-				),
-				'wrapper' => array(
-					'width' => '100',
-				),
-			),
-
             array (
                 'key'   		=> 'download_note',
                 'label' 		=> __( 'Download note', 'rom' ),
@@ -381,7 +349,7 @@ function k_init_rom() {
 				'sub_fields'    => array (
 					array (
 						'label' => __( 'Name', 'rom' ),
-						'key' 	=> 'name',
+						'key' 	=> 'download_list_name',
 						'name' 	=> 'name',
 						'required' => 1,
 						'type' 	=> 'text',
@@ -391,7 +359,7 @@ function k_init_rom() {
 					),
 					array (
 						'label' => __( 'Url', 'rom' ),
-						'key' 	=> 'url',
+						'key' 	=> 'download_list_url',
 						'name' 	=> 'url',
 						'required' => 1,
 						'type' 	=> 'url',
@@ -401,7 +369,7 @@ function k_init_rom() {
 					),
 					array (
 						'label' => __( 'File Size', 'rom' ),
-						'key' 	=> 'file_size',
+						'key' 	=> 'download_list_file_size',
 						'name' 	=> 'file_size',
 						'required' => 0,
 						'type' 	=> 'text',
@@ -411,12 +379,12 @@ function k_init_rom() {
 					),
 					array (
 						'label' => __( 'File Type', 'rom' ),
-						'key' 	=> 'file_type',
+						'key' 	=> 'download_list_file_type',
 						'name' 	=> 'file_type',
 						'required' => 0,
 						'type' 	=> 'text',
                         'wrapper'    => array(
-        					'width'  => '15',
+        					'width'  => '10',
         				),
 					),
 				),
@@ -432,7 +400,7 @@ function k_init_rom() {
 				'sub_fields'    => array (
 					array (
 						'label' => __( 'Name', 'rom' ),
-						'key' 	=> 'name',
+						'key' 	=> 'download_list_aff_name',
 						'name' 	=> 'name',
 						'type' 	=> 'text',
 						'required' => 1,
@@ -442,7 +410,7 @@ function k_init_rom() {
 					),
 					array (
 						'label' => __( 'Url', 'rom' ),
-						'key' 	=> 'url',
+						'key' 	=> 'download_list_aff_url',
 						'name' 	=> 'url',
 						'type' 	=> 'url',
 						'required' => 1,
@@ -452,7 +420,7 @@ function k_init_rom() {
 					),
 					array (
 						'label' => __( 'File Size', 'rom' ),
-						'key' 	=> 'file_size',
+						'key' 	=> 'download_list_aff_file_size',
 						'name' 	=> 'file_size',
 						'type' 	=> 'text',
 						'required' => 0,
@@ -462,12 +430,12 @@ function k_init_rom() {
 					),
 					array (
 						'label' => __( 'File Type', 'rom' ),
-						'key' 	=> 'file_type',
+						'key' 	=> 'download_list_aff_file_type',
 						'name' 	=> 'file_type',
 						'type' 	=> 'text',
 						'required' => 0,
                         'wrapper'    => array(
-        					'width'  => '15',
+        					'width'  => '10',
         				),
 					),
 				),

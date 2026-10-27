@@ -8,7 +8,7 @@ function k_init_post() {
 		'title'     => __( 'Settings', 'rom' ),
 		'fields' 	=> array (
 			array (
-				'key'   		=> 'views',
+				'key'   		=> 'post_views',
 				'label' 		=> __( 'Views', 'rom' ),
 				'name'  		=> 'views',
 				'type'  		=> 'number',

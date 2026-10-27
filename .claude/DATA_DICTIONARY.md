@@ -73,14 +73,13 @@ tiền tố `field_` kiểu ACF UI — key thường trùng luôn với name.
 | Key / Name | Type | Default | Required | Ghi chú |
 |---|---|---|---|---|
 | `hide` | select | `public` | — | 2 choice: `public`, `restricted` (§ 3.1.1) |
-| `file_size` | text | — | — | |
+| `file_size` (key `rom_file_size`) | text | — | — | key khác name vì name `file_size` trùng sub-field của 2 repeater (§ 3.8) |
 | `views` | number | `0` | — | ghi bởi `tracking/flush.php` |
 | `downloads` | number | `0` | — | ghi bởi `tracking/flush.php` |
 | `youtube_url` | url | — | — | nhận watch / `youtu.be` / shorts / embed / live; `single-rom.php` tách video id và render tile preview ở đầu section Screenshots |
 | `released` | textarea | — | — | |
 | `internal_note` | textarea | — | — | |
 | `image` | gallery | — | — | screenshots |
-| `grabber_gallery` | group | — | — | sub: `grabber_input` (text), `grabber_button` (text, default `Grab Images`) |
 | `download_note` | textarea | — | — | |
 | `download_list` | repeater | — | — | § 3.8 |
 | `download_list_aff` | repeater | — | — | link affiliate, § 3.8 |
@@ -124,7 +123,7 @@ Region terms have no fields. The flag shown next to a region is an emoji from `i
 | `emulator_console_downloads` | number | `0` | aggregate, cộng bởi `tracking/flush.php` |
 
 ### 3.6 `post_settings` — `setting/setting-post.php`
-**Location:** post_type `post` · `views` (number, default `0`, step 1)
+**Location:** post_type `post` · `views` (key `post_views`; number, default `0`, step 1)
 
 ### 3.7 `home_settings` — `setting/setting-page-home.php`
 **Location:** page template `page-home.php`
@@ -139,12 +138,16 @@ Field duy nhất: `home_content` (**flexible_content**)
 | `home_new_posts` | `home_new_posts_title` (text), `home_new_posts_number` (number, default `10`), `home_new_posts_link` (link) |
 
 ### 3.8 Repeater `download_list` / `download_list_aff`
-| Sub-field | Type | Required |
-|---|---|---|
-| `name` | text | ✅ |
-| `url` | url | ✅ |
-| `file_size` | text | — |
-| `file_type` | text | — |
+| Sub-field (name) | Type | Required | Width |
+|---|---|---|---|
+| `name` | text | ✅ | 45 |
+| `url` | url | ✅ | 35 |
+| `file_size` | text | — | 10 |
+| `file_type` | text | — | 10 |
+
+Key sub-field có tiền tố repeater (`download_list_name`, `download_list_aff_url`...): ACF yêu cầu key
+duy nhất toàn site, key trùng làm định nghĩa sau ghi đè định nghĩa trước. Giá trị lưu theo **name**
+(`download_list_{i}_{name}`) nên đổi key không đụng dữ liệu.
 
 **Index ở URL download là 1-based.** `rf_build_download_url()` và `download.php` merge
 `download_list` + `download_list_aff` (đúng thứ tự đó) rồi index vào mảng **đã merge** ⇒

@@ -631,66 +631,6 @@ jQuery(function ($) {
     $(".check-item").prop("checked", isChecked);
   });
 
-  // custom xxx
-  // $("#acf-grabber_gallery-grabber_button").css({
-  // 	'text-align': 'center',
-  // 	'cursor': 'pointer',
-  // 	'background': '#2271b1',
-  // 	'border-color': '#2271b1',
-  // 	'color': '#fff',
-  // 	'text-decoration': 'none',
-  // 	'text-shadow': 'none'
-  // });
-  $("#acf-grabber_gallery-grabber_button").addClass("button");
-  $("#acf-grabber_gallery-grabber_button").addClass("button-primary");
-  $("#acf-grabber_gallery-grabber_button").addClass("button-large");
-
-  $(document).on("click", "#acf-grabber_gallery-grabber_button", function (e) {
-    e.preventDefault();
-    if ($("#acf-grabber_gallery-grabber_button").hasClass("disabled")) {
-      return;
-    }
-    $("#acf-grabber_gallery-grabber_button").addClass("disabled");
-
-    const url = $("#acf-grabber_gallery-grabber_input").val();
-
-    // Regular expression to validate URL
-    const urlPattern = new RegExp(
-      "^(https?:\\/\\/)?" + // Protocol (http or https)
-        "((([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.)+[a-zA-Z]{2,}|" + // Domain name
-        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP (v4) address
-        "(\\:\\d+)?(\\/[-a-zA-Z\\d%_.~+]*)*" + // Port and path
-        "(\\?[;&a-zA-Z\\d%_.~+=-]*)?" + // Query string
-        "(\\#[-a-zA-Z\\d_]*)?$",
-      "i"
-    ); // Fragment locator
-
-    if (!urlPattern.test(url)) {
-      $("#acf-grabber_gallery-grabber_button").removeClass("disabled");
-      alert("Value must be a valid URL");
-      return;
-    }
-
-    $.ajax({
-      type: "POST",
-      url: ajax.ajax_url,
-      data: {
-        action: "k_grabber_gallery_multi",
-        "acf[url]": url,
-        "acf[postId]": $("#post_ID").val(),
-        "acf[title]": $("#title").val(),
-      },
-      timeout: 6000,
-      success: function (data, textStatus, jqXHR) {
-        $("#acf-grabber_gallery-grabber_button").removeClass("disabled");
-        location.reload(true);
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        location.reload(true);
-      },
-    });
-  });
-
   // grabber file
   /**
    * Export ROM Links (Site Options page → ROM Links tab)
