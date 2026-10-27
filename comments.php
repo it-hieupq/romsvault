@@ -25,7 +25,7 @@
                  the inner div so they never fight rf-guest-only's own display rule. -->
             <div class="rf-guest-only mb-6">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
-                    <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-50 text-primary">
+                    <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary-light text-primary">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     </span>
                     <p class="flex-1 m-0 text-meta text-slate-600">

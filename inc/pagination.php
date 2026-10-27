@@ -34,7 +34,7 @@ function rom_pagination( $pages = '', $range = 1 ) {
 	}
 
 	$cell  = 'flex items-center justify-center h-9 min-w-[2.25rem] px-2 rounded-xl text-meta font-semibold transition-colors';
-	$link  = $cell . ' text-slate-600 hover:bg-rose-50 hover:text-primary';
+	$link  = $cell . ' text-slate-600 hover:bg-primary-light hover:text-primary';
 	$arrow = 'flex items-center justify-center gap-1 h-9 px-2.5 sm:px-3 rounded-xl text-meta font-semibold transition-colors';
 	$prev  = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>';
 	$next  = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
@@ -43,7 +43,7 @@ function rom_pagination( $pages = '', $range = 1 ) {
         <ul class="inline-flex items-center gap-0.5 p-1 bg-white rounded-2xl border border-slate-200/80 shadow-card max-w-full overflow-x-auto">
             <li>
 				<?php if ( $current > 1 ) : ?>
-                    <a class="<?php echo esc_attr( $arrow ); ?> text-slate-600 hover:bg-rose-50 hover:text-primary" href="<?php echo esc_url( get_pagenum_link( $current - 1 ) ); ?>" rel="prev">
+                    <a class="<?php echo esc_attr( $arrow ); ?> text-slate-600 hover:bg-primary-light hover:text-primary" href="<?php echo esc_url( get_pagenum_link( $current - 1 ) ); ?>" rel="prev">
 						<?php echo $prev; ?><span class="hidden sm:inline"><?php esc_html_e( 'Prev', 'rom' ); ?></span>
                     </a>
 				<?php else : ?>
@@ -65,7 +65,7 @@ function rom_pagination( $pages = '', $range = 1 ) {
 			<?php endforeach; ?>
             <li>
 				<?php if ( $current < $pages ) : ?>
-                    <a class="<?php echo esc_attr( $arrow ); ?> text-slate-600 hover:bg-rose-50 hover:text-primary" href="<?php echo esc_url( get_pagenum_link( $current + 1 ) ); ?>" rel="next">
+                    <a class="<?php echo esc_attr( $arrow ); ?> text-slate-600 hover:bg-primary-light hover:text-primary" href="<?php echo esc_url( get_pagenum_link( $current + 1 ) ); ?>" rel="next">
                         <span class="hidden sm:inline"><?php esc_html_e( 'Next', 'rom' ); ?></span><?php echo $next; ?>
                     </a>
 				<?php else : ?>

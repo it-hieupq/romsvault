@@ -12,22 +12,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Ruby pink. 'primary' is the canonical name; 'rom-pink' and 'brand'
-        // are the legacy aliases still used across the templates and point at
-        // the same values so the whole site shifts together.
+        // Brand colour, read from the CSS variables in assets/css/input.css.
+        // 'primary' is the canonical name; 'rom-pink' and 'brand' are legacy
+        // aliases still used across the templates and point at the same values.
         primary: {
-          DEFAULT: '#d81b60',
-          hover: '#ad1457',
-          light: '#fdf2f8',
-          accent: '#ec4899',
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+          hover: 'rgb(var(--primary-hover) / <alpha-value>)',
+          light: 'rgb(var(--primary-light) / <alpha-value>)',
+          accent: 'rgb(var(--primary-accent) / <alpha-value>)',
         },
-        'rom-pink': '#d81b60',
-        'rom-pink-dark': '#ad1457',
-        'rom-pink-light': '#f06292',
+        'rom-pink': 'rgb(var(--primary) / <alpha-value>)',
+        'rom-pink-dark': 'rgb(var(--primary-hover) / <alpha-value>)',
+        'rom-pink-light': 'rgb(var(--primary-accent) / <alpha-value>)',
         brand: {
-          DEFAULT: '#d81b60',
-          dark: '#ad1457',
-          light: '#f06292',
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+          dark: 'rgb(var(--primary-hover) / <alpha-value>)',
+          light: 'rgb(var(--primary-accent) / <alpha-value>)',
         },
         gold: {
           DEFAULT: '#f59e0b',
@@ -60,8 +60,8 @@ module.exports = {
       boxShadow: {
         'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03)',
         'card': '0 4px 16px -2px rgba(15, 23, 42, 0.04)',
-        'card-hover': '0 14px 28px -6px rgba(216, 27, 96, 0.12)',
-        'glow-primary': '0 8px 24px -4px rgba(216, 27, 96, 0.35)',
+        'card-hover': '0 14px 28px -6px rgb(var(--primary) / 0.12)',
+        'glow-primary': '0 8px 24px -4px rgb(var(--primary) / 0.35)',
       },
     },
   },

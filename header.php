@@ -81,9 +81,8 @@ $search_param  = $browse_url ? 'q' : 's';
                 <?php if ( $logo_url ) : ?>
                     <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $site_name ); ?>" class="h-8 sm:h-9 w-auto">
                 <?php else : ?>
-                    <?php // Mark only; the site name beside it stays live text. 192px covers 3x screens. ?>
-                    <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-mark-192.png?v=' . $mark_ver ); ?>" alt="" width="48" height="48"
-                         class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0">
+                    <?php // Mark only; the site name beside it stays live text. ?>
+                    <?php echo rom_logo_mark( 'w-9 h-9 sm:w-11 sm:h-11 rounded-xl shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform flex-shrink-0' ); ?>
                 <?php endif; ?>
 
                 <?php
@@ -145,7 +144,7 @@ $search_param  = $browse_url ? 'q' : 's';
                     </div>
                 </div>
 
-                <button class="md:hidden p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-primary hover:bg-rose-50/50 transition-colors" id="mobile-menu-btn" aria-label="<?php esc_attr_e( 'Toggle menu', 'rom' ); ?>">
+                <button class="md:hidden p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-primary hover:bg-primary-light/50 transition-colors" id="mobile-menu-btn" aria-label="<?php esc_attr_e( 'Toggle menu', 'rom' ); ?>">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 6h16M4 12h16M4 18h16"></path>
@@ -164,7 +163,7 @@ $search_param  = $browse_url ? 'q' : 's';
             <?php if ($logo_url) : ?>
                 <img class="h-8 w-auto" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>">
             <?php else: ?>
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-mark-192.png?v=' . $mark_ver ); ?>" alt="" width="36" height="36" class="w-9 h-9 rounded-xl flex-shrink-0">
+                <?php echo rom_logo_mark( 'w-9 h-9 rounded-xl flex-shrink-0' ); ?>
                 <span class="text-lg font-bold tracking-tight text-slate-900 font-display truncate"><?php echo esc_html( $site_name ); ?></span>
             <?php endif; ?>
         </a>

@@ -105,7 +105,7 @@ while ( have_posts() ) : the_post();
                         <!-- Console + OS tags -->
                         <div class="flex flex-wrap items-center gap-2">
                             <a href="<?php echo esc_url( $console_link ); ?>"
-                               class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-rose-50 text-primary text-caption font-bold border border-rose-200/60 hover:bg-rose-100 transition-colors [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0"><?php echo get_svg_icon( 'joystick' ) . esc_html( $console->name ); ?></a>
+                               class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary-light text-primary text-caption font-bold border border-primary/30 hover:bg-primary/15 transition-colors [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0"><?php echo get_svg_icon( 'joystick' ) . esc_html( $console->name ); ?></a>
 							<?php
 							if ( ! is_wp_error( $os_terms ) && ! empty( $os_terms ) ) :
 								foreach ( $os_terms as $os_term ) :
@@ -147,7 +147,7 @@ while ( have_posts() ) : the_post();
                             <div class="grid grid-cols-2 gap-3 md:gap-4 my-1 [&>:last-child:nth-child(odd)]:col-span-2">
 								<?php foreach ( $specs as $spec ) : ?>
                                     <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-start gap-2.5">
-                                        <div class="w-8 h-8 rounded-lg bg-rose-50 border border-rose-100/80 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0">
+                                        <div class="w-8 h-8 rounded-lg bg-primary-light border border-primary/20 text-primary flex items-center justify-center flex-shrink-0 mt-0.5 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:mr-0">
 											<?php echo get_svg_icon( $spec['icon'] ); ?>
                                         </div>
                                         <div class="min-w-0 flex-1">

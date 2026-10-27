@@ -17,7 +17,6 @@ if ( has_nav_menu( 'footer-nav' ) ) {
 
 // Same brand block as the header: the uploaded logo when there is one, else the mark + name.
 $footer_logo = get_field( 'logo', 'option' );
-$footer_mark = get_template_directory_uri() . '/assets/images/logo-mark-192.png?v=' . filemtime( get_template_directory() . '/assets/images/logo-mark-192.png' );
 ?>
 <footer class="bg-white border-t border-slate-200 mt-auto text-slate-500 text-caption">
     <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col-reverse gap-10 lg:grid lg:grid-cols-3 lg:gap-16">
@@ -27,7 +26,7 @@ $footer_mark = get_template_directory_uri() . '/assets/images/logo-mark-192.png?
 				<?php if ( $footer_logo ) : ?>
                     <img src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" class="h-9 w-auto" loading="lazy">
 				<?php else : ?>
-                    <img src="<?php echo esc_url( $footer_mark ); ?>" alt="" width="40" height="40" class="w-10 h-10 rounded-xl flex-shrink-0" loading="lazy">
+                    <?php echo rom_logo_mark( 'w-10 h-10 rounded-xl flex-shrink-0' ); ?>
                     <span class="flex flex-col">
                         <span class="text-lg font-bold tracking-tight text-slate-900 font-display"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
                         <span class="text-[9px] tracking-widest uppercase font-bold text-slate-400 -mt-1"><?php esc_html_e( 'Game Archive', 'rom' ); ?></span>

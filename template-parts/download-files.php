@@ -31,8 +31,8 @@ foreach ( $args['groups'] as $group ) :
                 $ext = rom_file_ext( $f['url'] );
                 ?>
                 <a href="<?php echo esc_url( rom_download_url( $post_id, $item['n'] ) ); ?>" target="_blank" rel="nofollow"
-                   class="group flex items-center gap-3 sm:gap-4 p-4 sm:px-5 hover:bg-rose-50/40 transition-colors">
-                    <span class="w-10 h-10 rounded-xl bg-rose-50 text-primary flex items-center justify-center font-bold text-caption uppercase flex-shrink-0">
+                   class="group flex items-center gap-3 sm:gap-4 p-4 sm:px-5 hover:bg-primary-light/40 transition-colors">
+                    <span class="w-10 h-10 rounded-xl bg-primary-light text-primary flex items-center justify-center font-bold text-caption uppercase flex-shrink-0">
                         <?php echo esc_html( $ext ? $ext : '#' . $item['n'] ); ?>
                     </span>
                     <span class="min-w-0 flex-1">

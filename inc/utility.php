@@ -213,6 +213,17 @@ function rom_download_groups( $post_id ) {
     return $groups;
 }
 
+/**
+ * The logo mark (assets/images/logo-mark.svg) inline, so its tile takes the brand colour
+ * from --primary. Decorative: the site name next to it is the accessible label.
+ */
+function rom_logo_mark( $class = '' ) {
+    return '<svg class="' . esc_attr( $class ) . '" viewBox="0 0 512 512" aria-hidden="true" focusable="false">'
+        . '<rect class="fill-primary" width="512" height="512" rx="128"/>'
+        . '<path transform="translate(55.6 55.6) scale(16.7)" fill="#fff" d="M9,21a1,1,0,0,0,1-1V19a2,2,0,0,1,4,0v.78A1.223,1.223,0,0,0,15.228,21,7.7,7.7,0,0,0,23,13.73,7.5,7.5,0,0,0,15.5,6H13V4a1,1,0,0,0-2,0V6H8.772A7.7,7.7,0,0,0,1,13.27a7.447,7.447,0,0,0,2.114,5.453A7.81,7.81,0,0,0,9,21ZM8.772,8H15.5A5.5,5.5,0,0,1,21,13.67a5.643,5.643,0,0,1-5,5.279,4,4,0,0,0-8,.029A5.5,5.5,0,0,1,3,13.33,5.684,5.684,0,0,1,8.772,8ZM5,12.5a1,1,0,0,1,1-1H7v-1a1,1,0,0,1,2,0v1h1a1,1,0,0,1,0,2H9v1a1,1,0,0,1-2,0v-1H6A1,1,0,0,1,5,12.5ZM17,11a1,1,0,1,1,1,1A1,1,0,0,1,17,11Zm-2,3a1,1,0,1,1,1,1A1,1,0,0,1,15,14Z"/>'
+        . '</svg>';
+}
+
 // Archive extension read off a file URL (zip, 7z, iso...), or '' when there is none.
 function rom_file_ext( $url ) {
     $ext = strtolower( pathinfo( (string) wp_parse_url( (string) $url, PHP_URL_PATH ), PATHINFO_EXTENSION ) );

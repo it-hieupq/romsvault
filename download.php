@@ -94,7 +94,7 @@ $note        = get_field( 'download_note', $post_id );
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-meta text-slate-500">
                             <?php if ( $console ) : ?>
                                 <a href="<?php echo esc_url( get_term_link( $console ) ); ?>"
-                                   class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-rose-50 text-primary text-caption font-bold border border-rose-200/60 hover:bg-rose-100 transition-colors [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0"><?php echo get_svg_icon( 'joystick' ) . esc_html( $console->name ); ?></a>
+                                   class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-primary-light text-primary text-caption font-bold border border-primary/30 hover:bg-primary/15 transition-colors [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:mr-0"><?php echo get_svg_icon( 'joystick' ) . esc_html( $console->name ); ?></a>
                             <?php endif; ?>
                             <span class="inline-flex items-center gap-1.5" data-rf-rating-summary="compact">
                                 <?php echo rom_rating_summary_html( $post_id, 'compact' ); ?>
@@ -152,7 +152,7 @@ elseif ( $file_missing ) :
     <section class="py-6 sm:py-8">
         <div class="max-w-content mx-auto px-4 sm:px-6 space-y-6">
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-card px-5 py-10 sm:py-12 text-center">
-                <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-50 text-primary mb-4">
+                <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-light text-primary mb-4">
                     <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="m10 12 4 4m0-4-4 4"/></svg>
                 </span>
                 <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight"><?php esc_html_e( 'This file doesn\'t exist', 'rom' ); ?></h2>
@@ -198,7 +198,7 @@ else :
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-card overflow-hidden">
                 <!-- File summary -->
                 <div class="flex items-center gap-4 p-5 sm:p-6 border-b border-slate-100 bg-slate-50/60">
-                    <span class="w-12 h-12 rounded-2xl bg-rose-50 text-primary flex items-center justify-center font-bold text-meta uppercase flex-shrink-0">
+                    <span class="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center font-bold text-meta uppercase flex-shrink-0">
                         <?php echo esc_html( $current_ext ? $current_ext : '#' . $file_number ); ?>
                     </span>
                     <div class="min-w-0">
@@ -231,8 +231,8 @@ else :
                             <span class="text-base font-extrabold text-primary tabular-nums leading-none"><span id="countdown">0</span>%</span>
                         </div>
                         <?php // main.js scales the fill from 0 to 100% per animation frame (transform, not width, so it never re-lays out). ?>
-                        <div class="h-3 rounded-full bg-rose-100 overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="<?php esc_attr_e( 'Download preparation', 'rom' ); ?>">
-                            <div id="download-progress" class="h-full w-full rounded-full bg-gradient-to-r from-rose-400 to-primary origin-left will-change-transform" style="transform:scaleX(0)"></div>
+                        <div class="h-3 rounded-full bg-primary/15 overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="<?php esc_attr_e( 'Download preparation', 'rom' ); ?>">
+                            <div id="download-progress" class="h-full w-full rounded-full bg-gradient-to-r from-primary-accent to-primary origin-left will-change-transform" style="transform:scaleX(0)"></div>
                         </div>
                     </div>
 

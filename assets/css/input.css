@@ -89,6 +89,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brand colours as RGB channels, so Tailwind's opacity modifiers (bg-primary/25) and
+   style.css (rgb(var(--primary))) both read them. Change the palette here only. */
+:root {
+  --primary: 216 27 96;
+  --primary-hover: 173 20 87;
+  --primary-light: 253 242 248;
+  --primary-accent: 236 72 153;
+}
+
 /* Editor-written HTML (post content, descriptions, guides). One class on the
    wrapper styles every tag the editor can produce, so templates never style
    content tag by tag. */
