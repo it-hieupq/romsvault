@@ -71,21 +71,6 @@ romsvault/
 └── tailwindcss/               # build toolchain (node_modules — KHÔNG commit)
 ```
 
-### File có trên disk nhưng KHÔNG được load
-
-| File | Trạng thái |
-|---|---|
-| `grabber/grabber-rom.php` | không có require nào |
-| `grabber/grabber-mobygames.php` | không có require nào |
-| `grabber/grabber-igdb.php` | không có require nào |
-| `grabber/grabber-retrostic.php` | không có require nào |
-
-Cả 4 là bản cũ của các nguồn mà `grabber/grabber-multi.php` đã xử lý (mobygames, retrostic,
-igdb, romstation, cùng launchbox, gog, backloggd, romhackplaza, nintendolife, pushsquare).
-Đừng include lại: `grabber-retrostic.php` khai báo trùng `getGameDataAPI()` /
-`save_file_from_url()` với `grabber-multi.php` ⇒ fatal. Chúng còn ghi vào taxonomy cũ
-`dev`/`pub`/`type`.
-
 ---
 
 ## 3. Post Types
@@ -505,7 +490,7 @@ khác**, không phải site URL, nên không thay bằng `site_url()` được �
 option hoặc hằng ở `wp-config.php`.
 
 ### 10.2 Secret hardcode trong source
-`grabber/grabber-multi.php`, `grabber-igdb.php`, `grabber-retrostic.php` — `client_id` +
+`grabber/grabber-multi.php` — `client_id` +
 `client_secret` của Twitch/IGDB nằm thẳng trong code và đã vào git. Nên chuyển sang hằng
 ở `wp-config.php`, và rotate credential vì repo đã giữ chúng.
 Key XOR của `get_download_token()` (`inc/download-token.php`) cũng hardcode.
