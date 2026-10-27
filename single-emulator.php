@@ -173,10 +173,15 @@ while ( have_posts() ) : the_post();
                                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary-hover active:scale-95 transition-all shadow-sm shadow-primary/25 [&_svg]:w-4 [&_svg]:h-4">
 											<?php echo get_svg_icon( 'save' ) . esc_html__( 'Download Emulator', 'rom' ); ?>
                                         </a>
-                                        <a href="<?php echo esc_url( $console_link ); ?>"
-                                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 hover:text-slate-900 transition-colors [&_svg]:w-5 [&_svg]:h-5 [&_svg]:mr-0">
-											<?php echo get_svg_icon( 'emulator' ) . esc_html( sprintf( __( 'All %s Emulators', 'rom' ), $console->name ) ); ?>
-                                        </a>
+										<?php
+										// The rom console shares the emulator console's slug.
+										$rom_term = get_term_by( 'slug', $console->slug, 'console' );
+										if ( $rom_term && ! is_wp_error( $rom_term ) && $rom_term->count > 0 ) : ?>
+                                            <a href="<?php echo esc_url( get_term_link( $rom_term ) ); ?>"
+                                               class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 hover:text-slate-900 transition-colors [&_svg]:w-5 [&_svg]:h-5 [&_svg]:mr-0">
+												<?php echo get_svg_icon( 'joystick' ) . esc_html( sprintf( __( 'All %s ROMs', 'rom' ), $rom_term->name ) ); ?>
+                                            </a>
+										<?php endif; ?>
                                     </span>
                                     </span>
 								<?php endif; ?>
